@@ -1,0 +1,101 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --modra: #003DA5;
+  --rdeca: #D62718;
+  --bela: #FFFFFF;
+  --ozadje: #F5F6F8;
+  --kartica: #FFFFFF;
+  --besedilo: #1A1A2E;
+  --besedilo2: #6B7280;
+  --rob: #E5E7EB;
+  --nav-h: 64px;
+  --header-h: 56px;
+  --vsebina-vrh: calc(var(--header-h) + 3px);
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--ozadje);
+  color: var(--besedilo);
+}
+
+/* Scrollable content area */
+.vsebina {
+  position: fixed;
+  top: var(--vsebina-vrh);
+  bottom: var(--nav-h);
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Reusable card */
+.kartica {
+  background: var(--kartica);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  border: 0.5px solid var(--rob);
+}
+
+.kartica-naslov {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--besedilo2);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 10px;
+}
+
+/* Stat grid */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.stat {
+  background: white;
+  border-radius: 10px;
+  padding: 12px;
+  border: 0.5px solid var(--rob);
+  text-align: center;
+}
+
+.stat-st {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--modra);
+}
+
+.stat-ime {
+  font-size: 11px;
+  color: var(--besedilo2);
+  margin-top: 2px;
+}
+
+/* Difficulty badges */
+.tezavnost {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+.lahka  { background: #D1FAE5; color: #065F46; }
+.srednja { background: #FEF3C7; color: #92400E; }
+.tezka  { background: #FEE2E2; color: #991B1B; }
