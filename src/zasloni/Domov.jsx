@@ -124,10 +124,10 @@ export default function Domov() {
 
       {/* Statistike */}
       <div className="stat-grid">
-        <div className="stat"><div className="stat-st">24</div><div className="stat-ime">opravljene poti</div></div>
-        <div className="stat"><div className="stat-st">312 km</div><div className="stat-ime">skupna razdalja</div></div>
-        <div className="stat"><div className="stat-st">18.400 m</div><div className="stat-ime">skupni vzpon</div></div>
-        <div className="stat"><div className="stat-st">7</div><div className="stat-ime">pridobljene značke</div></div>
+        <div className="stat"><div className="stat-st">0</div><div className="stat-ime">opravljene poti</div></div>
+        <div className="stat"><div className="stat-st">0 km</div><div className="stat-ime">skupna razdalja</div></div>
+        <div className="stat"><div className="stat-st">0 m</div><div className="stat-ime">skupni vzpon</div></div>
+        <div className="stat"><div className="stat-st">0</div><div className="stat-ime">pridobljene značke</div></div>
       </div>
 
       {/* Priporočene poti */}
