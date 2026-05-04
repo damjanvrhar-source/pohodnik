@@ -77,7 +77,7 @@ function ProfilVisine({ tocke, dolzina }) {
   )
 }
 
-export default function Zemljevid() {
+export default function Zemljevid({ izbranaPot }) {
   const mapRef = useRef(null)
   const mapInstanca = useRef(null)
   const gpsMarker = useRef(null)
@@ -104,6 +104,16 @@ export default function Zemljevid() {
     }).addTo(map)
     L.control.zoom({ position: 'bottomright' }).addTo(map)
     mapInstanca.current = map
+
+    // Prikaži izbrano pot takoj ob inicializaciji
+    if (izbranaPot?.lat && izbranaPot?.lon) {
+      map.setView([izbranaPot.lat, izbranaPot.lon], 13)
+      L.marker([izbranaPot.lat, izbranaPot.lon])
+        .addTo(map)
+        .bindPopup(`<b>${izbranaPot.ime}</b><br>${izbranaPot.regija}`)
+        .openPopup()
+    }
+
     return () => {
       map.remove()
       mapInstanca.current = null
