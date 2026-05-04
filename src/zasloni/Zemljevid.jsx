@@ -31,21 +31,17 @@ function ProfilVisine({ tocke, dolzina }) {
   if (!tocke || tocke.length === 0) return null
   const visine = tocke.map(t => t.ele).filter(e => e !== null)
   if (visine.length === 0) return null
-
   const min = Math.min(...visine)
   const max = Math.max(...visine)
   const razpon = max - min || 1
   const w = 340, h = 70, pad = 8
-
   const points = visine.map((v, i) => {
     const x = pad + (i / (visine.length - 1)) * (w - pad * 2)
     const y = h - pad - ((v - min) / razpon) * (h - pad * 2)
     return `${x},${y}`
   }).join(' ')
-
   const areaPoints = `${pad},${h - pad} ${points} ${w - pad},${h - pad}`
   const vzpon = visine.reduce((acc, v, i) => i > 0 && v > visine[i-1] ? acc + (v - visine[i-1]) : acc, 0)
-
   return (
     <div style={{
       position: 'absolute', bottom: 0, left: 0, right: 0,
@@ -69,7 +65,6 @@ function ProfilVisine({ tocke, dolzina }) {
         </defs>
         <polygon points={areaPoints} fill="url(#profilGrad)" />
         <polyline points={points} fill="none" stroke="#003DA5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        {/* Min/max oznake */}
         <text x={pad} y={h - pad - ((max - min) / razpon) * (h - pad * 2) - 4} fontSize="9" fill="#003DA5">{max}m</text>
         <text x={pad} y={h - pad + 4} fontSize="9" fill="#6B7280">{min}m</text>
       </svg>
@@ -85,6 +80,7 @@ export default function Zemljevid({ izbranaPot }) {
   const potLinija = useRef(null)
   const watchId = useRef(null)
   const gpxInput = useRef(null)
+  const aktivniSloj = useRef(null)
 
   const [visina, setVisina] = useState(null)
   const [gpsStatus, setGpsStatus] = useState('izklopljen')
@@ -93,19 +89,35 @@ export default function Zemljevid({ izbranaPot }) {
   const [potDolzina, setPotDolzina] = useState(null)
   const [gpxTocke, setGpxTocke] = useState([])
   const [prikazProfila, setPrikazProfila] = useState(false)
+  const [jeTopoPogled, setJeTopoPogled] = useState(true)
+
+  const topoSloj = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
+  const satelitSloj = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+
+  function preklopi() {
+    const map = mapInstanca.current
+    if (!map) return
+    map.removeLayer(aktivniSloj.current)
+    const novSloj = L.tileLayer(
+      jeTopoPogled ? satelitSloj : topoSloj,
+      { attribution: jeTopoPogled ? '© Esri' : '© OpenTopoMap', maxZoom: 19 }
+    )
+    novSloj.addTo(map)
+    aktivniSloj.current = novSloj
+    setJeTopoPogled(!jeTopoPogled)
+  }
 
   useEffect(() => {
     if (mapInstanca.current) return
     const map = L.map(mapRef.current, {
       center: ZACETNI_POGLED, zoom: ZACETNI_ZOOM, zoomControl: false,
     })
-    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenTopoMap · © OpenStreetMap', maxZoom: 17,
-    }).addTo(map)
+    const sloj = L.tileLayer(topoSloj, { attribution: '© OpenTopoMap · © OpenStreetMap', maxZoom: 17 })
+    sloj.addTo(map)
+    aktivniSloj.current = sloj
     L.control.zoom({ position: 'bottomright' }).addTo(map)
     mapInstanca.current = map
 
-    // Prikaži izbrano pot takoj ob inicializaciji
     if (izbranaPot?.lat && izbranaPot?.lon) {
       map.setView([izbranaPot.lat, izbranaPot.lon], 13)
       L.marker([izbranaPot.lat, izbranaPot.lon])
@@ -179,14 +191,15 @@ export default function Zemljevid({ izbranaPot }) {
       for (let i = 1; i < koordinate.length; i++) {
         dolzina += map.distance(koordinate[i - 1], koordinate[i])
       }
-      const km = (dolzina / 1000).toFixed(1)
       setPotIme(datoteka.name.replace('.gpx', ''))
-      setPotDolzina(km)
+      setPotDolzina((dolzina / 1000).toFixed(1))
       setGpxTocke(tocke)
       setPrikazProfila(true)
     }
     bralnik.readAsText(datoteka)
   }
+
+  const spodajOffset = prikazProfila ? 160 : 0
 
   return (
     <div style={{ position: 'relative', height: '100%' }}>
@@ -214,28 +227,41 @@ export default function Zemljevid({ izbranaPot }) {
         )}
       </div>
 
-      {/* Gumbi desno */}
+      {/* Preklop pogled */}
+      <button onClick={preklopi} style={{
+        position: 'absolute', top: 12, right: 12,
+        background: 'white', color: '#1A1A2E',
+        border: '0.5px solid #E5E7EB', borderRadius: 8,
+        padding: '6px 10px', fontSize: 12, fontWeight: 600,
+        cursor: 'pointer', zIndex: 1000,
+      }}>
+        {jeTopoPogled ? '🛰 Satelit' : '🗺 Topo'}
+      </button>
+
+      {/* GPX gumb */}
       <input ref={gpxInput} type="file" accept=".gpx" style={{ display: 'none' }} onChange={nalozGPX} />
       <button onClick={() => gpxInput.current.click()} style={{
-        position: 'absolute', bottom: prikazProfila ? 160 : 124, right: 16,
+        position: 'absolute', bottom: 16 + spodajOffset + 108, right: 16,
         background: 'white', color: '#1A1A2E', border: '2px solid #E5E7EB',
         borderRadius: 10, padding: '10px 16px', fontSize: 13, fontWeight: 700,
-        cursor: 'pointer', zIndex: 1000, transition: 'bottom 0.3s',
+        cursor: 'pointer', zIndex: 1000,
       }}>📂 Uvozi GPX</button>
 
+      {/* GPS sledenje */}
       <button onClick={sledenje ? ustavi : zageniGPS} style={{
-        position: 'absolute', bottom: prikazProfila ? 106 : 70, right: 16,
+        position: 'absolute', bottom: 16 + spodajOffset + 54, right: 16,
         background: sledenje ? '#003DA5' : 'white',
         color: sledenje ? 'white' : '#003DA5',
         border: '2px solid #003DA5', borderRadius: 10, padding: '10px 16px',
-        fontSize: 13, fontWeight: 700, cursor: 'pointer', zIndex: 1000, transition: 'bottom 0.3s',
+        fontSize: 13, fontWeight: 700, cursor: 'pointer', zIndex: 1000,
       }}>{sledenje ? '⏹ Ustavi GPS' : '📍 Začni sledenje'}</button>
 
+      {/* SOS */}
       <button style={{
-        position: 'absolute', bottom: prikazProfila ? 52 : 16, right: 16,
+        position: 'absolute', bottom: 16 + spodajOffset, right: 16,
         background: '#D62718', color: 'white', border: 'none',
-        borderRadius: 10, padding: '10px 16px', fontSize: 13, fontWeight: 700,
-        cursor: 'pointer', zIndex: 1000, transition: 'bottom 0.3s',
+        borderRadius: 10, padding: '10px 16px', fontSize: 13,
+        fontWeight: 700, cursor: 'pointer', zIndex: 1000,
       }}>🆘 SOS</button>
 
       {/* Profil višine */}
