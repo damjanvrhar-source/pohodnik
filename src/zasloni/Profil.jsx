@@ -1,20 +1,26 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const ZNACKE = [
-  { ikona: '🏔️', ime: 'Triglavec', opis: 'Osvoji Triglav', zaklenjena: true },
-  { ikona: '❄️', ime: 'Zimski osvajalec', opis: 'Pohod pozimi', zaklenjena: true },
-  { ikona: '⚡', ime: 'Hitri pohodnik', opis: 'Pod 3h na 10km', zaklenjena: true },
-  { ikona: '🌄', ime: 'Zgodnji ptič', opis: 'Pohod pred 6:00', zaklenjena: true },
-  { ikona: '🧭', ime: 'Nav. maestro', opis: 'Uvozi GPX pot', zaklenjena: true },
-  { ikona: '🦅', ime: 'Alpinist', opis: '10 zahtevnih poti', zaklenjena: true },
-  { ikona: '🌙', ime: 'Nočni pohod', opis: 'Pohod ponoči', zaklenjena: true },
-  { ikona: '💯', ime: '100 poti', opis: 'Opravi 100 pohodov', zaklenjena: true },
+  { ikona: '🏔️', ime: 'Triglavec', opis: 'Osvoji Triglav' },
+  { ikona: '❄️', ime: 'Zimski osvajalec', opis: 'Pohod pozimi' },
+  { ikona: '⚡', ime: 'Hitri pohodnik', opis: 'Pod 3h na 10km' },
+  { ikona: '🌄', ime: 'Zgodnji ptič', opis: 'Pohod pred 6:00' },
+  { ikona: '🧭', ime: 'Nav. maestro', opis: 'Uvozi GPX pot' },
+  { ikona: '🦅', ime: 'Alpinist', opis: '10 zahtevnih poti' },
+  { ikona: '🌙', ime: 'Nočni pohod', opis: 'Pohod ponoči' },
+  { ikona: '💯', ime: '100 poti', opis: 'Opravi 100 pohodov' },
 ]
 
 export default function Profil() {
   const [urejanje, setUrejanje] = useState(false)
   const [ime, setIme] = useState('')
   const [tempIme, setTempIme] = useState('')
+
+  // Naloži shranjeno ime ob zagonu
+  useEffect(() => {
+    const shranjeno = localStorage.getItem('pohodnik_ime')
+    if (shranjeno) setIme(shranjeno)
+  }, [])
 
   function zacniUrejanje() {
     setTempIme(ime)
@@ -23,6 +29,7 @@ export default function Profil() {
 
   function shrani() {
     setIme(tempIme)
+    localStorage.setItem('pohodnik_ime', tempIme)
     setUrejanje(false)
   }
 
@@ -100,8 +107,7 @@ export default function Profil() {
           {ZNACKE.map((z, i) => (
             <div key={i} style={{
               background: 'white', borderRadius: 10, padding: '10px 6px',
-              textAlign: 'center', border: '0.5px solid var(--rob)',
-              opacity: 0.3
+              textAlign: 'center', border: '0.5px solid var(--rob)', opacity: 0.3
             }}>
               <div style={{ fontSize: 24 }}>{z.ikona}</div>
               <div style={{ fontSize: 9, color: 'var(--besedilo2)', marginTop: 4, lineHeight: 1.2 }}>{z.ime}</div>
@@ -113,10 +119,7 @@ export default function Profil() {
       {/* Zgodovina */}
       <div className="kartica">
         <div className="kartica-naslov">Zadnje poti</div>
-        <div style={{
-          textAlign: 'center', padding: '20px 0',
-          color: 'var(--besedilo2)', fontSize: 13
-        }}>
+        <div style={{ textAlign: 'center', padding: '20px 0', color: 'var(--besedilo2)', fontSize: 13 }}>
           Še ni opravljenih pohodov. 🥾<br/>
           <span style={{ fontSize: 12 }}>Začni pohod v zavihku Iskanje!</span>
         </div>

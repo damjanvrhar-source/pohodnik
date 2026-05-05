@@ -65,8 +65,6 @@ function ProfilVisine({ tocke, dolzina }) {
         </defs>
         <polygon points={areaPoints} fill="url(#profilGrad)" />
         <polyline points={points} fill="none" stroke="#003DA5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        <text x={pad} y={h - pad - ((max - min) / razpon) * (h - pad * 2) - 4} fontSize="9" fill="#003DA5">{max}m</text>
-        <text x={pad} y={h - pad + 4} fontSize="9" fill="#6B7280">{min}m</text>
       </svg>
     </div>
   )
@@ -81,6 +79,7 @@ export default function Zemljevid({ izbranaPot }) {
   const watchId = useRef(null)
   const gpxInput = useRef(null)
   const aktivniSloj = useRef(null)
+  const napisiSlojRef = useRef(null)
 
   const [visina, setVisina] = useState(null)
   const [gpsStatus, setGpsStatus] = useState('izklopljen')
@@ -91,19 +90,37 @@ export default function Zemljevid({ izbranaPot }) {
   const [prikazProfila, setPrikazProfila] = useState(false)
   const [jeTopoPogled, setJeTopoPogled] = useState(true)
 
-  const topoSloj = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
-  const satelitSloj = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-
   function preklopi() {
     const map = mapInstanca.current
     if (!map) return
     map.removeLayer(aktivniSloj.current)
-    const novSloj = L.tileLayer(
-      jeTopoPogled ? satelitSloj : topoSloj,
-      { attribution: jeTopoPogled ? '© Esri' : '© OpenTopoMap', maxZoom: 19 }
-    )
-    novSloj.addTo(map)
-    aktivniSloj.current = novSloj
+    if (napisiSlojRef.current) {
+      map.removeLayer(napisiSlojRef.current)
+      napisiSlojRef.current = null
+    }
+    if (jeTopoPogled) {
+      // Satelit + napisi + meje
+      const sat = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        { attribution: '© Esri', maxZoom: 19 }
+      )
+      sat.addTo(map)
+      aktivniSloj.current = sat
+      const napisi = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+        { attribution: '', maxZoom: 19, opacity: 0.9 }
+      )
+      napisi.addTo(map)
+      napisiSlojRef.current = napisi
+    } else {
+      // Topo
+      const topo = L.tileLayer(
+        'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+        { attribution: '© OpenTopoMap', maxZoom: 17 }
+      )
+      topo.addTo(map)
+      aktivniSloj.current = topo
+    }
     setJeTopoPogled(!jeTopoPogled)
   }
 
@@ -112,9 +129,12 @@ export default function Zemljevid({ izbranaPot }) {
     const map = L.map(mapRef.current, {
       center: ZACETNI_POGLED, zoom: ZACETNI_ZOOM, zoomControl: false,
     })
-    const sloj = L.tileLayer(topoSloj, { attribution: '© OpenTopoMap · © OpenStreetMap', maxZoom: 17 })
-    sloj.addTo(map)
-    aktivniSloj.current = sloj
+    const topo = L.tileLayer(
+      'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+      { attribution: '© OpenTopoMap · © OpenStreetMap', maxZoom: 17 }
+    )
+    topo.addTo(map)
+    aktivniSloj.current = topo
     L.control.zoom({ position: 'bottomright' }).addTo(map)
     mapInstanca.current = map
 
@@ -209,7 +229,7 @@ export default function Zemljevid({ izbranaPot }) {
       <div style={{
         position: 'absolute', top: 12, left: 12,
         display: 'flex', gap: 8, zIndex: 1000, flexWrap: 'wrap',
-        pointerEvents: 'none', maxWidth: 'calc(100% - 24px)',
+        pointerEvents: 'none', maxWidth: 'calc(100% - 120px)',
       }}>
         <div style={{
           background: 'white', borderRadius: 8, padding: '6px 10px',
