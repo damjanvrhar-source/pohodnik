@@ -6,16 +6,17 @@
 }
 
 :root {
-  --modra: #003DA5;
-  --rdeca: #D62718;
-  --bela: #FFFFFF;
-  --ozadje: #F5F6F8;
+  --zelena: #2D7A2D;
+  --zelena-t: #1F5C1F;
+  --zelena-s: #3A9A3A;
+  --zelena-sv: #E8F5E8;
+  --ozadje: #F4F7F4;
   --kartica: #FFFFFF;
-  --besedilo: #1A1A2E;
-  --besedilo2: #6B7280;
-  --rob: #E5E7EB;
+  --besedilo: #1A2E1A;
+  --besedilo2: #6B7D6B;
+  --rob: #D4E4D4;
   --nav-h: 64px;
-  --header-h: 56px;
+  --header-h: 60px;
   --vsebina-vrh: calc(var(--header-h) + 3px);
 }
 
@@ -30,7 +31,6 @@ body {
   color: var(--besedilo);
 }
 
-/* Scrollable content area */
 .vsebina {
   position: fixed;
   top: var(--vsebina-vrh);
@@ -41,7 +41,6 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Reusable card */
 .kartica {
   background: var(--kartica);
   border-radius: 12px;
@@ -51,15 +50,14 @@ body {
 }
 
 .kartica-naslov {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   color: var(--besedilo2);
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 1px;
   margin-bottom: 10px;
 }
 
-/* Stat grid */
 .stat-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -78,7 +76,7 @@ body {
 .stat-st {
   font-size: 22px;
   font-weight: 700;
-  color: var(--modra);
+  color: var(--zelena);
 }
 
 .stat-ime {
@@ -87,7 +85,6 @@ body {
   margin-top: 2px;
 }
 
-/* Difficulty badges */
 .tezavnost {
   display: inline-block;
   font-size: 10px;

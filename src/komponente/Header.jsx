@@ -3,7 +3,7 @@ import React from 'react'
 const stilji = {
   header: {
     height: 'var(--header-h)',
-    background: 'var(--modra)',
+    background: 'linear-gradient(135deg, #1F5C1F 0%, #2D7A2D 60%, #3A9A3A 100%)',
     display: 'flex',
     alignItems: 'center',
     padding: '0 16px',
@@ -15,15 +15,17 @@ const stilji = {
   },
   logo: {
     color: 'white',
-    fontSize: 20,
-    fontWeight: 700,
-    letterSpacing: '-0.5px',
+    fontSize: 22,
+    fontWeight: 800,
+    letterSpacing: '1px',
+    textTransform: 'uppercase',
   },
-  zlata: { color: '#FFD700' },
-  sub: {
-    color: 'rgba(255,255,255,0.6)',
-    fontSize: 12,
-    marginLeft: 'auto',
+  tagline: {
+    color: 'rgba(255,255,255,0.65)',
+    fontSize: 9,
+    letterSpacing: '1.5px',
+    textTransform: 'uppercase',
+    marginTop: 1,
   },
   proga: {
     position: 'fixed',
@@ -31,7 +33,7 @@ const stilji = {
     left: 0,
     right: 0,
     height: 3,
-    background: 'linear-gradient(90deg, var(--modra) 0%, var(--modra) 33.3%, white 33.3%, white 66.6%, var(--rdeca) 66.6%)',
+    background: 'linear-gradient(90deg, #A8D5A8 0%, #5DBF5D 50%, #A8D5A8 100%)',
     zIndex: 100,
   }
 }
@@ -40,10 +42,10 @@ export default function Header() {
   return (
     <>
       <header style={stilji.header}>
-        <div style={stilji.logo}>
-          Pohodnik
+        <div>
+          <div style={stilji.logo}>Pohodnik</div>
+          <div style={stilji.tagline}>Razišči · Odkrij · Doživi</div>
         </div>
-        <div style={stilji.sub}>pohodni portal</div>
       </header>
       <div style={stilji.proga} />
     </>
