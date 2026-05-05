@@ -6,6 +6,7 @@ import Iskanje from './zasloni/Iskanje'
 import PotDetail from './zasloni/PotDetail'
 import Zemljevid from './zasloni/Zemljevid'
 import Koce from './zasloni/Koce'
+import Navigacija from './zasloni/Navigacija'
 import Profil from './zasloni/Profil'
 
 export default function App() {
@@ -14,7 +15,13 @@ export default function App() {
   const [potDetail, setPotDetail] = useState(null)
 
   function odpriDetail(pot) { setPotDetail(pot) }
-  function zacniPohod(pot) { setPotDetail(null); setIzbranaPot(pot); setAktiven('zemljevid') }
+
+  function zacniPohod(pot) {
+    setPotDetail(null)
+    setIzbranaPot(pot)
+    setAktiven('zemljevid')
+  }
+
   function naZadaj() { setPotDetail(null) }
   function preklopi(zaslon) { setPotDetail(null); setAktiven(zaslon) }
 
@@ -33,10 +40,13 @@ export default function App() {
                 <Zemljevid izbranaPot={izbranaPot} />
               </div>
             )}
-            {aktiven === 'navigacija' && <Koce onPotDoKoce={(koca) => {
-              setIzbranaPot({ ime: koca.ime, regija: koca.regija, lat: koca.lat, lon: koca.lon })
-              setAktiven('zemljevid')
-            }} />}
+            {aktiven === 'navigacija' && (
+              <Koce onPotDoKoce={(koca) => {
+                setIzbranaPot({ ime: koca.ime, regija: koca.regija, lat: koca.lat, lon: koca.lon })
+                setAktiven('zemljevid')
+              }} />
+            )}
+            {aktiven === 'nav2' && <Navigacija izbranaPot={izbranaPot} />}
             {aktiven === 'profil' && <Profil />}
           </>
         )}

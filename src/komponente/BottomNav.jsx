@@ -43,6 +43,15 @@ const zavihki = [
     )
   },
   {
+    id: 'nav2',
+    ime: 'Navigacija',
+    ikona: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} width={22} height={22}>
+        <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+      </svg>
+    )
+  },
+  {
     id: 'profil',
     ime: 'Profil',
     ikona: (
@@ -81,7 +90,7 @@ const stilji = {
     padding: 0,
   }),
   oznaka: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: 500,
     letterSpacing: '0.3px',
   }
