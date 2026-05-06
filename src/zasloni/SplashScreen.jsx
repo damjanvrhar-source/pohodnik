@@ -19,23 +19,26 @@ export default function SplashScreen({ onKonec }) {
       transition: faza === 'izhod' ? 'opacity 0.5s ease' : 'none',
     }}>
 
-      <img
-        src="/logo.png"
-        alt="Pohodnik"
-        style={{
-          width: 120, height: 120,
-          borderRadius: 26,
-          objectFit: 'cover',
-          marginBottom: 24,
-          animation: 'splashScaleIn 0.85s cubic-bezier(0.34,1.56,0.64,1) both',
-        }}
-      />
+      {/* Logo v zaobljenem kvadratu */}
+      <div style={{
+        width: 120, height: 120,
+        borderRadius: 26,
+        overflow: 'hidden',
+        marginBottom: 24,
+        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+        animation: 'splashScaleIn 0.85s cubic-bezier(0.34,1.56,0.64,1) both',
+      }}>
+        <img
+          src="/logo.png"
+          alt="Pohodnik"
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      </div>
 
       <div style={{
         fontSize: 30, fontWeight: 800, color: '#fff',
         letterSpacing: '0.1em', lineHeight: 1,
-        animation: 'splashFadeUp 0.9s 0.2s ease both',
-        opacity: 0,
+        animation: 'splashFadeUp 0.9s 0.2s ease both', opacity: 0,
       }}>
         POHODNIK
       </div>
@@ -43,8 +46,7 @@ export default function SplashScreen({ onKonec }) {
       <div style={{
         fontSize: 10, color: 'rgba(255,255,255,0.38)',
         letterSpacing: '0.2em', marginTop: 8, fontWeight: 500,
-        animation: 'splashFadeUp 0.9s 0.35s ease both',
-        opacity: 0,
+        animation: 'splashFadeUp 0.9s 0.35s ease both', opacity: 0,
       }}>
         RAZIŠČI · ODKRIJ · DOŽIVI
       </div>
@@ -53,8 +55,7 @@ export default function SplashScreen({ onKonec }) {
         marginTop: 18, fontSize: 14,
         color: 'rgba(255,255,255,0.46)',
         fontStyle: 'italic', textAlign: 'center', lineHeight: 1.65,
-        animation: 'splashFadeUp 0.9s 0.5s ease both',
-        opacity: 0,
+        animation: 'splashFadeUp 0.9s 0.5s ease both', opacity: 0,
       }}>
         Tvoj najljubši sopotnik<br />v naravo.
       </div>
@@ -63,8 +64,7 @@ export default function SplashScreen({ onKonec }) {
         position: 'absolute', bottom: 52,
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', gap: 10,
-        animation: 'splashFadeIn 0.6s 1.2s ease both',
-        opacity: 0,
+        animation: 'splashFadeIn 0.6s 1.2s ease both', opacity: 0,
       }}>
         <div style={{
           width: 88, height: 1.5,
