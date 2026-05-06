@@ -1,16 +1,5 @@
 import React, { useState, useEffect } from 'react'
 
-const ZNACKE = [
-  { ikona: '🏔️', ime: 'Triglavec',       opis: 'Osvoji Triglav' },
-  { ikona: '❄️', ime: 'Zimski osvajalec', opis: 'Pohod pozimi' },
-  { ikona: '⚡', ime: 'Hitri pohodnik',   opis: 'Pod 3h na 10km' },
-  { ikona: '🌄', ime: 'Zgodnji ptič',     opis: 'Pohod pred 6:00' },
-  { ikona: '🧭', ime: 'Nav. maestro',     opis: 'Uvozi GPX pot' },
-  { ikona: '🦅', ime: 'Alpinist',         opis: '10 zahtevnih poti' },
-  { ikona: '🌙', ime: 'Nočni pohod',      opis: 'Pohod ponoči' },
-  { ikona: '💯', ime: '100 poti',         opis: 'Opravi 100 pohodov' },
-]
-
 export default function Profil() {
   const [urejanje, setUrejanje] = useState(false)
   const [ime, setIme] = useState('')
@@ -35,13 +24,13 @@ export default function Profil() {
       {/* Hero kartica */}
       <div style={{
         background: 'linear-gradient(135deg, #174617 0%, #2f8f2f 100%)',
-        borderRadius: 18, padding: '24px 20px 20px',
+        borderRadius: 18, padding: '28px 20px 22px',
         marginBottom: 16, textAlign: 'center',
         boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
       }}>
         <div style={{
           width: 80, height: 80, borderRadius: '50%',
-          background: ime ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.12)',
+          background: 'rgba(255,255,255,0.15)',
           border: '3px solid rgba(255,255,255,0.4)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontSize: ime ? 32 : 34, color: 'white', fontWeight: 800,
@@ -84,7 +73,7 @@ export default function Profil() {
               {ime || 'Neznani pohodnik'}
             </div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginBottom: 14 }}>
-              🥾 Začetnik · Nivo 1
+              🥾 Pohodnik · Slovenija
             </div>
             <button onClick={zacniUrejanje} style={{
               background: 'rgba(255,255,255,0.15)',
@@ -105,31 +94,6 @@ export default function Profil() {
         <div className="stat"><div className="stat-st">0 h</div><div className="stat-ime">v naravi</div></div>
       </div>
 
-      {/* Značke */}
-      <div style={{
-        background: 'white', borderRadius: 14, padding: 14,
-        border: '0.5px solid var(--rob)', marginBottom: 12,
-        boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
-      }}>
-        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--besedilo2)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 12 }}>
-          Značke
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
-          {ZNACKE.map((z, i) => (
-            <div key={i} style={{
-              background: 'var(--ozadje)', borderRadius: 10, padding: '10px 6px',
-              textAlign: 'center', border: '0.5px solid var(--rob)', opacity: 0.4,
-            }}>
-              <div style={{ fontSize: 26 }}>{z.ikona}</div>
-              <div style={{ fontSize: 9, color: 'var(--besedilo2)', marginTop: 5, lineHeight: 1.3, fontWeight: 500 }}>{z.ime}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ fontSize: 11, color: 'var(--besedilo2)', textAlign: 'center', marginTop: 10 }}>
-          Opravi pohode da odkleneš značke
-        </div>
-      </div>
-
       {/* Zgodovina */}
       <div style={{
         background: 'white', borderRadius: 14, padding: 14,
@@ -139,8 +103,8 @@ export default function Profil() {
         <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--besedilo2)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 12 }}>
           Zadnje poti
         </div>
-        <div style={{ textAlign: 'center', padding: '20px 0' }}>
-          <div style={{ fontSize: 40, marginBottom: 10 }}>🥾</div>
+        <div style={{ textAlign: 'center', padding: '24px 0' }}>
+          <div style={{ fontSize: 44, marginBottom: 10 }}>🥾</div>
           <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--besedilo)', marginBottom: 4 }}>
             Še ni opravljenih pohodov
           </div>
