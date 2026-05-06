@@ -73,10 +73,10 @@ export default function PotDetail({ pot, onIzberiIzhodisce, onNazaj }) {
       {/* Nazaj gumb */}
       <button onClick={onNazaj} style={{
         background: 'none', border: 'none', cursor: 'pointer',
-        color: 'var(--modra)', fontSize: 14, fontWeight: 600,
+        color: 'var(--zelena)', fontSize: 14, fontWeight: 600,
         padding: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: 6
       }}>
-        ← Nazaj na iskanje
+        🏠 Domov
       </button>
 
       {/* Naslov poti */}

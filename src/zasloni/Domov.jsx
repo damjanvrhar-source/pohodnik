@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from 'react'
 
-const poti = [
-  { ikona: '⛰️', ime: 'Triglav — standardna pot', tezavnost: 'tezka', oznaka: 'Zahtevna', km: 18, vzpon: 1700, cas: '7–9 ur' },
-  { ikona: '🌲', ime: 'Velika planina', tezavnost: 'lahka', oznaka: 'Lahka', km: 6, vzpon: 380, cas: '2–3 ure' },
-  { ikona: '🏔️', ime: 'Stol — Karavanke', tezavnost: 'srednja', oznaka: 'Srednja', km: 12, vzpon: 850, cas: '4–5 ur' },
-  { ikona: '🗻', ime: 'Mangart', tezavnost: 'tezka', oznaka: 'Zahtevna', km: 14, vzpon: 1200, cas: '5–7 ur' },
-  { ikona: '🌄', ime: 'Šmarna gora', tezavnost: 'lahka', oznaka: 'Lahka', km: 4, vzpon: 250, cas: '1–2 uri' },
-]
-
 function vremeIkona(koda) {
   if (!koda) return '⛅'
   if (koda <= 1) return '☀️'
@@ -52,8 +44,7 @@ export default function Domov() {
         kraj = geoData.address?.city || geoData.address?.town || geoData.address?.village || 'Slovenija'
       } catch {}
       setVreme({
-        kraj,
-        temp: Math.round(c.temperature_2m),
+        kraj, temp: Math.round(c.temperature_2m),
         opis: opisi[c.weather_code] || 'Delno oblačno',
         vlaga: Math.round(c.relative_humidity_2m),
         veter: Math.round(c.wind_speed_10m),
@@ -68,9 +59,9 @@ export default function Domov() {
   }
 
   return (
-    <div style={{ padding: 16 }}>
+    <div style={{ padding: 16, display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - var(--header-h) - 3px - var(--nav-h))' }}>
 
-      {/* Vremenski widget — manjši */}
+      {/* Vremenski widget */}
       <div style={{
         background: 'linear-gradient(135deg, #1F5C1F 0%, #2D7A2D 60%, #3A9A3A 100%)',
         borderRadius: 14, padding: '12px 16px', marginBottom: 14, color: 'white',
@@ -87,9 +78,7 @@ export default function Domov() {
                 <div style={{ fontSize: 30, fontWeight: 300 }}>{vreme?.temp}°C</div>
                 <div style={{ fontSize: 13, opacity: 0.9 }}>{vreme?.opis}</div>
               </div>
-              <div style={{ fontSize: 11, opacity: 0.7 }}>
-                💧 {vreme?.vlaga}% · 💨 {vreme?.veter} km/h
-              </div>
+              <div style={{ fontSize: 11, opacity: 0.7 }}>💧 {vreme?.vlaga}% · 💨 {vreme?.veter} km/h</div>
             </div>
             <div style={{ fontSize: 40 }}>{vremeIkona(vreme?.koda)}</div>
           </>
@@ -97,7 +86,7 @@ export default function Domov() {
       </div>
 
       {/* Statistike */}
-      <div className="stat-grid">
+      <div className="stat-grid" style={{ marginBottom: 16 }}>
         <div className="stat" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
           <div className="stat-st">0</div><div className="stat-ime">opravljene poti</div>
         </div>
@@ -112,36 +101,82 @@ export default function Domov() {
         </div>
       </div>
 
-      {/* Priporočene poti — večje kartice */}
-      <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--besedilo2)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 10 }}>
-        Priporočene poti
-      </div>
+      {/* Gore + slogan kartica */}
+      <div style={{
+        background: 'linear-gradient(160deg, #0A3D0A 0%, #1A5C1A 45%, #2D7A2D 80%, #3A9A3A 100%)',
+        borderRadius: 16, overflow: 'hidden', position: 'relative',
+        boxShadow: '0 6px 20px rgba(45,122,45,0.4)',
+        flex: 1,
+        minHeight: 0,
+      }}>
+        {/* Zvezde */}
+        {[...Array(12)].map((_, i) => (
+          <div key={i} style={{
+            position: 'absolute',
+            left: `${5 + (i * 37 % 90)}%`,
+            top: `${3 + (i * 23 % 35)}%`,
+            width: i % 3 === 0 ? 3 : 2,
+            height: i % 3 === 0 ? 3 : 2,
+            borderRadius: '50%',
+            background: 'rgba(255,255,255,0.55)',
+          }}/>
+        ))}
 
-      {poti.map((p, i) => (
-        <div key={i} style={{
-          background: 'white', borderRadius: 12, padding: '14px 16px',
-          marginBottom: 10, border: '0.5px solid var(--rob)',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.07)',
-          display: 'flex', alignItems: 'center', gap: 14, cursor: 'pointer',
+        {/* Gore SVG */}
+        <svg style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0,
+          width: '100%', height: '75%', opacity: 0.25,
+        }} viewBox="0 0 400 160" preserveAspectRatio="xMidYMax slice">
+          <polygon points="0,160 70,60 140,160" fill="white"/>
+          <polygon points="60,160 150,20 240,160" fill="white"/>
+          <polygon points="160,160 240,55 320,160" fill="white"/>
+          <polygon points="260,160 330,80 400,160" fill="white"/>
+          <polygon points="130,20 150,0 170,20 162,32 138,32" fill="rgba(255,255,255,0.7)"/>
+          <polygon points="62,60 70,44 78,60 74,70 66,70" fill="rgba(255,255,255,0.55)"/>
+          <polygon points="230,55 240,38 250,55 246,65 234,65" fill="rgba(255,255,255,0.55)"/>
+        </svg>
+
+        {/* Krog za logo */}
+        <div style={{
+          position: 'absolute', top: 16, left: '50%',
+          transform: 'translateX(-50%)',
+          width: 70, height: 70,
+          borderRadius: '50%',
+          border: '2px solid rgba(180,255,180,0.5)',
+          boxShadow: '0 0 30px rgba(180,255,180,0.15)',
+        }}/>
+
+        {/* Vsebina */}
+        <div style={{
+          position: 'relative', zIndex: 1,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          padding: '28px 20px 24px',
+          textAlign: 'center',
         }}>
+          <div style={{ fontSize: 52, marginBottom: 16 }}>🏔️</div>
           <div style={{
-            width: 48, height: 48, borderRadius: 10, background: 'var(--zelena-sv)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 24, flexShrink: 0,
-            boxShadow: '0 2px 6px rgba(45,122,45,0.15)',
-          }}>{p.ikona}</div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 3 }}>
-              {p.ime}
-              <span className={`tezavnost ${p.tezavnost}`}>{p.oznaka}</span>
-            </div>
-            <div style={{ fontSize: 12, color: 'var(--besedilo2)' }}>
-              {p.km} km · ↑{p.vzpon} m · ⏱ {p.cas}
-            </div>
+            fontSize: 36, fontWeight: 800, color: 'white',
+            letterSpacing: '3px', textTransform: 'uppercase',
+            textShadow: '0 2px 10px rgba(0,0,0,0.3)',
+            marginBottom: 6,
+          }}>POHODNIK</div>
+          <div style={{
+            fontSize: 14, color: 'rgba(180,255,180,0.9)',
+            letterSpacing: '2.5px', textTransform: 'uppercase',
+            fontWeight: 600,
+          }}>
+            Razišči · Odkrij · Doživi
           </div>
-          <div style={{ color: 'var(--zelena)', fontSize: 18 }}>›</div>
+          <div style={{
+            marginTop: 14, fontSize: 15,
+            color: 'rgba(255,255,255,0.6)',
+            fontStyle: 'italic',
+          }}>
+            Tvoj najljubši sopotnik v naravo
+          </div>
         </div>
-      ))}
+      </div>
 
     </div>
   )

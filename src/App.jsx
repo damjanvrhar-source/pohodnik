@@ -8,25 +8,30 @@ import Zemljevid from './zasloni/Zemljevid'
 import Koce from './zasloni/Koce'
 import Navigacija from './zasloni/Navigacija'
 import Profil from './zasloni/Profil'
+import SplashScreen from './zasloni/SplashScreen'
 
 export default function App() {
+  const [splashKoncan, setSplashKoncan] = useState(false)
   const [aktiven, setAktiven] = useState('domov')
   const [izbranaPot, setIzbranaPot] = useState(null)
   const [potDetail, setPotDetail] = useState(null)
 
   function odpriDetail(pot) { setPotDetail(pot) }
-
   function zacniPohod(pot) {
     setPotDetail(null)
     setIzbranaPot(pot)
     setAktiven('zemljevid')
   }
-
   function naZadaj() { setPotDetail(null) }
   function preklopi(zaslon) { setPotDetail(null); setAktiven(zaslon) }
 
   return (
     <>
+      {/* Splash screen — prikaže se samo ob prvem odprtju */}
+      {!splashKoncan && (
+        <SplashScreen onKonec={() => setSplashKoncan(true)} />
+      )}
+
       <Header />
       <main className="vsebina">
         {potDetail ? (
