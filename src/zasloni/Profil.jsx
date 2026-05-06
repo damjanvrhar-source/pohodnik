@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 
 const ZNACKE = [
-  { ikona: '🏔️', ime: 'Triglavec', opis: 'Osvoji Triglav' },
+  { ikona: '🏔️', ime: 'Triglavec',       opis: 'Osvoji Triglav' },
   { ikona: '❄️', ime: 'Zimski osvajalec', opis: 'Pohod pozimi' },
-  { ikona: '⚡', ime: 'Hitri pohodnik', opis: 'Pod 3h na 10km' },
-  { ikona: '🌄', ime: 'Zgodnji ptič', opis: 'Pohod pred 6:00' },
-  { ikona: '🧭', ime: 'Nav. maestro', opis: 'Uvozi GPX pot' },
-  { ikona: '🦅', ime: 'Alpinist', opis: '10 zahtevnih poti' },
-  { ikona: '🌙', ime: 'Nočni pohod', opis: 'Pohod ponoči' },
-  { ikona: '💯', ime: '100 poti', opis: 'Opravi 100 pohodov' },
+  { ikona: '⚡', ime: 'Hitri pohodnik',   opis: 'Pod 3h na 10km' },
+  { ikona: '🌄', ime: 'Zgodnji ptič',     opis: 'Pohod pred 6:00' },
+  { ikona: '🧭', ime: 'Nav. maestro',     opis: 'Uvozi GPX pot' },
+  { ikona: '🦅', ime: 'Alpinist',         opis: '10 zahtevnih poti' },
+  { ikona: '🌙', ime: 'Nočni pohod',      opis: 'Pohod ponoči' },
+  { ikona: '💯', ime: '100 poti',         opis: 'Opravi 100 pohodov' },
 ]
 
 export default function Profil() {
@@ -21,10 +21,7 @@ export default function Profil() {
     if (shranjeno) setIme(shranjeno)
   }, [])
 
-  function zacniUrejanje() {
-    setTempIme(ime)
-    setUrejanje(true)
-  }
+  function zacniUrejanje() { setTempIme(ime); setUrejanje(true) }
 
   function shrani() {
     setIme(tempIme)
@@ -35,17 +32,20 @@ export default function Profil() {
   return (
     <div style={{ padding: 16 }}>
 
-      {/* Glava profila */}
-      <div style={{ textAlign: 'center', padding: '8px 0 20px' }}>
+      {/* Hero kartica */}
+      <div style={{
+        background: 'linear-gradient(135deg, #174617 0%, #2f8f2f 100%)',
+        borderRadius: 18, padding: '24px 20px 20px',
+        marginBottom: 16, textAlign: 'center',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+      }}>
         <div style={{
-          width: 76, height: 76, borderRadius: '50%',
-          background: ime
-            ? 'linear-gradient(135deg, #1F5C1F, #3A9A3A)'
-            : '#E5E7EB',
+          width: 80, height: 80, borderRadius: '50%',
+          background: ime ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.12)',
+          border: '3px solid rgba(255,255,255,0.4)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: ime ? 30 : 32, color: 'white', fontWeight: 700,
-          margin: '0 auto 12px',
-          boxShadow: ime ? '0 4px 16px rgba(45,122,45,0.35)' : 'none',
+          fontSize: ime ? 32 : 34, color: 'white', fontWeight: 800,
+          margin: '0 auto 14px',
         }}>
           {ime ? ime.charAt(0).toUpperCase() : '👤'}
         </div>
@@ -58,35 +58,38 @@ export default function Profil() {
               placeholder="Vpiši svoje ime..."
               autoFocus
               style={{
-                border: '1.5px solid var(--zelena)', borderRadius: 8,
-                padding: '8px 14px', fontSize: 15, textAlign: 'center',
-                outline: 'none', width: 200,
+                background: 'rgba(255,255,255,0.15)',
+                border: '1.5px solid rgba(255,255,255,0.5)',
+                borderRadius: 8, padding: '8px 14px',
+                fontSize: 15, textAlign: 'center',
+                outline: 'none', width: 200, color: 'white',
               }}
             />
             <div style={{ display: 'flex', gap: 8 }}>
               <button onClick={shrani} style={{
-                background: 'var(--zelena)', color: 'white',
+                background: 'rgba(255,255,255,0.9)', color: '#1F5C1F',
                 border: 'none', borderRadius: 8, padding: '8px 20px',
-                fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                fontSize: 13, fontWeight: 700, cursor: 'pointer',
               }}>Shrani</button>
               <button onClick={() => setUrejanje(false)} style={{
-                background: 'white', color: 'var(--besedilo2)',
-                border: '0.5px solid var(--rob)', borderRadius: 8,
+                background: 'rgba(255,255,255,0.15)', color: 'white',
+                border: '1px solid rgba(255,255,255,0.3)', borderRadius: 8,
                 padding: '8px 16px', fontSize: 13, cursor: 'pointer',
               }}>Prekliči</button>
             </div>
           </div>
         ) : (
           <>
-            <div style={{ fontSize: 20, fontWeight: 700 }}>
+            <div style={{ fontSize: 22, fontWeight: 800, color: 'white', marginBottom: 4 }}>
               {ime || 'Neznani pohodnik'}
             </div>
-            <div style={{ fontSize: 13, color: 'var(--besedilo2)', marginTop: 3 }}>
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.65)', marginBottom: 14 }}>
               🥾 Začetnik · Nivo 1
             </div>
             <button onClick={zacniUrejanje} style={{
-              marginTop: 12, background: 'white', color: 'var(--zelena)',
-              border: '1px solid var(--zelena)', borderRadius: 8,
+              background: 'rgba(255,255,255,0.15)',
+              border: '1px solid rgba(255,255,255,0.35)',
+              color: 'white', borderRadius: 8,
               padding: '7px 18px', fontSize: 12, fontWeight: 600,
               cursor: 'pointer',
             }}>✏️ Uredi profil</button>
@@ -95,7 +98,7 @@ export default function Profil() {
       </div>
 
       {/* Statistike */}
-      <div className="stat-grid" style={{ marginBottom: 14 }}>
+      <div className="stat-grid" style={{ marginBottom: 16 }}>
         <div className="stat"><div className="stat-st">0</div><div className="stat-ime">poti</div></div>
         <div className="stat"><div className="stat-st">0 km</div><div className="stat-ime">razdalja</div></div>
         <div className="stat"><div className="stat-st">0 m</div><div className="stat-ime">vzpon</div></div>
@@ -103,27 +106,47 @@ export default function Profil() {
       </div>
 
       {/* Značke */}
-      <div className="kartica">
-        <div className="kartica-naslov">Značke — opravi pohode da jih odkleneš</div>
+      <div style={{
+        background: 'white', borderRadius: 14, padding: 14,
+        border: '0.5px solid var(--rob)', marginBottom: 12,
+        boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+      }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--besedilo2)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 12 }}>
+          Značke
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
           {ZNACKE.map((z, i) => (
             <div key={i} style={{
-              background: 'white', borderRadius: 10, padding: '10px 6px',
-              textAlign: 'center', border: '0.5px solid var(--rob)', opacity: 0.35,
+              background: 'var(--ozadje)', borderRadius: 10, padding: '10px 6px',
+              textAlign: 'center', border: '0.5px solid var(--rob)', opacity: 0.4,
             }}>
-              <div style={{ fontSize: 24 }}>{z.ikona}</div>
-              <div style={{ fontSize: 9, color: 'var(--besedilo2)', marginTop: 4, lineHeight: 1.2 }}>{z.ime}</div>
+              <div style={{ fontSize: 26 }}>{z.ikona}</div>
+              <div style={{ fontSize: 9, color: 'var(--besedilo2)', marginTop: 5, lineHeight: 1.3, fontWeight: 500 }}>{z.ime}</div>
             </div>
           ))}
+        </div>
+        <div style={{ fontSize: 11, color: 'var(--besedilo2)', textAlign: 'center', marginTop: 10 }}>
+          Opravi pohode da odkleneš značke
         </div>
       </div>
 
       {/* Zgodovina */}
-      <div className="kartica" style={{ marginTop: 12 }}>
-        <div className="kartica-naslov">Zadnje poti</div>
-        <div style={{ textAlign: 'center', padding: '24px 0', color: 'var(--besedilo2)', fontSize: 13 }}>
-          Še ni opravljenih pohodov. 🥾<br />
-          <span style={{ fontSize: 12 }}>Začni pohod v zavihku Iskanje!</span>
+      <div style={{
+        background: 'white', borderRadius: 14, padding: 14,
+        border: '0.5px solid var(--rob)',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
+      }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--besedilo2)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 12 }}>
+          Zadnje poti
+        </div>
+        <div style={{ textAlign: 'center', padding: '20px 0' }}>
+          <div style={{ fontSize: 40, marginBottom: 10 }}>🥾</div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--besedilo)', marginBottom: 4 }}>
+            Še ni opravljenih pohodov
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--besedilo2)' }}>
+            Začni pohod v zavihku Iskanje!
+          </div>
         </div>
       </div>
 
