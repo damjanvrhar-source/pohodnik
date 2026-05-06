@@ -12,20 +12,22 @@ const stilji = {
     left: 0,
     right: 0,
     zIndex: 100,
+    gap: 10,
   },
   logo: {
     color: 'white',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 800,
     letterSpacing: '1px',
     textTransform: 'uppercase',
+    lineHeight: 1,
   },
   tagline: {
-    color: 'rgba(255,255,255,0.65)',
+    color: 'rgba(255,255,255,0.6)',
     fontSize: 9,
     letterSpacing: '1.5px',
     textTransform: 'uppercase',
-    marginTop: 1,
+    marginTop: 2,
   },
   proga: {
     position: 'fixed',
@@ -42,6 +44,19 @@ export default function Header() {
   return (
     <>
       <header style={stilji.header}>
+        {/* Logo ikona */}
+        <img
+          src="/logo.png"
+          alt="Pohodnik"
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: 8,
+            objectFit: 'cover',
+            flexShrink: 0,
+          }}
+        />
+        {/* Besedilo */}
         <div>
           <div style={stilji.logo}>Pohodnik</div>
           <div style={stilji.tagline}>Razišči · Odkrij · Doživi</div>

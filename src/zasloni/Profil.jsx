@@ -16,7 +16,6 @@ export default function Profil() {
   const [ime, setIme] = useState('')
   const [tempIme, setTempIme] = useState('')
 
-  // Naloži shranjeno ime ob zagonu
   useEffect(() => {
     const shranjeno = localStorage.getItem('pohodnik_ime')
     if (shranjeno) setIme(shranjeno)
@@ -37,13 +36,16 @@ export default function Profil() {
     <div style={{ padding: 16 }}>
 
       {/* Glava profila */}
-      <div style={{ textAlign: 'center', padding: '8px 0 16px' }}>
+      <div style={{ textAlign: 'center', padding: '8px 0 20px' }}>
         <div style={{
-          width: 72, height: 72, borderRadius: '50%',
-          background: ime ? 'var(--modra)' : '#E5E7EB',
+          width: 76, height: 76, borderRadius: '50%',
+          background: ime
+            ? 'linear-gradient(135deg, #1F5C1F, #3A9A3A)'
+            : '#E5E7EB',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: ime ? 28 : 32, color: 'white', fontWeight: 700,
-          margin: '0 auto 10px'
+          fontSize: ime ? 30 : 32, color: 'white', fontWeight: 700,
+          margin: '0 auto 12px',
+          boxShadow: ime ? '0 4px 16px rgba(45,122,45,0.35)' : 'none',
         }}>
           {ime ? ime.charAt(0).toUpperCase() : '👤'}
         </div>
@@ -56,21 +58,21 @@ export default function Profil() {
               placeholder="Vpiši svoje ime..."
               autoFocus
               style={{
-                border: '1.5px solid var(--modra)', borderRadius: 8,
+                border: '1.5px solid var(--zelena)', borderRadius: 8,
                 padding: '8px 14px', fontSize: 15, textAlign: 'center',
-                outline: 'none', width: 200
+                outline: 'none', width: 200,
               }}
             />
             <div style={{ display: 'flex', gap: 8 }}>
               <button onClick={shrani} style={{
-                background: 'var(--modra)', color: 'white',
+                background: 'var(--zelena)', color: 'white',
                 border: 'none', borderRadius: 8, padding: '8px 20px',
-                fontSize: 13, fontWeight: 600, cursor: 'pointer'
+                fontSize: 13, fontWeight: 600, cursor: 'pointer',
               }}>Shrani</button>
               <button onClick={() => setUrejanje(false)} style={{
                 background: 'white', color: 'var(--besedilo2)',
                 border: '0.5px solid var(--rob)', borderRadius: 8,
-                padding: '8px 16px', fontSize: 13, cursor: 'pointer'
+                padding: '8px 16px', fontSize: 13, cursor: 'pointer',
               }}>Prekliči</button>
             </div>
           </div>
@@ -79,21 +81,21 @@ export default function Profil() {
             <div style={{ fontSize: 20, fontWeight: 700 }}>
               {ime || 'Neznani pohodnik'}
             </div>
-            <div style={{ fontSize: 13, color: 'var(--besedilo2)', marginTop: 2 }}>
+            <div style={{ fontSize: 13, color: 'var(--besedilo2)', marginTop: 3 }}>
               🥾 Začetnik · Nivo 1
             </div>
             <button onClick={zacniUrejanje} style={{
-              marginTop: 10, background: 'white', color: 'var(--modra)',
-              border: '1px solid var(--modra)', borderRadius: 8,
-              padding: '6px 16px', fontSize: 12, fontWeight: 600,
-              cursor: 'pointer'
+              marginTop: 12, background: 'white', color: 'var(--zelena)',
+              border: '1px solid var(--zelena)', borderRadius: 8,
+              padding: '7px 18px', fontSize: 12, fontWeight: 600,
+              cursor: 'pointer',
             }}>✏️ Uredi profil</button>
           </>
         )}
       </div>
 
       {/* Statistike */}
-      <div className="stat-grid" style={{ marginBottom: 12 }}>
+      <div className="stat-grid" style={{ marginBottom: 14 }}>
         <div className="stat"><div className="stat-st">0</div><div className="stat-ime">poti</div></div>
         <div className="stat"><div className="stat-st">0 km</div><div className="stat-ime">razdalja</div></div>
         <div className="stat"><div className="stat-st">0 m</div><div className="stat-ime">vzpon</div></div>
@@ -107,7 +109,7 @@ export default function Profil() {
           {ZNACKE.map((z, i) => (
             <div key={i} style={{
               background: 'white', borderRadius: 10, padding: '10px 6px',
-              textAlign: 'center', border: '0.5px solid var(--rob)', opacity: 0.3
+              textAlign: 'center', border: '0.5px solid var(--rob)', opacity: 0.35,
             }}>
               <div style={{ fontSize: 24 }}>{z.ikona}</div>
               <div style={{ fontSize: 9, color: 'var(--besedilo2)', marginTop: 4, lineHeight: 1.2 }}>{z.ime}</div>
@@ -117,10 +119,10 @@ export default function Profil() {
       </div>
 
       {/* Zgodovina */}
-      <div className="kartica">
+      <div className="kartica" style={{ marginTop: 12 }}>
         <div className="kartica-naslov">Zadnje poti</div>
-        <div style={{ textAlign: 'center', padding: '20px 0', color: 'var(--besedilo2)', fontSize: 13 }}>
-          Še ni opravljenih pohodov. 🥾<br/>
+        <div style={{ textAlign: 'center', padding: '24px 0', color: 'var(--besedilo2)', fontSize: 13 }}>
+          Še ni opravljenih pohodov. 🥾<br />
           <span style={{ fontSize: 12 }}>Začni pohod v zavihku Iskanje!</span>
         </div>
       </div>
