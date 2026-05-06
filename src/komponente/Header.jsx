@@ -15,7 +15,7 @@ export default function Header() {
         gap: 11,
       }}>
         <img
-          src="/logo.png"
+          src="/ikona-192.png"
           alt="Pohodnik"
           style={{
             width: 38, height: 38,

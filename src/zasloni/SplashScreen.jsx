@@ -19,18 +19,17 @@ export default function SplashScreen({ onKonec }) {
       transition: faza === 'izhod' ? 'opacity 0.5s ease' : 'none',
     }}>
 
-      {/* Logo z belim okvirjem */}
       <div style={{
         width: 120, height: 120,
         borderRadius: 26,
         overflow: 'hidden',
         marginBottom: 24,
         border: '3px solid rgba(255,255,255,0.6)',
-        boxShadow: '0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1)',
+        boxShadow: '0 8px 40px rgba(0,0,0,0.5)',
         animation: 'splashScaleIn 0.85s cubic-bezier(0.34,1.56,0.64,1) both',
       }}>
         <img
-          src="/logo.png"
+          src="/ikona-192.png"
           alt="Pohodnik"
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
