@@ -12,37 +12,30 @@ export default function Header() {
         position: 'fixed',
         top: 0, left: 0, right: 0,
         zIndex: 100,
-        gap: 10,
+        gap: 11,
       }}>
-        {/* Logo ikona — samo gorska silhueta iz slike */}
-        <div style={{
-          width: 40, height: 40,
-          borderRadius: 10,
-          overflow: 'hidden',
-          flexShrink: 0,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: 'rgba(255,255,255,0.12)',
-        }}>
-          <img
-            src="/logo.png"
-            alt="Pohodnik"
-            style={{
-              width: 40, height: 40,
-              objectFit: 'cover',
-              objectPosition: 'center',
-            }}
-          />
-        </div>
+        {/* Logo kot app ikona */}
+        <img
+          src="/logo.png"
+          alt="Pohodnik"
+          style={{
+            width: 38, height: 38,
+            borderRadius: 10,
+            objectFit: 'cover',
+            flexShrink: 0,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+          }}
+        />
 
         {/* Besedilo */}
         <div>
           <div style={{
-            color: 'white', fontSize: 20, fontWeight: 800,
-            letterSpacing: '1px', textTransform: 'uppercase', lineHeight: 1,
+            color: 'white', fontSize: 19, fontWeight: 800,
+            letterSpacing: '0.8px', textTransform: 'uppercase', lineHeight: 1,
           }}>Pohodnik</div>
           <div style={{
-            color: 'rgba(255,255,255,0.6)', fontSize: 9,
-            letterSpacing: '1.5px', textTransform: 'uppercase', marginTop: 2,
+            color: 'rgba(255,255,255,0.58)', fontSize: 9,
+            letterSpacing: '1.4px', textTransform: 'uppercase', marginTop: 2,
           }}>Razišči · Odkrij · Doživi</div>
         </div>
       </header>
