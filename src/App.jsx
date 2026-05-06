@@ -27,7 +27,6 @@ export default function App() {
 
   return (
     <>
-      {/* Splash screen — prikaže se samo ob prvem odprtju */}
       {!splashKoncan && (
         <SplashScreen onKonec={() => setSplashKoncan(true)} />
       )}
@@ -38,7 +37,7 @@ export default function App() {
           <PotDetail pot={potDetail} onIzberiIzhodisce={zacniPohod} onNazaj={naZadaj} />
         ) : (
           <>
-            {aktiven === 'domov' && <Domov />}
+            {aktiven === 'domov' && <Domov onOdpriPot={odpriDetail} />}
             {aktiven === 'iskanje' && <Iskanje onZacniPohod={odpriDetail} />}
             {aktiven === 'zemljevid' && (
               <div style={{ position: 'relative', height: '100%' }}>
