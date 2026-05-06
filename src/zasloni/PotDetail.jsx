@@ -9,63 +9,85 @@ function izracunajCas(km, vzpon) {
   return `${h} h ${min} min`
 }
 
-// Izhodišča za vsako pot
 const IZHODISCA = {
-  1: [ // Triglav standardna
+  1: [
     { ime: 'Mojstrana — Aljažev dom', opis: 'Najpogostejša pot. Parkirišče pri Aljaževem domu v Vratih.', km: '18', vzpon: 1700, lat: 46.4167, lon: 13.8500, tezavnost: 'demanding_mountain_hiking' },
     { ime: 'Bohinj — Savica', opis: 'Najdaljša pot skozi Triglavska jezera. Parkirišče pri Savici.', km: '22', vzpon: 2000, lat: 46.2833, lon: 13.8667, tezavnost: 'demanding_mountain_hiking' },
     { ime: 'Trenta — Soška dolina', opis: 'Zahtevna pot iz Trente. Parkirišče v Trenti.', km: '20', vzpon: 1900, lat: 46.3833, lon: 13.6667, tezavnost: 'demanding_mountain_hiking' },
     { ime: 'Kranjska Gora — Vrata', opis: 'Klasična pot skozi dolino Vrata.', km: '19', vzpon: 1800, lat: 46.4833, lon: 13.9167, tezavnost: 'demanding_mountain_hiking' },
   ],
-  2: [ // Triglav Bambergova
+  2: [
     { ime: 'Mojstrana — Aljažev dom', opis: 'Bambergova pot — zahtevna alpinska pot.', km: '20', vzpon: 1800, lat: 46.4167, lon: 13.8500, tezavnost: 'demanding_mountain_hiking' },
   ],
-  3: [ // Mangart
+  3: [
     { ime: 'Sedlo Mangart', opis: 'Najkrajša pot. Parkirišče na sedlu Mangart (cesta zaračunana).', km: '3', vzpon: 400, lat: 46.4333, lon: 13.6333, tezavnost: 'demanding_mountain_hiking' },
     { ime: 'Log pod Mangartom', opis: 'Daljša pot iz doline. Parkirišče v Logu.', km: '14', vzpon: 1200, lat: 46.3833, lon: 13.6000, tezavnost: 'demanding_mountain_hiking' },
   ],
-  21: [ // Velika planina
+  21: [
     { ime: 'Kamnik — Preskar', opis: 'Peš pot iz Kamnika. Parkirišče pri Preskarju.', km: '6', vzpon: 800, lat: 46.2167, lon: 14.6167, tezavnost: 'hiking' },
     { ime: 'Gondola — Velika planina', opis: 'Z gondolo navzgor, kratek sprehod po planini.', km: '3', vzpon: 100, lat: 46.3000, lon: 14.6167, tezavnost: 'hiking' },
   ],
-  41: [ // Stol
+  35: [
     { ime: 'Zelenica', opis: 'Najpogostejša pot. Parkirišče na Zelenici.', km: '5', vzpon: 600, lat: 46.4500, lon: 14.0833, tezavnost: 'mountain_hiking' },
     { ime: 'Jesenice', opis: 'Daljša pot iz Jesenic.', km: '12', vzpon: 1050, lat: 46.4333, lon: 14.0500, tezavnost: 'mountain_hiking' },
   ],
-  42: [ // Golica
-    { ime: 'Planina pod Golico', opis: 'Klasična pot. Parkirišče na Planini pod Golico.', km: '4', vzpon: 500, lat: 46.4500, lon: 14.0167, tezavnost: 'mountain_hiking' },
-    { ime: 'Jesenice — Koroška Bela', opis: 'Daljša pot iz Jesenic.', km: '10', vzpon: 900, lat: 46.4333, lon: 14.0333, tezavnost: 'mountain_hiking' },
-  ],
-  56: [ // Goška ravan
-    { ime: 'Kropa', opis: 'Parkirišče v Kropi, pot skozi gozd.', km: '8', vzpon: 440, lat: 46.2917, lon: 14.2000, tezavnost: 'hiking' },
-    { ime: 'Kamna Gorica', opis: 'Parkirišče v Kamni Gorici.', km: '7', vzpon: 380, lat: 46.2833, lon: 14.2167, tezavnost: 'hiking' },
-  ],
-  60: [ // Šmarna gora
+  47: [
     { ime: 'Tacen', opis: 'Najpogostejša pot. Parkirišče pri Tacnu.', km: '4', vzpon: 250, lat: 46.1000, lon: 14.4333, tezavnost: 'hiking' },
     { ime: 'Vikrče', opis: 'Pot iz Vikrč — malo daljša.', km: '5', vzpon: 300, lat: 46.1333, lon: 14.3833, tezavnost: 'hiking' },
   ],
 }
 
-function tezavnostBadge(t) {
-  if (!t) return null
+function tezavnostInfo(t) {
+  if (!t) return { razred: 'lahka', ime: 'Lahka', barva: '#065F46', ozadje: '#D1FAE5' }
   const s = t.toLowerCase()
-  if (s.includes('demanding')) return { razred: 'tezka', ime: 'Zahtevna' }
-  if (s.includes('mountain')) return { razred: 'srednja', ime: 'Srednja' }
-  return { razred: 'lahka', ime: 'Lahka' }
+  if (s.includes('demanding')) return { razred: 'tezka', ime: 'Zahtevna', barva: '#991B1B', ozadje: '#FEE2E2' }
+  if (s.includes('mountain')) return { razred: 'srednja', ime: 'Srednja', barva: '#92400E', ozadje: '#FEF3C7' }
+  return { razred: 'lahka', ime: 'Lahka', barva: '#065F46', ozadje: '#D1FAE5' }
+}
+
+function TezavnostPike({ razred }) {
+  const barva = razred === 'tezka' ? '#991B1B' : razred === 'srednja' ? '#92400E' : '#065F46'
+  const ozadje = razred === 'tezka' ? '#FEE2E2' : razred === 'srednja' ? '#FEF3C7' : '#D1FAE5'
+  const filled = razred === 'tezka' ? 3 : razred === 'srednja' ? 2 : 1
+  return (
+    <div style={{ display: 'flex', gap: 4 }}>
+      {[1,2,3].map(i => (
+        <div key={i} style={{
+          width: 8, height: 8, borderRadius: '50%',
+          background: i <= filled ? barva : ozadje,
+          border: `1px solid ${i <= filled ? barva : barva + '50'}`,
+        }} />
+      ))}
+    </div>
+  )
+}
+
+function StatChip({ ikona, vrednost, opis }) {
+  return (
+    <div style={{
+      flex: 1, background: 'var(--zelena-sv)', borderRadius: 10,
+      padding: '10px 8px', textAlign: 'center',
+    }}>
+      <div style={{ fontSize: 16 }}>{ikona}</div>
+      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--zelena)', marginTop: 2 }}>{vrednost}</div>
+      <div style={{ fontSize: 10, color: 'var(--besedilo2)', marginTop: 1 }}>{opis}</div>
+    </div>
+  )
 }
 
 export default function PotDetail({ pot, onIzberiIzhodisce, onNazaj }) {
-  const izhodisca = IZHODISCA[pot.id] || [
-    {
-      ime: pot.ime,
-      opis: 'Standardno izhodišče.',
-      km: pot.dolzina,
-      vzpon: pot.vzpon,
-      lat: pot.lat,
-      lon: pot.lon,
-      tezavnost: pot.tezavnost,
-    }
-  ]
+  const izhodisca = IZHODISCA[pot.id] || [{
+    ime: pot.ime,
+    opis: 'Standardno izhodišče.',
+    km: pot.dolzina,
+    vzpon: pot.vzpon,
+    lat: pot.lat,
+    lon: pot.lon,
+    tezavnost: pot.tezavnost,
+  }]
+
+  const tInfo = tezavnostInfo(pot.tezavnost)
+  const cas = izracunajCas(pot.dolzina, pot.vzpon)
 
   return (
     <div style={{ padding: 16 }}>
@@ -73,57 +95,107 @@ export default function PotDetail({ pot, onIzberiIzhodisce, onNazaj }) {
       {/* Nazaj gumb */}
       <button onClick={onNazaj} style={{
         background: 'none', border: 'none', cursor: 'pointer',
-        color: 'var(--zelena)', fontSize: 14, fontWeight: 600,
-        padding: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: 6
+        color: 'var(--zelena)', fontSize: 13, fontWeight: 600,
+        padding: '0 0 14px 0', display: 'flex', alignItems: 'center', gap: 5,
       }}>
-        🏠 Domov
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M19 12H5M5 12l7-7M5 12l7 7"/>
+        </svg>
+        Nazaj
       </button>
 
-      {/* Naslov poti */}
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 22, fontWeight: 700 }}>{pot.ime}</div>
-        <div style={{ fontSize: 14, color: 'var(--besedilo2)', marginTop: 4 }}>{pot.regija}</div>
+      {/* Hero kartica */}
+      <div style={{
+        background: 'linear-gradient(135deg, #174617 0%, #2f8f2f 100%)',
+        borderRadius: 18, padding: '20px 18px', marginBottom: 16,
+        color: 'white', boxShadow: '0 8px 32px rgba(0,0,0,0.15)',
+      }}>
+        <div style={{ fontSize: 11, opacity: 0.65, marginBottom: 4, letterSpacing: '0.5px' }}>
+          {pot.regija?.toUpperCase()}
+        </div>
+        <div style={{ fontSize: 22, fontWeight: 800, marginBottom: 8, lineHeight: 1.2 }}>
+          {pot.ime}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{
+            fontSize: 11, fontWeight: 700, padding: '3px 9px', borderRadius: 6,
+            background: tInfo.ozadje, color: tInfo.barva,
+          }}>{tInfo.ime}</span>
+          <TezavnostPike razred={tInfo.razred} />
+        </div>
       </div>
 
-      {/* Izhodišča */}
-      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--besedilo2)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 10 }}>
+      {/* Statistike */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+        <StatChip ikona="📏" vrednost={`${pot.dolzina} km`} opis="razdalja" />
+        <StatChip ikona="⬆️" vrednost={`${pot.vzpon} m`} opis="vzpon" />
+        <StatChip ikona="⏱" vrednost={cas} opis="čas" />
+      </div>
+
+      {/* Izhodišča naslov */}
+      <div style={{
+        fontSize: 11, fontWeight: 700, color: 'var(--besedilo2)',
+        textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 10,
+      }}>
         Izberi izhodišče
       </div>
 
+      {/* Kartice izhodišč */}
       {izhodisca.map((iz, i) => {
-        const badge = tezavnostBadge(iz.tezavnost)
-        const cas = izracunajCas(iz.km, iz.vzpon)
+        const izInfo = tezavnostInfo(iz.tezavnost)
+        const izCas = izracunajCas(iz.km, iz.vzpon)
         return (
           <div key={i} style={{
-            background: 'white', borderRadius: 12, padding: 14,
+            background: 'white', borderRadius: 14, padding: 14,
             marginBottom: 10, border: '0.5px solid var(--rob)',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
           }}>
+
+            {/* Ime + badge */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
-              <div style={{ fontSize: 15, fontWeight: 600 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, flex: 1, paddingRight: 8 }}>
                 📍 {iz.ime}
               </div>
-              {badge && <span className={`tezavnost ${badge.razred}`}>{badge.ime}</span>}
+              <span className={`tezavnost ${izInfo.razred}`}>{izInfo.ime}</span>
             </div>
-            <div style={{ fontSize: 12, color: 'var(--besedilo2)', marginBottom: 8 }}>
+
+            {/* Opis */}
+            <div style={{ fontSize: 12, color: 'var(--besedilo2)', marginBottom: 10, lineHeight: 1.5 }}>
               {iz.opis}
             </div>
-            <div style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
-              <div style={{ fontSize: 12, color: 'var(--besedilo2)' }}>📏 {iz.km} km</div>
-              <div style={{ fontSize: 12, color: 'var(--besedilo2)' }}>↑ {iz.vzpon} m</div>
-              <div style={{ fontSize: 12, color: 'var(--besedilo2)' }}>⏱ {cas}</div>
+
+            {/* Stats vrstica */}
+            <div style={{
+              display: 'flex', gap: 14, marginBottom: 12,
+              padding: '8px 0', borderTop: '0.5px solid var(--rob)',
+            }}>
+              <span style={{ fontSize: 12, color: 'var(--besedilo2)' }}>📏 {iz.km} km</span>
+              <span style={{ fontSize: 12, color: 'var(--besedilo2)' }}>⬆️ {iz.vzpon} m</span>
+              <span style={{ fontSize: 12, color: 'var(--besedilo2)' }}>⏱ {izCas}</span>
             </div>
+
+            {/* Gumb */}
             <button
               onClick={() => onIzberiIzhodisce({ ...pot, ...iz })}
               style={{
-                width: '100%', background: 'var(--modra)', color: 'white',
-                border: 'none', borderRadius: 8, padding: '10px',
-                fontSize: 13, fontWeight: 700, cursor: 'pointer'
-              }}>
-              🥾 Začni pohod od tukaj
+                width: '100%',
+                background: 'linear-gradient(135deg, #1F5C1F, #3A9A3A)',
+                color: 'white', border: 'none', borderRadius: 10,
+                padding: '11px', fontSize: 13, fontWeight: 700,
+                cursor: 'pointer', display: 'flex', alignItems: 'center',
+                justifyContent: 'center', gap: 7,
+                boxShadow: '0 4px 12px rgba(45,122,45,0.35)',
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              Začni pohod od tukaj
             </button>
           </div>
         )
       })}
+
     </div>
   )
 }
