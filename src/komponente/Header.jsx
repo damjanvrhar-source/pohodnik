@@ -14,7 +14,6 @@ export default function Header() {
         zIndex: 100,
         gap: 11,
       }}>
-        {/* Logo kot app ikona */}
         <img
           src="/logo.png"
           alt="Pohodnik"
@@ -23,11 +22,10 @@ export default function Header() {
             borderRadius: 10,
             objectFit: 'cover',
             flexShrink: 0,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+            border: '2px solid rgba(255,255,255,0.5)',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
           }}
         />
-
-        {/* Besedilo */}
         <div>
           <div style={{
             color: 'white', fontSize: 19, fontWeight: 800,
@@ -39,8 +37,6 @@ export default function Header() {
           }}>Razišči · Odkrij · Doživi</div>
         </div>
       </header>
-
-      {/* Zelena proga */}
       <div style={{
         position: 'fixed', top: 'var(--header-h)',
         left: 0, right: 0, height: 3,

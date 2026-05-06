@@ -19,13 +19,14 @@ export default function SplashScreen({ onKonec }) {
       transition: faza === 'izhod' ? 'opacity 0.5s ease' : 'none',
     }}>
 
-      {/* Logo v zaobljenem kvadratu */}
+      {/* Logo z belim okvirjem */}
       <div style={{
         width: 120, height: 120,
         borderRadius: 26,
         overflow: 'hidden',
         marginBottom: 24,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+        border: '3px solid rgba(255,255,255,0.6)',
+        boxShadow: '0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1)',
         animation: 'splashScaleIn 0.85s cubic-bezier(0.34,1.56,0.64,1) both',
       }}>
         <img
@@ -39,17 +40,13 @@ export default function SplashScreen({ onKonec }) {
         fontSize: 30, fontWeight: 800, color: '#fff',
         letterSpacing: '0.1em', lineHeight: 1,
         animation: 'splashFadeUp 0.9s 0.2s ease both', opacity: 0,
-      }}>
-        POHODNIK
-      </div>
+      }}>POHODNIK</div>
 
       <div style={{
         fontSize: 10, color: 'rgba(255,255,255,0.38)',
         letterSpacing: '0.2em', marginTop: 8, fontWeight: 500,
         animation: 'splashFadeUp 0.9s 0.35s ease both', opacity: 0,
-      }}>
-        RAZIŠČI · ODKRIJ · DOŽIVI
-      </div>
+      }}>RAZIŠČI · ODKRIJ · DOŽIVI</div>
 
       <div style={{
         marginTop: 18, fontSize: 14,
@@ -77,10 +74,7 @@ export default function SplashScreen({ onKonec }) {
             width: 0,
           }} />
         </div>
-        <div style={{
-          fontSize: 9, color: 'rgba(255,255,255,0.2)',
-          letterSpacing: '0.16em',
-        }}>
+        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.2)', letterSpacing: '0.16em' }}>
           NALAGANJE
         </div>
       </div>
@@ -95,13 +89,10 @@ export default function SplashScreen({ onKonec }) {
           to   { opacity: 1; transform: translateY(0); }
         }
         @keyframes splashFadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
+          from { opacity: 0; } to { opacity: 1; }
         }
         @keyframes splashLoadBar {
-          0%   { width: 0; }
-          65%  { width: 76%; }
-          100% { width: 100%; }
+          0% { width: 0; } 65% { width: 76%; } 100% { width: 100%; }
         }
       `}</style>
     </div>
