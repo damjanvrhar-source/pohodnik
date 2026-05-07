@@ -233,11 +233,12 @@ export default function Zemljevid({ izbranaPot }) {
 
   const btnStil = {
     background: 'white', color: '#1A1A2E',
-    border: '0.5px solid #E5E7EB', borderRadius: 10,
-    padding: '9px 14px', fontSize: 12, fontWeight: 600,
+    border: '1px solid #D1D5DB', borderRadius: 12,
+    padding: '11px 16px', fontSize: 13, fontWeight: 700,
     cursor: 'pointer', zIndex: 1000,
-    boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-    display: 'flex', alignItems: 'center', gap: 6,
+    boxShadow: '0 3px 12px rgba(0,0,0,0.2)',
+    display: 'flex', alignItems: 'center', gap: 7,
+    minWidth: 80, justifyContent: 'center',
   }
 
   return (
@@ -251,11 +252,11 @@ export default function Zemljevid({ izbranaPot }) {
         zIndex: 1000, pointerEvents: 'none',
       }}>
         <div style={{
-          background: 'white', borderRadius: 8, padding: '6px 10px',
-          fontSize: 11, fontWeight: 600, border: '0.5px solid #E5E7EB',
+          background: 'white', borderRadius: 10, padding: '8px 12px',
+          fontSize: 12, fontWeight: 700, border: '1px solid #E5E7EB',
           color: gpsStatus === 'aktiven ✓' ? ZELENA : '#6B7280',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-          display: 'flex', alignItems: 'center', gap: 5,
+          boxShadow: '0 3px 10px rgba(0,0,0,0.15)',
+          display: 'flex', alignItems: 'center', gap: 6,
         }}>
           <div style={{ width: 7, height: 7, borderRadius: '50%', background: gpsStatus === 'aktiven ✓' ? ZELENA : '#D1D5DB' }} />
           GPS {gpsStatus}
@@ -275,7 +276,7 @@ export default function Zemljevid({ izbranaPot }) {
       </div>
 
       {/* Preklop pogled — zgoraj desno */}
-      <button onClick={preklopi} style={{ ...btnStil, position: 'absolute', top: 12, right: 12 }}>
+      <button onClick={preklopi} style={{ ...btnStil, position: 'absolute', top: 12, right: 12, padding: '9px 14px' }}>
         {jeTopoPogled ? (
           <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Satelit</>
         ) : (
@@ -286,14 +287,14 @@ export default function Zemljevid({ izbranaPot }) {
       {/* Gumbi desno */}
       <input ref={gpxInput} type="file" accept=".gpx" style={{ display: 'none' }} onChange={nalozGPX} />
 
-      <button onClick={() => gpxInput.current.click()} style={{ ...btnStil, position: 'absolute', bottom: 16 + spodajOffset + 114, right: 12 }}>
+      <button onClick={() => gpxInput.current.click()} style={{ ...btnStil, position: 'absolute', bottom: 16 + spodajOffset + 124, right: 12 }}>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         GPX
       </button>
 
       <button onClick={sledenje ? ustavi : zageniGPS} style={{
         ...btnStil,
-        position: 'absolute', bottom: 16 + spodajOffset + 58, right: 12,
+        position: 'absolute', bottom: 16 + spodajOffset + 62, right: 12,
         background: sledenje ? ZELENA : 'white',
         color: sledenje ? 'white' : ZELENA,
         border: `1.5px solid ${ZELENA}`,
@@ -308,10 +309,11 @@ export default function Zemljevid({ izbranaPot }) {
       <button onClick={sosKlic} style={{
         position: 'absolute', bottom: 16 + spodajOffset, right: 12,
         background: '#DC2626', color: 'white', border: 'none',
-        borderRadius: 10, padding: '9px 14px', fontSize: 12,
-        fontWeight: 700, cursor: 'pointer', zIndex: 1000,
-        boxShadow: '0 3px 10px rgba(220,38,38,0.4)',
-        display: 'flex', alignItems: 'center', gap: 6,
+        borderRadius: 12, padding: '11px 16px', fontSize: 14,
+        fontWeight: 800, cursor: 'pointer', zIndex: 1000,
+        boxShadow: '0 4px 14px rgba(220,38,38,0.5)',
+        display: 'flex', alignItems: 'center', gap: 7,
+        minWidth: 80, justifyContent: 'center',
       }}>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.62 4.38 2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         112
