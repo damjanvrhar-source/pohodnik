@@ -130,7 +130,7 @@ export default function Domov({ onOdpriPot }) {
           <div className="stat-st">0 m</div><div className="stat-ime">skupni vzpon</div>
         </div>
         <div className="stat" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-          <div className="stat-st">0</div><div className="stat-ime">pridobljene značke</div>
+          <div className="stat-st">0 h</div><div className="stat-ime">skupni čas</div>
         </div>
       </div>
 
@@ -159,7 +159,7 @@ export default function Domov({ onOdpriPot }) {
                 <span className={`tezavnost ${p.razred}`} style={{ marginLeft: 6 }}>{p.oznaka}</span>
               </div>
               <div style={{ fontSize: 11, color: 'var(--besedilo2)' }}>
-                {p.dolzina} km · ↑{p.vzpon} m · ⏱ {p.cas}
+                {p.dolzina} km · ▲{p.vzpon} m · ⏱ {p.cas}
               </div>
             </div>
           </div>

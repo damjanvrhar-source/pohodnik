@@ -283,7 +283,7 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
                   <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 3, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                     {p.ime}<span className={`tezavnost ${info.razred}`}>{info.ime}</span>
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--besedilo2)' }}>{p.regija} · {p.dolzina} km · ↑{p.vzpon} m · ⏱ {cas}</div>
+                  <div style={{ fontSize: 11, color: 'var(--besedilo2)' }}>{p.regija} · {p.dolzina} km · ▲{p.vzpon} m · ⏱ {cas}</div>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 8, borderTop: '0.5px solid var(--rob)', paddingTop: 10 }}>
@@ -316,7 +316,7 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10, paddingBottom: 10, borderBottom: '0.5px solid var(--rob)' }}>
-              {k.km > 0 && <span style={{ fontSize: 11, background: '#F0FAF0', color: 'var(--zelena-t)', padding: '3px 8px', borderRadius: 6, fontWeight: 500 }}>📏 {k.km} km · ↑{k.vzpon} m · ⏱ {izracunajCas(k.km, k.vzpon)}</span>}
+              {k.km > 0 && <span style={{ fontSize: 11, background: '#F0FAF0', color: 'var(--zelena-t)', padding: '3px 8px', borderRadius: 6, fontWeight: 500 }}>📏 {k.km} km · ▲{k.vzpon} m · ⏱ {izracunajCas(k.km, k.vzpon)}</span>}
               <span style={{ fontSize: 11, background: '#F5F5F5', color: 'var(--besedilo2)', padding: '3px 8px', borderRadius: 6 }}>🛏 {k.lezisca}</span>
               <span style={{ fontSize: 11, background: '#F5F5F5', color: 'var(--besedilo2)', padding: '3px 8px', borderRadius: 6 }}>📅 {k.odprta}</span>
             </div>
