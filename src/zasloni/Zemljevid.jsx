@@ -128,7 +128,7 @@ export default function Zemljevid({ izbranaPot }) {
       map.setView([izbranaPot.lat, izbranaPot.lon], 13)
       const ikona = L.divIcon({
         className: '',
-        html: `<div style="background:${ZELENA};color:white;padding:4px 8px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.3)">🏔 ${izbranaPot.ime}</div>`,
+        html: `<div style="background:white;color:${ZELENA_T};padding:5px 10px;border-radius:10px;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 3px 12px rgba(0,0,0,0.35);border:2px solid ${ZELENA}">🏔 ${izbranaPot.ime}</div>`,
         iconAnchor: [0, 0],
       })
       L.marker([izbranaPot.lat, izbranaPot.lon], { icon: ikona }).addTo(map)
