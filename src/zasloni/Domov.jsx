@@ -38,7 +38,7 @@ function TezavnostPike({ razred }) {
 
 
 function IkonaPoti({ razred }) {
-  const [pulse, setPulse] = React.useState(false)
+  const [pulse, setPulse] = useState(false)
   const barve = {
     tezka:   { ozadje: '#FEE2E2', gora: '#C0392B', sneg: '#FADBD8' },
     srednja: { ozadje: '#FEF3C7', gora: '#D35400', sneg: '#FDEBD0' },

@@ -149,6 +149,66 @@ const BAZA_KOC = [
   { id: 58, ime: 'Dom na Boču',                       visina: 979,  regija: 'Štajerska',            tel: '+38635721000',  lezisca: 25,  odprta: 'Jun–Sep',  lat: 46.2167, lon: 15.6667, km: 3,  vzpon: 400  },
 ]
 
+
+function IkonaPoti({ razred }) {
+  const [pulse, setPulse] = useState(false)
+  const barve = {
+    tezka:   { ozadje: '#FEE2E2', gora: '#C0392B', sneg: '#FADBD8' },
+    srednja: { ozadje: '#FEF3C7', gora: '#D35400', sneg: '#FDEBD0' },
+    lahka:   { ozadje: '#D1FAE5', gora: '#1E8449', sneg: '#A9DFBF' },
+  }
+  const b = barve[razred] || barve.lahka
+  return (
+    <div
+      onMouseDown={() => setPulse(true)}
+      onMouseUp={() => setTimeout(() => setPulse(false), 400)}
+      onTouchStart={() => setPulse(true)}
+      onTouchEnd={() => setTimeout(() => setPulse(false), 400)}
+      style={{
+        width: 44, height: 44, borderRadius: 10,
+        background: b.ozadje, flexShrink: 0,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        transform: pulse ? 'scale(1.18)' : 'scale(1)',
+        transition: 'transform 0.2s cubic-bezier(0.34,1.56,0.64,1)',
+        boxShadow: pulse ? `0 0 0 5px ${b.ozadje}80` : 'none',
+      }}
+    >
+      <svg width="26" height="26" viewBox="0 0 40 40" fill="none">
+        <polygon points="20,4 25,14 15,14" fill={b.sneg}/>
+        <polygon points="20,4 34,34 6,34" fill={b.gora}/>
+        <path d="M20 34 C17 30 22 27 19 23" stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.8"/>
+      </svg>
+    </div>
+  )
+}
+
+function IkonaKoce() {
+  const [pulse, setPulse] = useState(false)
+  return (
+    <div
+      onMouseDown={() => setPulse(true)}
+      onMouseUp={() => setTimeout(() => setPulse(false), 400)}
+      onTouchStart={() => setPulse(true)}
+      onTouchEnd={() => setTimeout(() => setPulse(false), 400)}
+      style={{
+        width: 44, height: 44, borderRadius: 10,
+        background: '#E8F5E9', flexShrink: 0,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        transform: pulse ? 'scale(1.18)' : 'scale(1)',
+        transition: 'transform 0.2s cubic-bezier(0.34,1.56,0.64,1)',
+        boxShadow: pulse ? '0 0 0 5px #E8F5E980' : 'none',
+      }}
+    >
+      <svg width="26" height="26" viewBox="0 0 40 40" fill="none">
+        <polygon points="20,5 36,20 4,20" fill="#2E7D32"/>
+        <rect x="10" y="20" width="20" height="14" fill="#388E3C" rx="1"/>
+        <rect x="16" y="26" width="8" height="8" fill="#1B5E20" rx="1"/>
+        <rect x="26" y="11" width="4" height="9" fill="#1B5E20"/>
+      </svg>
+    </div>
+  )
+}
+
 function tezavnostInfo(t) {
   if (!t) return { razred: 'lahka', ime: 'Lahka' }
   const s = t.toLowerCase()
@@ -278,7 +338,7 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
           return (
             <div key={p.id} style={{ background: 'white', borderRadius: 14, padding: '13px 14px', marginBottom: 9, border: '0.5px solid var(--rob)', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 11, marginBottom: 8 }}>
-                <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--zelena-sv)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>⛰️</div>
+                <IkonaPoti razred={info.razred} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 3, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                     {p.ime}<span className={`tezavnost ${info.razred}`}>{info.ime}</span>
@@ -306,7 +366,7 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
         {tab === 'koce' && filtrirane_koce.map(k => (
           <div key={k.id} style={{ background: 'white', borderRadius: 14, padding: '13px 14px', marginBottom: 9, border: '0.5px solid var(--rob)', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 11, marginBottom: 8 }}>
-              <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--zelena-sv)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>🏠</div>
+              <IkonaKoce />
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 3 }}>{k.ime}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
