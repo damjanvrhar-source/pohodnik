@@ -2,10 +2,9 @@ import React, { useState } from 'react'
 import Header from './komponente/Header'
 import BottomNav from './komponente/BottomNav'
 import Domov from './zasloni/Domov'
-import Iskanje from './zasloni/Iskanje'
+import Isci from './zasloni/Isci'
 import PotDetail from './zasloni/PotDetail'
 import Zemljevid from './zasloni/Zemljevid'
-import Koce from './zasloni/Koce'
 import Navigacija from './zasloni/Navigacija'
 import Profil from './zasloni/Profil'
 import SplashScreen from './zasloni/SplashScreen'
@@ -17,19 +16,20 @@ export default function App() {
   const [potDetail, setPotDetail] = useState(null)
 
   function odpriDetail(pot) { setPotDetail(pot) }
+
   function zacniPohod(pot) {
     setPotDetail(null)
     setIzbranaPot(pot)
     setAktiven('zemljevid')
   }
+
   function naZadaj() { setPotDetail(null) }
+
   function preklopi(zaslon) { setPotDetail(null); setAktiven(zaslon) }
 
   return (
     <>
-      {!splashKoncan && (
-        <SplashScreen onKonec={() => setSplashKoncan(true)} />
-      )}
+      {!splashKoncan && <SplashScreen onKonec={() => setSplashKoncan(true)} />}
 
       <Header />
       <main className="vsebina">
@@ -38,17 +38,19 @@ export default function App() {
         ) : (
           <>
             {aktiven === 'domov' && <Domov onOdpriPot={odpriDetail} />}
-            {aktiven === 'iskanje' && <Iskanje onZacniPohod={odpriDetail} />}
+            {aktiven === 'isci' && (
+              <Isci
+                onOdpriPot={odpriDetail}
+                onPotDoKoce={(koca) => {
+                  setIzbranaPot({ ime: koca.ime, regija: koca.regija, lat: koca.lat, lon: koca.lon })
+                  setAktiven('zemljevid')
+                }}
+              />
+            )}
             {aktiven === 'zemljevid' && (
               <div style={{ position: 'relative', height: '100%' }}>
                 <Zemljevid izbranaPot={izbranaPot} />
               </div>
-            )}
-            {aktiven === 'navigacija' && (
-              <Koce onPotDoKoce={(koca) => {
-                setIzbranaPot({ ime: koca.ime, regija: koca.regija, lat: koca.lat, lon: koca.lon })
-                setAktiven('zemljevid')
-              }} />
             )}
             {aktiven === 'nav2' && <Navigacija izbranaPot={izbranaPot} />}
             {aktiven === 'profil' && <Profil />}
