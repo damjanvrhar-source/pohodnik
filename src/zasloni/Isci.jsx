@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-// ============================================================
-// PODATKI — POTI
-// ============================================================
 const BAZA_POTI = [
   { id: 1,  ime: 'Triglav — standardna pot',    regija: 'Julijske Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '18', vzpon: 1700, lat: 46.3792, lon: 13.8367 },
   { id: 2,  ime: 'Triglav — Bambergova pot',    regija: 'Julijske Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '20', vzpon: 1800, lat: 46.3792, lon: 13.8367 },
@@ -14,87 +11,144 @@ const BAZA_POTI = [
   { id: 8,  ime: 'Špik',                         regija: 'Julijske Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '12', vzpon: 1100, lat: 46.4167, lon: 13.8000 },
   { id: 9,  ime: 'Visoka Ponca',                 regija: 'Julijske Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '13', vzpon: 1250, lat: 46.4500, lon: 13.7333 },
   { id: 10, ime: 'Velika Mojstrovka',            regija: 'Julijske Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '11', vzpon: 1100, lat: 46.4333, lon: 13.7667 },
-  { id: 11, ime: 'Kanjavec',                     regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '13', vzpon: 1000, lat: 46.3500, lon: 13.8167 },
-  { id: 12, ime: 'Bogatin',                      regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '11', vzpon: 900,  lat: 46.2833, lon: 13.8333 },
-  { id: 13, ime: 'Krn',                          regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '12', vzpon: 1100, lat: 46.2333, lon: 13.7167 },
-  { id: 14, ime: 'Matajur',                      regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '10', vzpon: 850,  lat: 46.1833, lon: 13.5833 },
-  { id: 15, ime: 'Rombon',                       regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '9',  vzpon: 800,  lat: 46.3167, lon: 13.5667 },
-  { id: 16, ime: 'Črna prst',                   regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '10', vzpon: 800,  lat: 46.2667, lon: 13.9667 },
-  { id: 17, ime: 'Soška pot',                    regija: 'Julijske Alpe',        tezavnost: 'hiking',                    dolzina: '25', vzpon: 300,  lat: 46.2500, lon: 13.6833 },
-  { id: 18, ime: 'Bohinjsko jezero — Savica',    regija: 'Julijske Alpe',        tezavnost: 'hiking',                    dolzina: '6',  vzpon: 200,  lat: 46.2833, lon: 13.8667 },
-  { id: 19, ime: 'Vogel',                        regija: 'Julijske Alpe',        tezavnost: 'hiking',                    dolzina: '5',  vzpon: 350,  lat: 46.2667, lon: 13.8333 },
-  { id: 20, ime: 'Blejski vintgar',              regija: 'Gorenjska',            tezavnost: 'hiking',                    dolzina: '4',  vzpon: 80,   lat: 46.3900, lon: 14.0800 },
-  { id: 21, ime: 'Pokljuka — krožna pot',        regija: 'Gorenjska',            tezavnost: 'hiking',                    dolzina: '8',  vzpon: 200,  lat: 46.3333, lon: 13.9833 },
-  { id: 22, ime: 'Grintovec',                    regija: 'Kamniške Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '14', vzpon: 1500, lat: 46.3667, lon: 14.5333 },
-  { id: 23, ime: 'Kočna',                        regija: 'Kamniške Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '13', vzpon: 1400, lat: 46.3833, lon: 14.5167 },
-  { id: 24, ime: 'Skuta',                        regija: 'Kamniške Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '15', vzpon: 1600, lat: 46.3500, lon: 14.5500 },
-  { id: 25, ime: 'Ojstrica',                     regija: 'Kamniške Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '12', vzpon: 1200, lat: 46.3333, lon: 14.5667 },
-  { id: 26, ime: 'Velika planina',               regija: 'Kamniške Alpe',        tezavnost: 'hiking',                    dolzina: '6',  vzpon: 380,  lat: 46.3167, lon: 14.6333 },
-  { id: 27, ime: 'Planjava',                     regija: 'Kamniške Alpe',        tezavnost: 'mountain_hiking',           dolzina: '11', vzpon: 1000, lat: 46.3167, lon: 14.5833 },
-  { id: 28, ime: 'Storžič',                      regija: 'Kamniške Alpe',        tezavnost: 'mountain_hiking',           dolzina: '12', vzpon: 1100, lat: 46.4000, lon: 14.4667 },
-  { id: 29, ime: 'Logarska dolina',              regija: 'Kamniške Alpe',        tezavnost: 'hiking',                    dolzina: '8',  vzpon: 250,  lat: 46.3833, lon: 14.6333 },
-  { id: 30, ime: 'Okrešelj',                     regija: 'Kamniške Alpe',        tezavnost: 'hiking',                    dolzina: '7',  vzpon: 400,  lat: 46.3500, lon: 14.5833 },
-  { id: 31, ime: 'Stol',                         regija: 'Karavanke',            tezavnost: 'mountain_hiking',           dolzina: '12', vzpon: 1050, lat: 46.4833, lon: 14.1167 },
-  { id: 32, ime: 'Golica',                       regija: 'Karavanke',            tezavnost: 'mountain_hiking',           dolzina: '10', vzpon: 900,  lat: 46.4667, lon: 14.0333 },
-  { id: 33, ime: 'Begunjščica',                  regija: 'Karavanke',            tezavnost: 'mountain_hiking',           dolzina: '11', vzpon: 1000, lat: 46.4333, lon: 14.2167 },
-  { id: 34, ime: 'Košuta',                       regija: 'Karavanke',            tezavnost: 'mountain_hiking',           dolzina: '13', vzpon: 1100, lat: 46.4500, lon: 14.3333 },
-  { id: 35, ime: 'Kepa',                         regija: 'Karavanke',            tezavnost: 'mountain_hiking',           dolzina: '9',  vzpon: 800,  lat: 46.5000, lon: 13.9500 },
-  { id: 36, ime: 'Jezerska Kočna',               regija: 'Karavanke',            tezavnost: 'demanding_mountain_hiking', dolzina: '13', vzpon: 1300, lat: 46.4167, lon: 14.5000 },
-  { id: 37, ime: 'Peca',                         regija: 'Karavanke',            tezavnost: 'mountain_hiking',           dolzina: '11', vzpon: 950,  lat: 46.5000, lon: 14.8833 },
-  { id: 38, ime: 'Goška ravan',                  regija: 'Škofjeloško hribovje', tezavnost: 'hiking',                    dolzina: '8',  vzpon: 440,  lat: 46.3166, lon: 14.1328 },
-  { id: 39, ime: 'Ratitovec',                    regija: 'Škofjeloško hribovje', tezavnost: 'mountain_hiking',           dolzina: '11', vzpon: 850,  lat: 46.2333, lon: 14.0667 },
-  { id: 40, ime: 'Blegoš',                       regija: 'Škofjeloško hribovje', tezavnost: 'mountain_hiking',           dolzina: '9',  vzpon: 700,  lat: 46.1833, lon: 14.0167 },
-  { id: 41, ime: 'Šmarna gora',                  regija: 'Posavsko hribovje',    tezavnost: 'hiking',                    dolzina: '4',  vzpon: 250,  lat: 46.1872, lon: 14.4630 },
-  { id: 42, ime: 'Kum',                          regija: 'Posavsko hribovje',    tezavnost: 'mountain_hiking',           dolzina: '10', vzpon: 800,  lat: 46.0833, lon: 15.0667 },
-  { id: 43, ime: 'Nanos',                        regija: 'Primorska',            tezavnost: 'hiking',                    dolzina: '7',  vzpon: 450,  lat: 45.7667, lon: 14.0333 },
-  { id: 44, ime: 'Snežnik',                      regija: 'Primorska',            tezavnost: 'mountain_hiking',           dolzina: '12', vzpon: 900,  lat: 45.5833, lon: 14.4500 },
-  { id: 45, ime: 'Slavnik',                      regija: 'Primorska',            tezavnost: 'hiking',                    dolzina: '8',  vzpon: 500,  lat: 45.5333, lon: 13.9667 },
-  { id: 46, ime: 'Rogla',                        regija: 'Pohorje',              tezavnost: 'hiking',                    dolzina: '6',  vzpon: 300,  lat: 46.4500, lon: 15.3333 },
-  { id: 47, ime: 'Trdinov vrh',                  regija: 'Dolenjska',            tezavnost: 'mountain_hiking',           dolzina: '10', vzpon: 700,  lat: 45.8167, lon: 15.2333 },
-  { id: 48, ime: 'Menina planina',               regija: 'Savinjske Alpe',       tezavnost: 'mountain_hiking',           dolzina: '10', vzpon: 700,  lat: 46.2500, lon: 14.7833 },
-  { id: 49, ime: 'Raduha',                       regija: 'Savinjske Alpe',       tezavnost: 'demanding_mountain_hiking', dolzina: '12', vzpon: 1100, lat: 46.4167, lon: 14.7333 },
-  { id: 50, ime: 'Donačka gora',                 regija: 'Štajerska',            tezavnost: 'hiking',                    dolzina: '6',  vzpon: 350,  lat: 46.3167, lon: 15.8167 },
+  { id: 11, ime: 'Mala Mojstrovka',              regija: 'Julijske Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '10', vzpon: 1000, lat: 46.4300, lon: 13.7700 },
+  { id: 12, ime: 'Tosc',                         regija: 'Julijske Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '16', vzpon: 1500, lat: 46.3333, lon: 13.8667 },
+  { id: 13, ime: 'Kanjavec',                     regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '13', vzpon: 1000, lat: 46.3500, lon: 13.8167 },
+  { id: 14, ime: 'Bogatin',                      regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '11', vzpon: 900,  lat: 46.2833, lon: 13.8333 },
+  { id: 15, ime: 'Krn',                          regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '12', vzpon: 1100, lat: 46.2333, lon: 13.7167 },
+  { id: 16, ime: 'Matajur',                      regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '10', vzpon: 850,  lat: 46.1833, lon: 13.5833 },
+  { id: 17, ime: 'Rombon',                       regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '9',  vzpon: 800,  lat: 46.3167, lon: 13.5667 },
+  { id: 18, ime: 'Polovnik',                     regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '8',  vzpon: 700,  lat: 46.1667, lon: 13.6333 },
+  { id: 19, ime: 'Slemenova špica',              regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '7',  vzpon: 600,  lat: 46.4000, lon: 13.9000 },
+  { id: 20, ime: 'Črna prst',                   regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '10', vzpon: 800,  lat: 46.2667, lon: 13.9667 },
+  { id: 21, ime: 'Kobla',                        regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '8',  vzpon: 700,  lat: 46.3000, lon: 13.9500 },
+  { id: 22, ime: 'Porezen',                      regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '9',  vzpon: 750,  lat: 46.2333, lon: 14.0167 },
+  { id: 23, ime: 'Dolina Triglavskih jezer',     regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '20', vzpon: 1000, lat: 46.3333, lon: 13.8000 },
+  { id: 24, ime: 'Soška pot',                    regija: 'Julijske Alpe',        tezavnost: 'hiking',                    dolzina: '25', vzpon: 300,  lat: 46.2500, lon: 13.6833 },
+  { id: 25, ime: 'Bohinjsko jezero — Savica',    regija: 'Julijske Alpe',        tezavnost: 'hiking',                    dolzina: '6',  vzpon: 200,  lat: 46.2833, lon: 13.8667 },
+  { id: 26, ime: 'Vogel',                        regija: 'Julijske Alpe',        tezavnost: 'hiking',                    dolzina: '5',  vzpon: 350,  lat: 46.2667, lon: 13.8333 },
+  { id: 27, ime: 'Blejski vintgar',              regija: 'Gorenjska',            tezavnost: 'hiking',                    dolzina: '4',  vzpon: 80,   lat: 46.3900, lon: 14.0800 },
+  { id: 28, ime: 'Pokljuka — krožna pot',        regija: 'Gorenjska',            tezavnost: 'hiking',                    dolzina: '8',  vzpon: 200,  lat: 46.3333, lon: 13.9833 },
+  { id: 29, ime: 'Dolina Radovne',               regija: 'Gorenjska',            tezavnost: 'hiking',                    dolzina: '10', vzpon: 150,  lat: 46.4000, lon: 13.9500 },
+  { id: 30, ime: 'Kranjska Gora — Vršič',        regija: 'Gorenjska',            tezavnost: 'hiking',                    dolzina: '8',  vzpon: 550,  lat: 46.4833, lon: 13.9167 },
+  { id: 31, ime: 'Bled — Straža',               regija: 'Gorenjska',            tezavnost: 'hiking',                    dolzina: '3',  vzpon: 150,  lat: 46.3683, lon: 14.1146 },
+  { id: 32, ime: 'Sveti Jošt nad Kranjem',      regija: 'Gorenjska',            tezavnost: 'hiking',                    dolzina: '5',  vzpon: 350,  lat: 46.2333, lon: 14.3500 },
+  { id: 33, ime: 'Grintovec',                    regija: 'Kamniške Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '14', vzpon: 1500, lat: 46.3667, lon: 14.5333 },
+  { id: 34, ime: 'Kočna',                        regija: 'Kamniške Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '13', vzpon: 1400, lat: 46.3833, lon: 14.5167 },
+  { id: 35, ime: 'Skuta',                        regija: 'Kamniške Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '15', vzpon: 1600, lat: 46.3500, lon: 14.5500 },
+  { id: 36, ime: 'Ojstrica',                     regija: 'Kamniške Alpe',        tezavnost: 'demanding_mountain_hiking', dolzina: '12', vzpon: 1200, lat: 46.3333, lon: 14.5667 },
+  { id: 37, ime: 'Raduha',                       regija: 'Savinjske Alpe',       tezavnost: 'demanding_mountain_hiking', dolzina: '12', vzpon: 1100, lat: 46.4167, lon: 14.7333 },
+  { id: 38, ime: 'Velika planina',               regija: 'Kamniške Alpe',        tezavnost: 'hiking',                    dolzina: '6',  vzpon: 380,  lat: 46.3167, lon: 14.6333 },
+  { id: 39, ime: 'Planjava',                     regija: 'Kamniške Alpe',        tezavnost: 'mountain_hiking',           dolzina: '11', vzpon: 1000, lat: 46.3167, lon: 14.5833 },
+  { id: 40, ime: 'Brana',                        regija: 'Kamniške Alpe',        tezavnost: 'mountain_hiking',           dolzina: '10', vzpon: 950,  lat: 46.3333, lon: 14.5333 },
+  { id: 41, ime: 'Turska gora',                  regija: 'Kamniške Alpe',        tezavnost: 'mountain_hiking',           dolzina: '11', vzpon: 1050, lat: 46.3500, lon: 14.5167 },
+  { id: 42, ime: 'Kamniško sedlo',               regija: 'Kamniške Alpe',        tezavnost: 'mountain_hiking',           dolzina: '9',  vzpon: 850,  lat: 46.3667, lon: 14.5667 },
+  { id: 43, ime: 'Storžič',                      regija: 'Kamniške Alpe',        tezavnost: 'mountain_hiking',           dolzina: '12', vzpon: 1100, lat: 46.4000, lon: 14.4667 },
+  { id: 44, ime: 'Logarska dolina',              regija: 'Kamniške Alpe',        tezavnost: 'hiking',                    dolzina: '8',  vzpon: 250,  lat: 46.3833, lon: 14.6333 },
+  { id: 45, ime: 'Okrešelj',                     regija: 'Kamniške Alpe',        tezavnost: 'hiking',                    dolzina: '7',  vzpon: 400,  lat: 46.3500, lon: 14.5833 },
+  { id: 46, ime: 'Krvavec',                      regija: 'Kamniške Alpe',        tezavnost: 'hiking',                    dolzina: '5',  vzpon: 300,  lat: 46.3000, lon: 14.5333 },
+  { id: 47, ime: 'Menina planina',               regija: 'Kamniške Alpe',        tezavnost: 'hiking',                    dolzina: '9',  vzpon: 500,  lat: 46.2500, lon: 14.7833 },
+  { id: 48, ime: 'Stol',                         regija: 'Karavanke',            tezavnost: 'mountain_hiking',           dolzina: '12', vzpon: 1050, lat: 46.4833, lon: 14.1167 },
+  { id: 49, ime: 'Golica',                       regija: 'Karavanke',            tezavnost: 'mountain_hiking',           dolzina: '10', vzpon: 900,  lat: 46.4667, lon: 14.0333 },
+  { id: 50, ime: 'Begunjščica',                  regija: 'Karavanke',            tezavnost: 'mountain_hiking',           dolzina: '11', vzpon: 1000, lat: 46.4333, lon: 14.2167 },
+  { id: 51, ime: 'Košuta',                       regija: 'Karavanke',            tezavnost: 'mountain_hiking',           dolzina: '13', vzpon: 1100, lat: 46.4500, lon: 14.3333 },
+  { id: 52, ime: 'Kepa',                         regija: 'Karavanke',            tezavnost: 'mountain_hiking',           dolzina: '9',  vzpon: 800,  lat: 46.5000, lon: 13.9500 },
+  { id: 53, ime: 'Uršlja gora',                  regija: 'Karavanke',            tezavnost: 'hiking',                    dolzina: '8',  vzpon: 550,  lat: 46.5167, lon: 14.7833 },
+  { id: 54, ime: 'Peca',                         regija: 'Karavanke',            tezavnost: 'mountain_hiking',           dolzina: '11', vzpon: 950,  lat: 46.5000, lon: 14.8833 },
+  { id: 55, ime: 'Jezerska Kočna',               regija: 'Karavanke',            tezavnost: 'demanding_mountain_hiking', dolzina: '13', vzpon: 1300, lat: 46.4167, lon: 14.5000 },
+  { id: 56, ime: 'Olševa',                       regija: 'Karavanke',            tezavnost: 'mountain_hiking',           dolzina: '9',  vzpon: 700,  lat: 46.4833, lon: 14.8167 },
+  { id: 57, ime: 'Smrekovec',                    regija: 'Karavanke',            tezavnost: 'mountain_hiking',           dolzina: '9',  vzpon: 700,  lat: 46.4833, lon: 14.7167 },
+  { id: 58, ime: 'Goška ravan',                  regija: 'Škofjeloško hribovje', tezavnost: 'hiking',                    dolzina: '8',  vzpon: 440,  lat: 46.3166, lon: 14.1328 },
+  { id: 59, ime: 'Ratitovec',                    regija: 'Škofjeloško hribovje', tezavnost: 'mountain_hiking',           dolzina: '11', vzpon: 850,  lat: 46.2333, lon: 14.0667 },
+  { id: 60, ime: 'Blegoš',                       regija: 'Škofjeloško hribovje', tezavnost: 'mountain_hiking',           dolzina: '9',  vzpon: 700,  lat: 46.1833, lon: 14.0167 },
+  { id: 61, ime: 'Lubnik',                       regija: 'Škofjeloško hribovje', tezavnost: 'hiking',                    dolzina: '5',  vzpon: 450,  lat: 46.1667, lon: 14.0833 },
+  { id: 62, ime: 'Šmarna gora',                  regija: 'Posavsko hribovje',    tezavnost: 'hiking',                    dolzina: '4',  vzpon: 250,  lat: 46.1872, lon: 14.4630 },
+  { id: 63, ime: 'Kum',                          regija: 'Posavsko hribovje',    tezavnost: 'mountain_hiking',           dolzina: '10', vzpon: 800,  lat: 46.0833, lon: 15.0667 },
+  { id: 64, ime: 'Sv. Gora — Zasavje',           regija: 'Posavsko hribovje',    tezavnost: 'hiking',                    dolzina: '5',  vzpon: 350,  lat: 46.0500, lon: 15.0167 },
+  { id: 65, ime: 'Limbarska gora',               regija: 'Posavsko hribovje',    tezavnost: 'hiking',                    dolzina: '4',  vzpon: 280,  lat: 46.1333, lon: 14.8667 },
+  { id: 66, ime: 'Nanos',                        regija: 'Primorska',            tezavnost: 'hiking',                    dolzina: '7',  vzpon: 450,  lat: 45.7667, lon: 14.0333 },
+  { id: 67, ime: 'Snežnik',                      regija: 'Primorska',            tezavnost: 'mountain_hiking',           dolzina: '12', vzpon: 900,  lat: 45.5833, lon: 14.4500 },
+  { id: 68, ime: 'Slavnik',                      regija: 'Primorska',            tezavnost: 'hiking',                    dolzina: '8',  vzpon: 500,  lat: 45.5333, lon: 13.9667 },
+  { id: 69, ime: 'Vremščica',                    regija: 'Primorska',            tezavnost: 'hiking',                    dolzina: '7',  vzpon: 400,  lat: 45.7000, lon: 13.9500 },
+  { id: 70, ime: 'Trstelj',                      regija: 'Primorska',            tezavnost: 'hiking',                    dolzina: '5',  vzpon: 280,  lat: 45.8167, lon: 13.7500 },
+  { id: 71, ime: 'Izvir Reke',                   regija: 'Primorska',            tezavnost: 'hiking',                    dolzina: '4',  vzpon: 100,  lat: 45.5500, lon: 14.3500 },
+  { id: 72, ime: 'Rogla — krožna pot',           regija: 'Pohorje',              tezavnost: 'hiking',                    dolzina: '6',  vzpon: 300,  lat: 46.4500, lon: 15.3333 },
+  { id: 73, ime: 'Črni vrh — Pohorje',           regija: 'Pohorje',              tezavnost: 'hiking',                    dolzina: '8',  vzpon: 400,  lat: 46.5000, lon: 15.3833 },
+  { id: 74, ime: 'Lovrenška jezera',             regija: 'Pohorje',              tezavnost: 'hiking',                    dolzina: '7',  vzpon: 300,  lat: 46.5167, lon: 15.3500 },
+  { id: 75, ime: 'Trdinov vrh',                  regija: 'Dolenjska',            tezavnost: 'mountain_hiking',           dolzina: '10', vzpon: 700,  lat: 45.8167, lon: 15.2333 },
+  { id: 76, ime: 'Mirna gora',                   regija: 'Dolenjska',            tezavnost: 'hiking',                    dolzina: '7',  vzpon: 450,  lat: 45.7167, lon: 15.1000 },
+  { id: 77, ime: 'Gorjanci — greben',            regija: 'Dolenjska',            tezavnost: 'mountain_hiking',           dolzina: '15', vzpon: 600,  lat: 45.8000, lon: 15.2000 },
+  { id: 78, ime: 'Menina planina — vrh',         regija: 'Savinjske Alpe',       tezavnost: 'mountain_hiking',           dolzina: '10', vzpon: 700,  lat: 46.2500, lon: 14.7833 },
+  { id: 79, ime: 'Smrekovec — vrh',              regija: 'Savinjske Alpe',       tezavnost: 'mountain_hiking',           dolzina: '9',  vzpon: 600,  lat: 46.4833, lon: 14.7167 },
+  { id: 80, ime: 'Donačka gora',                 regija: 'Štajerska',            tezavnost: 'hiking',                    dolzina: '6',  vzpon: 350,  lat: 46.3167, lon: 15.8167 },
+  { id: 81, ime: 'Boč',                          regija: 'Štajerska',            tezavnost: 'hiking',                    dolzina: '7',  vzpon: 400,  lat: 46.2167, lon: 15.6667 },
+  { id: 82, ime: 'Mrzlica',                      regija: 'Štajerska',            tezavnost: 'hiking',                    dolzina: '6',  vzpon: 380,  lat: 46.1667, lon: 15.1833 },
+  { id: 83, ime: 'Peca — vrh',                   regija: 'Koroška',              tezavnost: 'mountain_hiking',           dolzina: '11', vzpon: 950,  lat: 46.5000, lon: 14.8833 },
+  { id: 84, ime: 'Plešivec — Koroška',           regija: 'Koroška',              tezavnost: 'hiking',                    dolzina: '7',  vzpon: 500,  lat: 46.5500, lon: 14.9000 },
+  { id: 85, ime: 'Debela peč',                   regija: 'Julijske Alpe',        tezavnost: 'mountain_hiking',           dolzina: '8',  vzpon: 700,  lat: 46.3167, lon: 14.0000 },
 ]
 
-// ============================================================
-// PODATKI — KOČE
-// ============================================================
 const BAZA_KOC = [
-  { id: 1,  ime: 'Triglavski dom na Kredarici',     visina: 2515, regija: 'Julijske Alpe',        tel: '+38645740574',  lezisca: 130, odprta: 'Jul–Sep',  lat: 46.3792, lon: 13.8367, km: 9,  vzpon: 1400 },
-  { id: 2,  ime: 'Aljažev dom v Vratih',            visina: 1015, regija: 'Julijske Alpe',        tel: '+38645898360',  lezisca: 80,  odprta: 'Cel leto', lat: 46.4167, lon: 13.8500, km: 0,  vzpon: 0    },
-  { id: 3,  ime: 'Dom Planika pod Triglavom',       visina: 2401, regija: 'Julijske Alpe',        tel: '+38645741574',  lezisca: 60,  odprta: 'Jul–Sep',  lat: 46.3750, lon: 13.8400, km: 7,  vzpon: 1200 },
-  { id: 4,  ime: 'Koča pri Triglavskih jezerih',    visina: 1685, regija: 'Julijske Alpe',        tel: '+38645723170',  lezisca: 50,  odprta: 'Jun–Sep',  lat: 46.3333, lon: 13.8000, km: 6,  vzpon: 700  },
-  { id: 5,  ime: 'Vodnikov dom na Velem polju',     visina: 1817, regija: 'Julijske Alpe',        tel: '+38645721182',  lezisca: 70,  odprta: 'Jun–Oct',  lat: 46.3667, lon: 13.8500, km: 5,  vzpon: 900  },
-  { id: 6,  ime: 'Dom v Tamarju',                   visina: 1108, regija: 'Julijske Alpe',        tel: '+38645890050',  lezisca: 40,  odprta: 'Cel leto', lat: 46.4667, lon: 13.7833, km: 4,  vzpon: 200  },
-  { id: 7,  ime: 'Erjavčeva koča na Vršiču',       visina: 1515, regija: 'Julijske Alpe',        tel: '+38645881050',  lezisca: 60,  odprta: 'Maj–Oct',  lat: 46.4333, lon: 13.7500, km: 1,  vzpon: 50   },
-  { id: 8,  ime: 'Dom na Komni',                    visina: 1520, regija: 'Julijske Alpe',        tel: '+38645725100',  lezisca: 80,  odprta: 'Jun–Oct',  lat: 46.2667, lon: 13.8333, km: 5,  vzpon: 800  },
-  { id: 9,  ime: 'Cojzova koča na Kokrskem sedlu', visina: 1793, regija: 'Kamniške Alpe',        tel: '+38642525010',  lezisca: 60,  odprta: 'Jun–Oct',  lat: 46.3833, lon: 14.5500, km: 5,  vzpon: 900  },
-  { id: 10, ime: 'Češka koča na Spodnjih Ravneh',  visina: 1543, regija: 'Kamniške Alpe',        tel: '+38648391600',  lezisca: 80,  odprta: 'Jun–Oct',  lat: 46.3500, lon: 14.5667, km: 4,  vzpon: 700  },
-  { id: 11, ime: 'Koča na Veliki planini',          visina: 1666, regija: 'Kamniške Alpe',        tel: '+38642523100',  lezisca: 40,  odprta: 'Cel leto', lat: 46.3167, lon: 14.6333, km: 3,  vzpon: 380  },
-  { id: 12, ime: 'Dom v Logarski dolini',           visina: 785,  regija: 'Kamniške Alpe',        tel: '+38638395000',  lezisca: 30,  odprta: 'Apr–Oct',  lat: 46.3833, lon: 14.6333, km: 1,  vzpon: 50   },
-  { id: 13, ime: 'Dom na Stolu',                    visina: 1685, regija: 'Karavanke',            tel: '+38645727000',  lezisca: 50,  odprta: 'Jun–Oct',  lat: 46.4833, lon: 14.1167, km: 4,  vzpon: 700  },
-  { id: 14, ime: 'Koča na Zelenici',                visina: 1537, regija: 'Karavanke',            tel: '+38645728000',  lezisca: 60,  odprta: 'Jun–Oct',  lat: 46.4500, lon: 14.0833, km: 2,  vzpon: 300  },
-  { id: 15, ime: 'Planinska koča na Golici',        visina: 1582, regija: 'Karavanke',            tel: '+38645729000',  lezisca: 40,  odprta: 'Jun–Oct',  lat: 46.4667, lon: 14.0333, km: 3,  vzpon: 500  },
-  { id: 16, ime: 'Dom na Begunjščici',              visina: 1657, regija: 'Karavanke',            tel: '+38645321000',  lezisca: 30,  odprta: 'Jun–Sep',  lat: 46.4333, lon: 14.2167, km: 4,  vzpon: 700  },
-  { id: 17, ime: 'Dom na Uršlji gori',              visina: 1699, regija: 'Karavanke',            tel: '+38628241000',  lezisca: 40,  odprta: 'Cel leto', lat: 46.5167, lon: 14.7833, km: 4,  vzpon: 600  },
-  { id: 18, ime: 'Planinska koča na Ratitovcu',    visina: 1667, regija: 'Škofjeloško hribovje', tel: '+38645121000',  lezisca: 40,  odprta: 'Jun–Oct',  lat: 46.2333, lon: 14.0667, km: 4,  vzpon: 700  },
-  { id: 19, ime: 'Dom na Goški ravni',              visina: 933,  regija: 'Škofjeloško hribovje', tel: '+38645123000',  lezisca: 40,  odprta: 'Cel leto', lat: 46.3166, lon: 14.1328, km: 3,  vzpon: 440  },
-  { id: 20, ime: 'Dom na Šmarni gori',              visina: 669,  regija: 'Posavsko hribovje',    tel: '+38615611000',  lezisca: 30,  odprta: 'Cel leto', lat: 46.1872, lon: 14.4630, km: 2,  vzpon: 250  },
-  { id: 21, ime: 'Koča na Kumu',                    visina: 1220, regija: 'Posavsko hribovje',    tel: '+38618981000',  lezisca: 35,  odprta: 'Jun–Oct',  lat: 46.0833, lon: 15.0667, km: 5,  vzpon: 700  },
-  { id: 22, ime: 'Koča na Nanosu',                  visina: 1262, regija: 'Primorska',            tel: '+38653641000',  lezisca: 40,  odprta: 'Jun–Oct',  lat: 45.7667, lon: 14.0333, km: 3,  vzpon: 450  },
-  { id: 23, ime: 'Dom na Snežniku',                 visina: 1796, regija: 'Primorska',            tel: '+38617071000',  lezisca: 30,  odprta: 'Jun–Sep',  lat: 45.5833, lon: 14.4500, km: 5,  vzpon: 700  },
-  { id: 24, ime: 'Dom na Slavniku',                 visina: 1028, regija: 'Primorska',            tel: '+38656721000',  lezisca: 30,  odprta: 'Jun–Sep',  lat: 45.5333, lon: 13.9667, km: 4,  vzpon: 500  },
-  { id: 25, ime: 'Koča na Črnem vrhu',              visina: 1543, regija: 'Pohorje',              tel: '+38626031000',  lezisca: 40,  odprta: 'Cel leto', lat: 46.5000, lon: 15.3833, km: 4,  vzpon: 400  },
-  { id: 26, ime: 'Dom na Rogli',                    visina: 1517, regija: 'Pohorje',              tel: '+38637571000',  lezisca: 50,  odprta: 'Cel leto', lat: 46.4500, lon: 15.3333, km: 3,  vzpon: 300  },
-  { id: 27, ime: 'Koča na Trdinov vrh',             visina: 1178, regija: 'Dolenjska',            tel: '+38673841000',  lezisca: 30,  odprta: 'Jun–Sep',  lat: 45.8167, lon: 15.2333, km: 4,  vzpon: 500  },
-  { id: 28, ime: 'Dom na Menini',                   visina: 1508, regija: 'Savinjske Alpe',       tel: '+38638398000',  lezisca: 40,  odprta: 'Jun–Oct',  lat: 46.2500, lon: 14.7833, km: 4,  vzpon: 600  },
-  { id: 29, ime: 'Dom na Pokljuki',                 visina: 1330, regija: 'Gorenjska',            tel: '+38645720100',  lezisca: 40,  odprta: 'Cel leto', lat: 46.3333, lon: 13.9833, km: 2,  vzpon: 200  },
-  { id: 30, ime: 'Koča pri Savici',                 visina: 653,  regija: 'Gorenjska',            tel: '+38645723456',  lezisca: 25,  odprta: 'Apr–Oct',  lat: 46.2833, lon: 13.8667, km: 1,  vzpon: 100  },
+  { id: 1,  ime: 'Triglavski dom na Kredarici',       visina: 2515, regija: 'Julijske Alpe',        tel: '+38645740574',  lezisca: 130, odprta: 'Jul–Sep',  lat: 46.3792, lon: 13.8367, km: 9,  vzpon: 1400 },
+  { id: 2,  ime: 'Aljažev dom v Vratih',              visina: 1015, regija: 'Julijske Alpe',        tel: '+38645898360',  lezisca: 80,  odprta: 'Cel leto', lat: 46.4167, lon: 13.8500, km: 0,  vzpon: 0    },
+  { id: 3,  ime: 'Dom Planika pod Triglavom',         visina: 2401, regija: 'Julijske Alpe',        tel: '+38645741574',  lezisca: 60,  odprta: 'Jul–Sep',  lat: 46.3750, lon: 13.8400, km: 7,  vzpon: 1200 },
+  { id: 4,  ime: 'Koča pri Triglavskih jezerih',      visina: 1685, regija: 'Julijske Alpe',        tel: '+38645723170',  lezisca: 50,  odprta: 'Jun–Sep',  lat: 46.3333, lon: 13.8000, km: 6,  vzpon: 700  },
+  { id: 5,  ime: 'Vodnikov dom na Velem polju',       visina: 1817, regija: 'Julijske Alpe',        tel: '+38645721182',  lezisca: 70,  odprta: 'Jun–Oct',  lat: 46.3667, lon: 13.8500, km: 5,  vzpon: 900  },
+  { id: 6,  ime: 'Dom v Tamarju',                     visina: 1108, regija: 'Julijske Alpe',        tel: '+38645890050',  lezisca: 40,  odprta: 'Cel leto', lat: 46.4667, lon: 13.7833, km: 4,  vzpon: 200  },
+  { id: 7,  ime: 'Erjavčeva koča na Vršiču',         visina: 1515, regija: 'Julijske Alpe',        tel: '+38645881050',  lezisca: 60,  odprta: 'Maj–Oct',  lat: 46.4333, lon: 13.7500, km: 1,  vzpon: 50   },
+  { id: 8,  ime: 'Dom na Komni',                      visina: 1520, regija: 'Julijske Alpe',        tel: '+38645725100',  lezisca: 80,  odprta: 'Jun–Oct',  lat: 46.2667, lon: 13.8333, km: 5,  vzpon: 800  },
+  { id: 9,  ime: 'Koča na Doliču',                    visina: 2151, regija: 'Julijske Alpe',        tel: '+38645899000',  lezisca: 40,  odprta: 'Jul–Sep',  lat: 46.4000, lon: 13.7500, km: 8,  vzpon: 1200 },
+  { id: 10, ime: 'Pogačnikov dom na Kriških podih',   visina: 2050, regija: 'Julijske Alpe',        tel: '+38645898200',  lezisca: 50,  odprta: 'Jul–Sep',  lat: 46.3833, lon: 13.8700, km: 6,  vzpon: 1000 },
+  { id: 11, ime: 'Tičarjev dom na Vršiču',           visina: 1620, regija: 'Julijske Alpe',        tel: '+38645881055',  lezisca: 40,  odprta: 'Jun–Oct',  lat: 46.4300, lon: 13.7450, km: 2,  vzpon: 150  },
+  { id: 12, ime: 'Zasavska koča na Prehodavcih',     visina: 2071, regija: 'Julijske Alpe',        tel: '+38612345678',  lezisca: 30,  odprta: 'Jul–Sep',  lat: 46.3500, lon: 13.7833, km: 7,  vzpon: 1000 },
+  { id: 13, ime: 'Koča pri Savici',                   visina: 653,  regija: 'Julijske Alpe',        tel: '+38645723456',  lezisca: 25,  odprta: 'Apr–Oct',  lat: 46.2833, lon: 13.8667, km: 1,  vzpon: 100  },
+  { id: 14, ime: 'Dom na Voglu',                      visina: 1535, regija: 'Julijske Alpe',        tel: '+38645729100',  lezisca: 30,  odprta: 'Jun–Sep',  lat: 46.2667, lon: 13.8333, km: 1,  vzpon: 50   },
+  { id: 15, ime: 'Cojzova koča na Kokrskem sedlu',   visina: 1793, regija: 'Kamniške Alpe',        tel: '+38642525010',  lezisca: 60,  odprta: 'Jun–Oct',  lat: 46.3833, lon: 14.5500, km: 5,  vzpon: 900  },
+  { id: 16, ime: 'Češka koča na Spodnjih Ravneh',    visina: 1543, regija: 'Kamniške Alpe',        tel: '+38648391600',  lezisca: 80,  odprta: 'Jun–Oct',  lat: 46.3500, lon: 14.5667, km: 4,  vzpon: 700  },
+  { id: 17, ime: 'Dom na Kamniškem sedlu',            visina: 1864, regija: 'Kamniške Alpe',        tel: '+38618391234',  lezisca: 40,  odprta: 'Jul–Sep',  lat: 46.3667, lon: 14.5667, km: 6,  vzpon: 1000 },
+  { id: 18, ime: 'Klemenčeva koča na Grintovcu',     visina: 2347, regija: 'Kamniške Alpe',        tel: '+38642520000',  lezisca: 20,  odprta: 'Jul–Sep',  lat: 46.3667, lon: 14.5333, km: 8,  vzpon: 1400 },
+  { id: 19, ime: 'Dom na Okrešlju',                   visina: 1396, regija: 'Kamniške Alpe',        tel: '+38648391700',  lezisca: 50,  odprta: 'Jun–Oct',  lat: 46.3500, lon: 14.5833, km: 3,  vzpon: 500  },
+  { id: 20, ime: 'Koča na Veliki planini',            visina: 1666, regija: 'Kamniške Alpe',        tel: '+38642523100',  lezisca: 40,  odprta: 'Cel leto', lat: 46.3167, lon: 14.6333, km: 3,  vzpon: 380  },
+  { id: 21, ime: 'Dom v Logarski dolini',             visina: 785,  regija: 'Kamniške Alpe',        tel: '+38638395000',  lezisca: 30,  odprta: 'Apr–Oct',  lat: 46.3833, lon: 14.6333, km: 1,  vzpon: 50   },
+  { id: 22, ime: 'Koča pod Skuto',                    visina: 1850, regija: 'Kamniške Alpe',        tel: '+38648392000',  lezisca: 30,  odprta: 'Jul–Sep',  lat: 46.3400, lon: 14.5600, km: 5,  vzpon: 900  },
+  { id: 23, ime: 'Dom na Storžiču',                   visina: 1755, regija: 'Kamniške Alpe',        tel: '+38642526000',  lezisca: 35,  odprta: 'Jun–Sep',  lat: 46.4000, lon: 14.4667, km: 5,  vzpon: 900  },
+  { id: 24, ime: 'Dom na Stolu',                      visina: 1685, regija: 'Karavanke',            tel: '+38645727000',  lezisca: 50,  odprta: 'Jun–Oct',  lat: 46.4833, lon: 14.1167, km: 4,  vzpon: 700  },
+  { id: 25, ime: 'Prešernova koča na Stolu',         visina: 1331, regija: 'Karavanke',            tel: '+38645741000',  lezisca: 40,  odprta: 'Jun–Oct',  lat: 46.4667, lon: 14.0833, km: 3,  vzpon: 500  },
+  { id: 26, ime: 'Koča na Zelenici',                  visina: 1537, regija: 'Karavanke',            tel: '+38645728000',  lezisca: 60,  odprta: 'Jun–Oct',  lat: 46.4500, lon: 14.0833, km: 2,  vzpon: 300  },
+  { id: 27, ime: 'Planinska koča na Golici',          visina: 1582, regija: 'Karavanke',            tel: '+38645729000',  lezisca: 40,  odprta: 'Jun–Oct',  lat: 46.4667, lon: 14.0333, km: 3,  vzpon: 500  },
+  { id: 28, ime: 'Dom na Begunjščici',                visina: 1657, regija: 'Karavanke',            tel: '+38645321000',  lezisca: 30,  odprta: 'Jun–Sep',  lat: 46.4333, lon: 14.2167, km: 4,  vzpon: 700  },
+  { id: 29, ime: 'Koča na Kepi',                      visina: 1882, regija: 'Karavanke',            tel: '+38645882000',  lezisca: 25,  odprta: 'Jul–Sep',  lat: 46.5000, lon: 13.9500, km: 5,  vzpon: 900  },
+  { id: 30, ime: 'Planinska koča na Košuti',          visina: 1789, regija: 'Karavanke',            tel: '+38645322000',  lezisca: 35,  odprta: 'Jun–Sep',  lat: 46.4500, lon: 14.3333, km: 5,  vzpon: 800  },
+  { id: 31, ime: 'Dom na Uršlji gori',                visina: 1699, regija: 'Karavanke',            tel: '+38628241000',  lezisca: 40,  odprta: 'Cel leto', lat: 46.5167, lon: 14.7833, km: 4,  vzpon: 600  },
+  { id: 32, ime: 'Koča na Peci',                      visina: 2114, regija: 'Karavanke',            tel: '+38628242000',  lezisca: 30,  odprta: 'Jul–Sep',  lat: 46.5000, lon: 14.8833, km: 6,  vzpon: 900  },
+  { id: 33, ime: 'Koča na Olševi',                    visina: 1620, regija: 'Karavanke',            tel: '+38628243000',  lezisca: 35,  odprta: 'Jun–Sep',  lat: 46.4833, lon: 14.8167, km: 4,  vzpon: 600  },
+  { id: 34, ime: 'Koča na Raduhi',                    visina: 2062, regija: 'Karavanke',            tel: '+38628701000',  lezisca: 30,  odprta: 'Jul–Sep',  lat: 46.4167, lon: 14.7333, km: 5,  vzpon: 800  },
+  { id: 35, ime: 'Planinska koča na Ratitovcu',      visina: 1667, regija: 'Škofjeloško hribovje', tel: '+38645121000',  lezisca: 40,  odprta: 'Jun–Oct',  lat: 46.2333, lon: 14.0667, km: 4,  vzpon: 700  },
+  { id: 36, ime: 'Koča na Blegoš',                   visina: 1562, regija: 'Škofjeloško hribovje', tel: '+38645122000',  lezisca: 30,  odprta: 'Jun–Sep',  lat: 46.1833, lon: 14.0167, km: 4,  vzpon: 650  },
+  { id: 37, ime: 'Dom na Goški ravni',                visina: 933,  regija: 'Škofjeloško hribovje', tel: '+38645123000',  lezisca: 40,  odprta: 'Cel leto', lat: 46.3166, lon: 14.1328, km: 3,  vzpon: 440  },
+  { id: 38, ime: 'Koča na Lubniku',                   visina: 1025, regija: 'Škofjeloško hribovje', tel: '+38645124000',  lezisca: 25,  odprta: 'Jun–Sep',  lat: 46.1667, lon: 14.0833, km: 3,  vzpon: 500  },
+  { id: 39, ime: 'Dom na Šmarni gori',                visina: 669,  regija: 'Posavsko hribovje',    tel: '+38615611000',  lezisca: 30,  odprta: 'Cel leto', lat: 46.1872, lon: 14.4630, km: 2,  vzpon: 250  },
+  { id: 40, ime: 'Koča na Kumu',                      visina: 1220, regija: 'Posavsko hribovje',    tel: '+38618981000',  lezisca: 35,  odprta: 'Jun–Oct',  lat: 46.0833, lon: 15.0667, km: 5,  vzpon: 700  },
+  { id: 41, ime: 'Koča na Nanosu',                    visina: 1262, regija: 'Primorska',            tel: '+38653641000',  lezisca: 40,  odprta: 'Jun–Oct',  lat: 45.7667, lon: 14.0333, km: 3,  vzpon: 450  },
+  { id: 42, ime: 'Dom na Snežniku',                   visina: 1796, regija: 'Primorska',            tel: '+38617071000',  lezisca: 30,  odprta: 'Jun–Sep',  lat: 45.5833, lon: 14.4500, km: 5,  vzpon: 700  },
+  { id: 43, ime: 'Dom na Slavniku',                   visina: 1028, regija: 'Primorska',            tel: '+38656721000',  lezisca: 30,  odprta: 'Jun–Sep',  lat: 45.5333, lon: 13.9667, km: 4,  vzpon: 500  },
+  { id: 44, ime: 'Koča na Vremščici',                 visina: 1027, regija: 'Primorska',            tel: '+38656922000',  lezisca: 25,  odprta: 'Jun–Sep',  lat: 45.7000, lon: 13.9500, km: 3,  vzpon: 400  },
+  { id: 45, ime: 'Koča na Črnem vrhu',                visina: 1543, regija: 'Pohorje',              tel: '+38626031000',  lezisca: 40,  odprta: 'Cel leto', lat: 46.5000, lon: 15.3833, km: 4,  vzpon: 400  },
+  { id: 46, ime: 'Dom na Rogli',                      visina: 1517, regija: 'Pohorje',              tel: '+38637571000',  lezisca: 50,  odprta: 'Cel leto', lat: 46.4500, lon: 15.3333, km: 3,  vzpon: 300  },
+  { id: 47, ime: 'Planinska koča Mariborsko Pohorje', visina: 1320, regija: 'Pohorje',              tel: '+38626032000',  lezisca: 35,  odprta: 'Cel leto', lat: 46.5333, lon: 15.4000, km: 3,  vzpon: 350  },
+  { id: 48, ime: 'Dom na Lovrenškem jezeru',          visina: 1517, regija: 'Pohorje',              tel: '+38626034000',  lezisca: 20,  odprta: 'Jun–Sep',  lat: 46.5167, lon: 15.3500, km: 4,  vzpon: 350  },
+  { id: 49, ime: 'Koča na Trdinov vrh',               visina: 1178, regija: 'Dolenjska',            tel: '+38673841000',  lezisca: 30,  odprta: 'Jun–Sep',  lat: 45.8167, lon: 15.2333, km: 4,  vzpon: 500  },
+  { id: 50, ime: 'Dom na Mirni gori',                 visina: 1046, regija: 'Dolenjska',            tel: '+38673051000',  lezisca: 25,  odprta: 'Jun–Sep',  lat: 45.7167, lon: 15.1000, km: 3,  vzpon: 400  },
+  { id: 51, ime: 'Dom na Menini',                     visina: 1508, regija: 'Savinjske Alpe',       tel: '+38638398000',  lezisca: 40,  odprta: 'Jun–Oct',  lat: 46.2500, lon: 14.7833, km: 4,  vzpon: 600  },
+  { id: 52, ime: 'Koča na Smrekovcu',                 visina: 1577, regija: 'Savinjske Alpe',       tel: '+38638399000',  lezisca: 35,  odprta: 'Jun–Sep',  lat: 46.4833, lon: 14.7167, km: 4,  vzpon: 500  },
+  { id: 53, ime: 'Dom na Pokljuki',                   visina: 1330, regija: 'Gorenjska',            tel: '+38645720100',  lezisca: 40,  odprta: 'Cel leto', lat: 46.3333, lon: 13.9833, km: 2,  vzpon: 200  },
+  { id: 54, ime: 'Koča pri Savici',                   visina: 653,  regija: 'Gorenjska',            tel: '+38645723456',  lezisca: 25,  odprta: 'Apr–Oct',  lat: 46.2833, lon: 13.8667, km: 1,  vzpon: 100  },
+  { id: 55, ime: 'Dom na Voglu',                      visina: 1535, regija: 'Gorenjska',            tel: '+38645729100',  lezisca: 30,  odprta: 'Jun–Sep',  lat: 46.2667, lon: 13.8333, km: 1,  vzpon: 50   },
+  { id: 56, ime: 'Koča na Raduhi — Koroška',         visina: 2062, regija: 'Koroška',              tel: '+38628702000',  lezisca: 30,  odprta: 'Jul–Sep',  lat: 46.4167, lon: 14.7333, km: 5,  vzpon: 800  },
+  { id: 57, ime: 'Dom na Donački gori',               visina: 884,  regija: 'Štajerska',            tel: '+38627961000',  lezisca: 20,  odprta: 'Jun–Sep',  lat: 46.3167, lon: 15.8167, km: 3,  vzpon: 350  },
+  { id: 58, ime: 'Dom na Boču',                       visina: 979,  regija: 'Štajerska',            tel: '+38635721000',  lezisca: 25,  odprta: 'Jun–Sep',  lat: 46.2167, lon: 15.6667, km: 3,  vzpon: 400  },
 ]
 
-// ============================================================
-// POMOŽNE FUNKCIJE
-// ============================================================
 function tezavnostInfo(t) {
   if (!t) return { razred: 'lahka', ime: 'Lahka' }
   const s = t.toLowerCase()
@@ -112,10 +166,6 @@ function izracunajCas(km, vzpon) {
   return `${h} h ${min} min`
 }
 
-function odpriNavig(k) {
-  window.open(`https://www.google.com/maps/dir/?api=1&destination=${k.lat},${k.lon}&travelmode=driving`, '_blank')
-}
-
 function VisinaBadge({ visina }) {
   const barva  = visina > 2000 ? '#991B1B' : visina > 1500 ? '#92400E' : '#065F46'
   const ozadje = visina > 2000 ? '#FEE2E2' : visina > 1500 ? '#FEF3C7' : '#D1FAE5'
@@ -125,9 +175,6 @@ function VisinaBadge({ visina }) {
 const REGIJE_POTI = ['Vse', ...new Set(BAZA_POTI.map(p => p.regija))]
 const REGIJE_KOC  = ['Vse', ...new Set(BAZA_KOC.map(k => k.regija))]
 
-// ============================================================
-// GLAVNI KOMPONENTI
-// ============================================================
 export default function Isci({ onOdpriPot, onPotDoKoce }) {
   const [tab, setTab] = useState('poti')
   const [iskanje, setIskanje] = useState('')
@@ -135,7 +182,6 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
   const [regija, setRegija] = useState('Vse')
   const inputRef = useRef(null)
 
-  // Reset filtrov ob menjavi taba
   useEffect(() => { setIskanje(''); setTezavnost('Vse'); setRegija('Vse') }, [tab])
 
   const filtriranePoti = BAZA_POTI.filter(p => {
@@ -158,11 +204,7 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-
-      {/* Glava — fiksna */}
       <div style={{ padding: '14px 14px 0', background: 'var(--ozadje)', flexShrink: 0 }}>
-
-        {/* Iskalno polje */}
         <div style={{
           display: 'flex', alignItems: 'center', gap: 10,
           background: 'white', border: '0.5px solid var(--rob)',
@@ -172,40 +214,31 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
           <svg width="16" height="16" fill="none" stroke="#9CA3AF" strokeWidth={2} viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
           </svg>
-          <input
-            ref={inputRef}
-            value={iskanje}
-            onChange={e => setIskanje(e.target.value)}
+          <input ref={inputRef} value={iskanje} onChange={e => setIskanje(e.target.value)}
             placeholder={tab === 'poti' ? 'Išči pot ali vrh...' : 'Išči kočo ali regijo...'}
             style={{ border: 'none', outline: 'none', fontSize: 15, flex: 1, background: 'transparent', color: 'var(--besedilo)' }}
           />
-          {iskanje && (
-            <button onClick={() => setIskanje('')} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--besedilo2)', fontSize: 18, padding: 0, lineHeight: 1 }}>✕</button>
-          )}
+          {iskanje && <button onClick={() => setIskanje('')} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--besedilo2)', fontSize: 18, padding: 0 }}>✕</button>}
         </div>
 
-        {/* Tabs */}
         <div style={{ display: 'flex', background: 'white', borderRadius: 10, padding: 3, border: '0.5px solid var(--rob)', marginBottom: 10 }}>
           {['poti', 'koce'].map(t => (
             <button key={t} onClick={() => setTab(t)} style={{
               flex: 1, padding: '8px 0', borderRadius: 8, border: 'none',
               fontSize: 13, fontWeight: 600, cursor: 'pointer',
               background: tab === t ? 'var(--zelena)' : 'transparent',
-              color: tab === t ? 'white' : 'var(--besedilo2)',
-              transition: 'all 0.2s',
+              color: tab === t ? 'white' : 'var(--besedilo2)', transition: 'all 0.2s',
             }}>
               {t === 'poti' ? `⛰ Poti (${BAZA_POTI.length})` : `🏠 Koče (${BAZA_KOC.length})`}
             </button>
           ))}
         </div>
 
-        {/* Filtri */}
         {tab === 'poti' && (
           <div style={{ display: 'flex', gap: 6, marginBottom: 8, overflowX: 'auto', paddingBottom: 2 }}>
             {['Vse', 'Lahka', 'Srednja', 'Zahtevna'].map(f => (
               <button key={f} onClick={() => setTezavnost(f)} style={{
-                flexShrink: 0, padding: '4px 12px', borderRadius: 20,
-                border: '0.5px solid', fontSize: 11, fontWeight: 500, cursor: 'pointer',
+                flexShrink: 0, padding: '4px 12px', borderRadius: 20, border: '0.5px solid', fontSize: 11, fontWeight: 500, cursor: 'pointer',
                 background: tezavnost === f ? 'var(--zelena)' : 'white',
                 color: tezavnost === f ? 'white' : 'var(--besedilo2)',
                 borderColor: tezavnost === f ? 'var(--zelena)' : 'var(--rob)',
@@ -217,8 +250,7 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
         <div style={{ display: 'flex', gap: 6, marginBottom: 8, overflowX: 'auto', paddingBottom: 2 }}>
           {(tab === 'poti' ? REGIJE_POTI : REGIJE_KOC).map(r => (
             <button key={r} onClick={() => setRegija(r)} style={{
-              flexShrink: 0, padding: '4px 11px', borderRadius: 20,
-              border: '0.5px solid', fontSize: 11, fontWeight: 500, cursor: 'pointer',
+              flexShrink: 0, padding: '4px 11px', borderRadius: 20, border: '0.5px solid', fontSize: 11, fontWeight: 500, cursor: 'pointer',
               background: regija === r ? '#1F5C1F' : 'white',
               color: regija === r ? 'white' : 'var(--besedilo2)',
               borderColor: regija === r ? '#1F5C1F' : 'var(--rob)',
@@ -227,14 +259,11 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
         </div>
 
         <div style={{ fontSize: 11, color: 'var(--besedilo2)', marginBottom: 8, fontWeight: 500 }}>
-          {steviloRezultatov} {tab === 'poti' ? 'poti' : 'koč'}
-          {iskanje && ` za "${iskanje}"`}
+          {steviloRezultatov} {tab === 'poti' ? 'poti' : 'koč'}{iskanje && ` za "${iskanje}"`}
         </div>
       </div>
 
-      {/* Seznam — scrollable */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 14px 14px' }}>
-
         {steviloRezultatov === 0 && (
           <div style={{ textAlign: 'center', padding: '50px 0', color: 'var(--besedilo2)' }}>
             <div style={{ fontSize: 36, marginBottom: 10 }}>🔍</div>
@@ -243,64 +272,41 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
           </div>
         )}
 
-        {/* POTI */}
         {tab === 'poti' && filtriranePoti.map(p => {
           const info = tezavnostInfo(p.tezavnost)
           const cas = izracunajCas(p.dolzina, p.vzpon)
           return (
-            <div key={p.id} style={{
-              background: 'white', borderRadius: 14, padding: '13px 14px',
-              marginBottom: 9, border: '0.5px solid var(--rob)',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-            }}>
+            <div key={p.id} style={{ background: 'white', borderRadius: 14, padding: '13px 14px', marginBottom: 9, border: '0.5px solid var(--rob)', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 11, marginBottom: 8 }}>
-                <div style={{
-                  width: 44, height: 44, borderRadius: 10, background: 'var(--zelena-sv)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 20, flexShrink: 0,
-                }}>⛰️</div>
+                <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--zelena-sv)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>⛰️</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 3, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                    {p.ime}
-                    <span className={`tezavnost ${info.razred}`}>{info.ime}</span>
+                    {p.ime}<span className={`tezavnost ${info.razred}`}>{info.ime}</span>
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--besedilo2)' }}>
-                    {p.regija} · {p.dolzina} km · ↑{p.vzpon} m · ⏱ {cas}
-                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--besedilo2)' }}>{p.regija} · {p.dolzina} km · ↑{p.vzpon} m · ⏱ {cas}</div>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 8, borderTop: '0.5px solid var(--rob)', paddingTop: 10 }}>
                 <button onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}&travelmode=driving`, '_blank')} style={{
                   flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-                  padding: '8px', background: 'white', borderRadius: 8,
-                  border: '0.5px solid var(--rob)', color: 'var(--besedilo)', fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                  padding: '8px', background: 'white', borderRadius: 8, border: '0.5px solid var(--rob)', color: 'var(--besedilo)', fontSize: 12, fontWeight: 600, cursor: 'pointer',
                 }}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
                   Navigacija
                 </button>
                 <button onClick={() => onOdpriPot && onOdpriPot(p)} style={{
                   flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-                  padding: '8px', background: 'linear-gradient(135deg, #1F5C1F, #3A9A3A)',
-                  borderRadius: 8, border: 'none', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                  padding: '8px', background: 'linear-gradient(135deg, #1F5C1F, #3A9A3A)', borderRadius: 8, border: 'none', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer',
                 }}>▶ Odpri pot</button>
               </div>
             </div>
           )
         })}
 
-        {/* KOČE */}
         {tab === 'koce' && filtrirane_koce.map(k => (
-          <div key={k.id} style={{
-            background: 'white', borderRadius: 14, padding: '13px 14px',
-            marginBottom: 9, border: '0.5px solid var(--rob)',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-          }}>
+          <div key={k.id} style={{ background: 'white', borderRadius: 14, padding: '13px 14px', marginBottom: 9, border: '0.5px solid var(--rob)', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 11, marginBottom: 8 }}>
-              <div style={{
-                width: 44, height: 44, borderRadius: 10, background: 'var(--zelena-sv)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 20, flexShrink: 0,
-              }}>🏠</div>
+              <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--zelena-sv)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>🏠</div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 3 }}>{k.ime}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
@@ -310,33 +316,17 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10, paddingBottom: 10, borderBottom: '0.5px solid var(--rob)' }}>
-              {k.km > 0 && (
-                <span style={{ fontSize: 11, background: '#F0FAF0', color: 'var(--zelena-t)', padding: '3px 8px', borderRadius: 6, fontWeight: 500 }}>
-                  📏 {k.km} km · ↑{k.vzpon} m · ⏱ {izracunajCas(k.km, k.vzpon)}
-                </span>
-              )}
+              {k.km > 0 && <span style={{ fontSize: 11, background: '#F0FAF0', color: 'var(--zelena-t)', padding: '3px 8px', borderRadius: 6, fontWeight: 500 }}>📏 {k.km} km · ↑{k.vzpon} m · ⏱ {izracunajCas(k.km, k.vzpon)}</span>}
               <span style={{ fontSize: 11, background: '#F5F5F5', color: 'var(--besedilo2)', padding: '3px 8px', borderRadius: 6 }}>🛏 {k.lezisca}</span>
               <span style={{ fontSize: 11, background: '#F5F5F5', color: 'var(--besedilo2)', padding: '3px 8px', borderRadius: 6 }}>📅 {k.odprta}</span>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <a href={`tel:${k.tel}`} style={{
-                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-                padding: '8px', background: 'var(--zelena-sv)', borderRadius: 8,
-                textDecoration: 'none', color: 'var(--zelena-t)', fontSize: 12, fontWeight: 600,
-              }}>📞 Pokliči</a>
-              <button onClick={() => odpriNavig(k)} style={{
-                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-                padding: '8px', background: 'white', borderRadius: 8,
-                border: '0.5px solid var(--rob)', color: 'var(--besedilo)', fontSize: 12, fontWeight: 600, cursor: 'pointer',
-              }}>
+              <a href={`tel:${k.tel}`} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '8px', background: 'var(--zelena-sv)', borderRadius: 8, textDecoration: 'none', color: 'var(--zelena-t)', fontSize: 12, fontWeight: 600 }}>📞 Pokliči</a>
+              <button onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${k.lat},${k.lon}&travelmode=driving`, '_blank')} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '8px', background: 'white', borderRadius: 8, border: '0.5px solid var(--rob)', color: 'var(--besedilo)', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
                 Navigacija
               </button>
-              <button onClick={() => onPotDoKoce && onPotDoKoce(k)} style={{
-                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-                padding: '8px', background: 'linear-gradient(135deg, #1F5C1F, #3A9A3A)',
-                borderRadius: 8, border: 'none', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer',
-              }}>▶ Pot</button>
+              <button onClick={() => onPotDoKoce && onPotDoKoce(k)} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '8px', background: 'linear-gradient(135deg, #1F5C1F, #3A9A3A)', borderRadius: 8, border: 'none', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>▶ Pot</button>
             </div>
           </div>
         ))}
