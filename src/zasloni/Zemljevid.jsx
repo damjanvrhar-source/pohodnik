@@ -118,12 +118,12 @@ export default function Zemljevid({ izbranaPot }) {
   useEffect(() => {
     if (mapInstanca.current) return
     const map = L.map(mapRef.current, { center: ZACETNI_POGLED, zoom: ZACETNI_ZOOM, zoomControl: false })
-    const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: '© Esri', maxZoom: 19 })
-    sat.addTo(map)
-    aktivniSloj.current = sat
-    const napisi = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', { attribution: '', maxZoom: 19, opacity: 1.0, className: 'white-labels' })
-    napisi.addTo(map)
-    napisiSlojRef.current = napisi
+    const osm = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap · © CartoDB',
+      subdomains: 'abcd', maxZoom: 19,
+    })
+    osm.addTo(map)
+    aktivniSloj.current = osm
     L.control.zoom({ position: 'bottomright' }).addTo(map)
     mapInstanca.current = map
 
@@ -246,10 +246,7 @@ export default function Zemljevid({ izbranaPot }) {
 
   return (
     <div style={{ position: 'relative', height: '100%' }}>
-      <style>{`
-        .white-labels { filter: invert(1) brightness(2) contrast(2); }
-        .leaflet-tile-pane .white-labels { mix-blend-mode: normal; }
-      `}</style>
+
       <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
 
       {/* HUD — zgoraj levo */}
@@ -283,6 +280,13 @@ export default function Zemljevid({ izbranaPot }) {
       </div>
 
       {/* Preklop pogled — zgoraj desno */}
+      <button onClick={preklopi} style={{ ...btnStil, position: 'absolute', top: 12, right: 12, padding: '9px 14px' }}>
+        {jeTopoPogled ? (
+          <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Satelit</>
+        ) : (
+          <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/></svg> Zemljevid</>
+        )}
+      </button>
 
 
       {/* Gumbi desno */}
