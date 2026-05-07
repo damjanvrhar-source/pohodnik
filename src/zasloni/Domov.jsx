@@ -36,6 +36,39 @@ function TezavnostPike({ razred }) {
   )
 }
 
+
+function IkonaPoti({ razred }) {
+  const [pulse, setPulse] = React.useState(false)
+  const barve = {
+    tezka:   { ozadje: '#FEE2E2', gora: '#C0392B', sneg: '#FADBD8' },
+    srednja: { ozadje: '#FEF3C7', gora: '#D35400', sneg: '#FDEBD0' },
+    lahka:   { ozadje: '#D1FAE5', gora: '#1E8449', sneg: '#A9DFBF' },
+  }
+  const b = barve[razred] || barve.lahka
+  return (
+    <div
+      onMouseDown={() => setPulse(true)}
+      onMouseUp={() => setTimeout(() => setPulse(false), 400)}
+      onTouchStart={() => setPulse(true)}
+      onTouchEnd={() => setTimeout(() => setPulse(false), 400)}
+      style={{
+        width: 46, height: 46, borderRadius: 11,
+        background: b.ozadje, flexShrink: 0,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        transform: pulse ? 'scale(1.18)' : 'scale(1)',
+        transition: 'transform 0.2s cubic-bezier(0.34,1.56,0.64,1)',
+        boxShadow: pulse ? `0 0 0 5px ${b.ozadje}80` : 'none',
+      }}
+    >
+      <svg width="26" height="26" viewBox="0 0 40 40" fill="none">
+        <polygon points="20,4 25,14 15,14" fill={b.sneg}/>
+        <polygon points="20,4 34,34 6,34" fill={b.gora}/>
+        <path d="M20 34 C17 30 22 27 19 23" stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.8"/>
+      </svg>
+    </div>
+  )
+}
+
 export default function Domov({ onOdpriPot }) {
   const [vreme, setVreme] = useState(null)
   const [nalaganje, setNalaganje] = useState(true)
@@ -148,11 +181,7 @@ export default function Domov({ onOdpriPot }) {
         }}>
           {/* Zgornji del — ikona + info */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
-            <div style={{
-              width: 46, height: 46, borderRadius: 10, background: 'var(--zelena-sv)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 22, flexShrink: 0,
-            }}>{p.ikona}</div>
+            <IkonaPoti razred={p.razred} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>
                 {p.ime}
