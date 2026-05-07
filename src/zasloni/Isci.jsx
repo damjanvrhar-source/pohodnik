@@ -248,35 +248,42 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
           const info = tezavnostInfo(p.tezavnost)
           const cas = izracunajCas(p.dolzina, p.vzpon)
           return (
-            <div key={p.id}
-              onClick={() => onOdpriPot && onOdpriPot(p)}
-              style={{
-                background: 'white', borderRadius: 14, padding: '13px 14px',
-                marginBottom: 9, border: '0.5px solid var(--rob)',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 12,
-                transition: 'box-shadow 0.15s',
-              }}
-              onTouchStart={e => e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.12)'}
-              onTouchEnd={e => e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)'}
-            >
-              <div style={{
-                width: 44, height: 44, borderRadius: 10, background: 'var(--zelena-sv)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 20, flexShrink: 0,
-              }}>⛰️</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 3, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                  {p.ime}
-                  <span className={`tezavnost ${info.razred}`}>{info.ime}</span>
-                </div>
-                <div style={{ fontSize: 11, color: 'var(--besedilo2)' }}>
-                  {p.regija} · {p.dolzina} km · ↑{p.vzpon} m · ⏱ {cas}
+            <div key={p.id} style={{
+              background: 'white', borderRadius: 14, padding: '13px 14px',
+              marginBottom: 9, border: '0.5px solid var(--rob)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 11, marginBottom: 8 }}>
+                <div style={{
+                  width: 44, height: 44, borderRadius: 10, background: 'var(--zelena-sv)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 20, flexShrink: 0,
+                }}>⛰️</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 3, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                    {p.ime}
+                    <span className={`tezavnost ${info.razred}`}>{info.ime}</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--besedilo2)' }}>
+                    {p.regija} · {p.dolzina} km · ↑{p.vzpon} m · ⏱ {cas}
+                  </div>
                 </div>
               </div>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--besedilo2)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                <path d="M9 18l6-6-6-6"/>
-              </svg>
+              <div style={{ display: 'flex', gap: 8, borderTop: '0.5px solid var(--rob)', paddingTop: 10 }}>
+                <button onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}&travelmode=driving`, '_blank')} style={{
+                  flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+                  padding: '8px', background: 'white', borderRadius: 8,
+                  border: '0.5px solid var(--rob)', color: 'var(--besedilo)', fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+                  Navigacija
+                </button>
+                <button onClick={() => onOdpriPot && onOdpriPot(p)} style={{
+                  flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+                  padding: '8px', background: 'linear-gradient(135deg, #1F5C1F, #3A9A3A)',
+                  borderRadius: 8, border: 'none', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                }}>▶ Odpri pot</button>
+              </div>
             </div>
           )
         })}
