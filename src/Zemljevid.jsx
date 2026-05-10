@@ -323,8 +323,8 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
         112
       </button>
 
-      {/* PREKINI POT — prikaže se ko je pohod aktiven */}
-      {jeAktiven && (
+      {/* PREKINI POT — prikaže se ko GPS teče */}
+      {sledenje && (
         <button onClick={prekiniPot} style={{
           position: 'absolute', bottom: 16 + spodajOffset, left: 12,
           background: '#DC2626', color: 'white', border: 'none',
