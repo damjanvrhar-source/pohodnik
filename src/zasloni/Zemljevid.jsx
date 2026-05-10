@@ -13,6 +13,78 @@ const ZACETNI_POGLED = [46.3792, 13.8367]
 const ZACETNI_ZOOM = 10
 const ZELENA = '#2D7A2D'
 
+// ============================================================
+// ZVOČNI EFEKTI — Web Audio API
+// ============================================================
+function predvajajZvok(tip) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)()
+
+    if (tip === 'start') {
+      // Motivacijski vzhajajoči akord — C E G
+      [[261, 0], [329, 0.15], [392, 0.3]].forEach(([freq, delay]) => {
+        const osc = ctx.createOscillator()
+        const gain = ctx.createGain()
+        osc.connect(gain); gain.connect(ctx.destination)
+        osc.type = 'sine'
+        osc.frequency.value = freq
+        gain.gain.setValueAtTime(0, ctx.currentTime + delay)
+        gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + delay + 0.05)
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.5)
+        osc.start(ctx.currentTime + delay)
+        osc.stop(ctx.currentTime + delay + 0.5)
+      })
+    }
+
+    else if (tip === 'gps') {
+      // Kratki ping — GPS najden
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.connect(gain); gain.connect(ctx.destination)
+      osc.type = 'sine'
+      osc.frequency.setValueAtTime(880, ctx.currentTime)
+      osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.1)
+      gain.gain.setValueAtTime(0.3, ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
+      osc.start(ctx.currentTime)
+      osc.stop(ctx.currentTime + 0.3)
+    }
+
+    else if (tip === 'prekini') {
+      // Padajoči ton — konec pohoda
+      [[523, 0], [392, 0.2], [261, 0.4]].forEach(([freq, delay]) => {
+        const osc = ctx.createOscillator()
+        const gain = ctx.createGain()
+        osc.connect(gain); gain.connect(ctx.destination)
+        osc.type = 'sine'
+        osc.frequency.value = freq
+        gain.gain.setValueAtTime(0.25, ctx.currentTime + delay)
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.4)
+        osc.start(ctx.currentTime + delay)
+        osc.stop(ctx.currentTime + delay + 0.4)
+      })
+    }
+
+    else if (tip === 'sos') {
+      // SOS alarm — trikratni urgentni signal
+      for (let i = 0; i < 3; i++) {
+        const osc = ctx.createOscillator()
+        const gain = ctx.createGain()
+        osc.connect(gain); gain.connect(ctx.destination)
+        osc.type = 'square'
+        osc.frequency.value = 880
+        const t = ctx.currentTime + i * 0.4
+        gain.gain.setValueAtTime(0.4, t)
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3)
+        osc.start(t)
+        osc.stop(t + 0.3)
+      }
+    }
+
+    setTimeout(() => ctx.close(), 3000)
+  } catch(e) {}
+}
+
 function formatCas(s) {
   if (s < 60) return `${s}s`
   const m = Math.floor(s / 60)
@@ -121,6 +193,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   useEffect(() => {
     if (avtomatskiStart) {
       setTimeout(() => {
+        predvajajZvok('start')
         zageniGPS()
         setPohod(true)
         if (onGPSZacet) onGPSZacet()
@@ -209,11 +282,13 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     setSledenje(true)
     setSledRazdalja(0)
     setSledCas(0)
+    predvajajZvok('start')
     zageniWakeLock()
     casTimer.current = setInterval(() => setSledCas(s => s + 1), 1000)
     watchId.current = navigator.geolocation.watchPosition(
       (pos) => {
         const { latitude, longitude, altitude, accuracy } = pos.coords
+        if (gpsStatus !== 'aktiven ✓') predvajajZvok('gps')
         setGpsStatus('aktiven ✓')
         if (altitude) setVisina(Math.round(altitude))
         if (pos.coords.speed) setHitrost(Math.round(pos.coords.speed * 3.6))
@@ -299,6 +374,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   }
 
   function prekiniPot() {
+    predvajajZvok('prekini')
     shranijPohod()
     ustavi()
     setPohod(false)
@@ -341,7 +417,8 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   }
 
   function sosKlic() {
-    window.open('tel:112')
+    predvajajZvok('sos')
+    setTimeout(() => window.open('tel:112'), 500)
   }
 
   const spodajOffset = prikazProfila ? 155 : 0
