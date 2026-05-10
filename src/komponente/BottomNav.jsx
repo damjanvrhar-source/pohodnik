@@ -76,15 +76,15 @@ export default function BottomNav({ aktiven, onPreklop }) {
               alignItems: 'center', justifyContent: 'center',
               gap: 3, border: 'none',
               background: jeAktiven
-                ? 'linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.08) 100%)'
+                ? 'linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 100%)'
                 : 'transparent',
               cursor: 'pointer',
               color: jeAktiven ? 'white' : 'rgba(255,255,255,0.45)',
-              transition: 'all 0.2s ease',
+              transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
               padding: '6px 0',
-              transform: jePritisnjeno ? 'scale(0.88)' : jeAktiven ? 'scale(1.05)' : 'scale(1)',
-              borderTop: jeAktiven ? '2px solid rgba(255,255,255,0.6)' : '2px solid transparent',
-              filter: jeAktiven ? 'drop-shadow(0 0 8px rgba(255,255,255,0.3))' : 'none',
+              transform: jePritisnjeno ? 'scale(0.82)' : jeAktiven ? 'scale(1.08)' : 'scale(1)',
+              borderTop: jeAktiven ? '2.5px solid rgba(255,255,255,0.7)' : '2px solid transparent',
+              filter: jeAktiven ? 'drop-shadow(0 0 10px rgba(255,255,255,0.4))' : 'none',
             }}
           >
             {z.ikona(jeAktiven)}

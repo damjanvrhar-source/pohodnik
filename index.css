@@ -1,0 +1,250 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --zelena: #2D7A2D;
+  --zelena-t: #1F5C1F;
+  --zelena-s: #3A9A3A;
+  --zelena-sv: #E8F5E8;
+  --ozadje: #F0F5F0;
+  --kartica: #FFFFFF;
+  --besedilo: #1A2E1A;
+  --besedilo2: #6B7D6B;
+  --rob: #D4E4D4;
+  --nav-h: 64px;
+  --header-h: 60px;
+  --vsebina-vrh: calc(var(--header-h) + 3px);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+  --radius: 14px;
+  --radius-lg: 20px;
+  --transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--ozadje);
+  color: var(--besedilo);
+}
+
+/* ===================== VSEBINA ===================== */
+.vsebina {
+  position: fixed;
+  top: var(--vsebina-vrh);
+  bottom: var(--nav-h);
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* ===================== KARTICE ===================== */
+.kartica {
+  background: var(--kartica);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  border: 0.5px solid var(--rob);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  animation: fadeSlideUp 0.35s ease both;
+}
+
+.kartica:active {
+  transform: scale(0.98);
+  box-shadow: var(--shadow-sm);
+}
+
+.kartica-naslov {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--besedilo2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+/* ===================== STATISTIKE ===================== */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.stat {
+  background: white;
+  border-radius: 12px;
+  padding: 14px 12px;
+  border: 0.5px solid var(--rob);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  animation: fadeSlideUp 0.4s ease both;
+}
+
+.stat:active {
+  transform: scale(0.96);
+}
+
+.stat-st {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--zelena);
+  letter-spacing: -0.5px;
+}
+
+.stat-ime {
+  font-size: 11px;
+  color: var(--besedilo2);
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+/* ===================== TEŽAVNOST BADGE ===================== */
+.tezavnost {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  margin-left: 4px;
+  letter-spacing: 0.3px;
+}
+
+.lahka   { background: #D1FAE5; color: #065F46; }
+.srednja { background: #FEF3C7; color: #92400E; }
+.tezka   { background: #FEE2E2; color: #991B1B; }
+
+/* ===================== GUMBI ===================== */
+button {
+  transition: var(--transition);
+}
+
+button:active {
+  transform: scale(0.94) !important;
+}
+
+/* ===================== ANIMACIJE ===================== */
+
+/* Fade + slide od spodaj */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade in */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Scale in */
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Slide od leve */
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Pulse zelena */
+@keyframes greenPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(45,122,45,0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(45,122,45,0); }
+}
+
+/* Bounce */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-4px); }
+}
+
+/* Shimmer za loading */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Spin */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ===================== UTILITY ANIMACIJE ===================== */
+.anim-fade-up   { animation: fadeSlideUp 0.35s ease both; }
+.anim-fade-in   { animation: fadeIn 0.3s ease both; }
+.anim-scale-in  { animation: scaleIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both; }
+.anim-slide-left { animation: slideInLeft 0.3s ease both; }
+
+/* Delay razredi */
+.delay-1 { animation-delay: 0.05s; }
+.delay-2 { animation-delay: 0.10s; }
+.delay-3 { animation-delay: 0.15s; }
+.delay-4 { animation-delay: 0.20s; }
+.delay-5 { animation-delay: 0.25s; }
+
+/* ===================== SCROLLBAR ===================== */
+.vsebina::-webkit-scrollbar { width: 3px; }
+.vsebina::-webkit-scrollbar-track { background: transparent; }
+.vsebina::-webkit-scrollbar-thumb { background: var(--rob); border-radius: 2px; }
+
+/* ===================== KARTICA HOVER ===================== */
+@media (hover: hover) {
+  .kartica:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+/* ===================== SHIMMER LOADING ===================== */
+.shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* ===================== PILL / CHIP ===================== */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--zelena-sv);
+  color: var(--zelena-t);
+  border: 0.5px solid var(--rob);
+}
+
+/* ===================== TOUCH FEEDBACK ===================== */
+.tap-feedback {
+  transition: var(--transition);
+}
+.tap-feedback:active {
+  transform: scale(0.95);
+  opacity: 0.85;
+}

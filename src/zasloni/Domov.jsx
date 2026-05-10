@@ -153,18 +153,10 @@ export default function Domov({ onOdpriPot }) {
 
       {/* Statistike */}
       <div className="stat-grid">
-        <div className="stat" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-          <div className="stat-st">0</div><div className="stat-ime">opravljene poti</div>
-        </div>
-        <div className="stat" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-          <div className="stat-st">0 km</div><div className="stat-ime">skupna razdalja</div>
-        </div>
-        <div className="stat" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-          <div className="stat-st">0 m</div><div className="stat-ime">skupni vzpon</div>
-        </div>
-        <div className="stat" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-          <div className="stat-st">0 h</div><div className="stat-ime">skupni čas</div>
-        </div>
+        <div className="stat delay-1"><div className="stat-st">0</div><div className="stat-ime">opravljene poti</div></div>
+        <div className="stat delay-2"><div className="stat-st">0 km</div><div className="stat-ime">skupna razdalja</div></div>
+        <div className="stat delay-3"><div className="stat-st">0 m</div><div className="stat-ime">skupni vzpon</div></div>
+        <div className="stat delay-4"><div className="stat-st">0 h</div><div className="stat-ime">skupni čas</div></div>
       </div>
 
       {/* Naslov */}
@@ -174,10 +166,10 @@ export default function Domov({ onOdpriPot }) {
 
       {/* Kartice poti */}
       {poti.map((p, i) => (
-        <div key={i} style={{
-          background: 'white', borderRadius: 14, padding: '13px 14px',
-          marginBottom: 10, border: '0.5px solid var(--rob)',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.07)',
+        <div key={i} className="kartica tap-feedback" style={{
+          borderRadius: 14, padding: '13px 14px',
+          marginBottom: 10,
+          animationDelay: `${i * 0.07}s`,
         }}>
           {/* Zgornji del — ikona + info */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
