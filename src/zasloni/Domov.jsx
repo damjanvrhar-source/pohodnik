@@ -80,14 +80,6 @@ export default function Domov({ onOdpriPot }) {
       setStats(s)
     } catch(e) {}
   }, [])
-  const [stats, setStats] = useState({ poti: 0, razdalja: 0, vzpon: 0, cas: 0 })
-
-  useEffect(() => {
-    try {
-      const s = JSON.parse(localStorage.getItem('pohodnik_stats') || '{"poti":0,"razdalja":0,"vzpon":0,"cas":0}')
-      setStats(s)
-    } catch(e) {}
-  }, [])
 
   useEffect(() => {
     if (navigator.geolocation) {
