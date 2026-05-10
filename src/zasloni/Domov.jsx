@@ -72,6 +72,22 @@ function IkonaPoti({ razred }) {
 export default function Domov({ onOdpriPot }) {
   const [vreme, setVreme] = useState(null)
   const [nalaganje, setNalaganje] = useState(true)
+  const [stats, setStats] = useState({ poti: 0, razdalja: 0, vzpon: 0, cas: 0 })
+
+  useEffect(() => {
+    try {
+      const s = JSON.parse(localStorage.getItem('pohodnik_stats') || '{"poti":0,"razdalja":0,"vzpon":0,"cas":0}')
+      setStats(s)
+    } catch(e) {}
+  }, [])
+  const [stats, setStats] = useState({ poti: 0, razdalja: 0, vzpon: 0, cas: 0 })
+
+  useEffect(() => {
+    try {
+      const s = JSON.parse(localStorage.getItem('pohodnik_stats') || '{"poti":0,"razdalja":0,"vzpon":0,"cas":0}')
+      setStats(s)
+    } catch(e) {}
+  }, [])
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -153,10 +169,10 @@ export default function Domov({ onOdpriPot }) {
 
       {/* Statistike */}
       <div className="stat-grid">
-        <div className="stat delay-1"><div className="stat-st">0</div><div className="stat-ime">opravljene poti</div></div>
-        <div className="stat delay-2"><div className="stat-st">0 km</div><div className="stat-ime">skupna razdalja</div></div>
-        <div className="stat delay-3"><div className="stat-st">0 m</div><div className="stat-ime">skupni vzpon</div></div>
-        <div className="stat delay-4"><div className="stat-st">0 h</div><div className="stat-ime">skupni čas</div></div>
+        <div className="stat delay-1"><div className="stat-st">{stats.poti}</div><div className="stat-ime">opravljene poti</div></div>
+        <div className="stat delay-2"><div className="stat-st">{stats.razdalja < 1000 ? `${stats.razdalja} m` : `${(stats.razdalja/1000).toFixed(1)} km`}</div><div className="stat-ime">skupna razdalja</div></div>
+        <div className="stat delay-3"><div className="stat-st">{stats.vzpon} m</div><div className="stat-ime">skupni vzpon</div></div>
+        <div className="stat delay-4"><div className="stat-st">{stats.cas < 3600 ? `${Math.floor(stats.cas/60)} min` : `${Math.floor(stats.cas/3600)} h`}</div><div className="stat-ime">skupni čas</div></div>
       </div>
 
       {/* Naslov */}
