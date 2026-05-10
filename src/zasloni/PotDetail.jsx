@@ -98,12 +98,30 @@ export default function PotDetail({ pot, onZacniNavigacijo, onNazaj }) {
     <div style={{ padding: 16 }}>
 
       {/* Nazaj */}
-      <button onClick={onNazaj} style={{
-        background: 'none', border: 'none', cursor: 'pointer',
-        color: 'var(--zelena)', fontSize: 13, fontWeight: 600,
-        padding: '0 0 14px 0', display: 'flex', alignItems: 'center', gap: 5,
-      }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <style>{`
+        @keyframes nazajPulse {
+          0% { transform: translateX(0); }
+          30% { transform: translateX(-5px); }
+          60% { transform: translateX(-2px); }
+          100% { transform: translateX(0); }
+        }
+        .nazaj-btn:hover { background: var(--zelena-sv) !important; transform: translateX(-3px); }
+        .nazaj-btn:active { transform: scale(0.95) translateX(-3px) !important; }
+      `}</style>
+      <button
+        className="nazaj-btn"
+        onClick={onNazaj}
+        style={{
+          background: 'white', border: '1.5px solid var(--zelena)',
+          cursor: 'pointer', color: 'var(--zelena)', fontSize: 13, fontWeight: 700,
+          padding: '9px 16px', marginBottom: 14,
+          display: 'flex', alignItems: 'center', gap: 7,
+          borderRadius: 12, boxShadow: '0 2px 8px rgba(45,122,45,0.15)',
+          transition: 'all 0.2s cubic-bezier(0.34,1.56,0.64,1)',
+          animation: 'nazajPulse 1.5s ease 0.5s',
+        }}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M19 12H5M5 12l7-7M5 12l7 7"/>
         </svg>
         Nazaj

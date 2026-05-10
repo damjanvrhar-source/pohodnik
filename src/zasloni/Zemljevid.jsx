@@ -129,12 +129,18 @@ export default function Zemljevid({ izbranaPot }) {
 
     if (izbranaPot?.lat && izbranaPot?.lon) {
       map.setView([izbranaPot.lat, izbranaPot.lon], 13)
-      const ikona = L.divIcon({
+      // Pulse cilj marker
+      const ciljIkona = L.divIcon({
         className: '',
-        html: `<div style="background:white;color:${ZELENA_T};padding:5px 10px;border-radius:10px;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:0 3px 12px rgba(0,0,0,0.35);border:2px solid ${ZELENA}">🏔 ${izbranaPot.ime}</div>`,
-        iconAnchor: [0, 0],
+        html: `<div style="position:relative;display:flex;align-items:center;justify-content:center;">
+          <div style="position:absolute;width:36px;height:36px;border-radius:50%;background:rgba(220,38,38,0.2);animation:ciljPulse 1.5s ease-out infinite;"></div>
+          <div style="position:absolute;width:24px;height:24px;border-radius:50%;background:rgba(220,38,38,0.3);animation:ciljPulse 1.5s ease-out infinite 0.3s;"></div>
+          <div style="width:14px;height:14px;border-radius:50%;background:#DC2626;border:3px solid white;box-shadow:0 2px 8px rgba(220,38,38,0.6);position:relative;z-index:2;"></div>
+        </div>`,
+        iconSize: [36, 36], iconAnchor: [18, 18],
       })
-      L.marker([izbranaPot.lat, izbranaPot.lon], { icon: ikona }).addTo(map)
+      L.marker([izbranaPot.lat, izbranaPot.lon], { icon: ciljIkona }).addTo(map)
+        .bindPopup(`<div style="font-weight:700;color:#DC2626;font-size:13px">🏔 ${izbranaPot.ime}</div><div style="font-size:11px;color:#6B7280">${izbranaPot.regija || ''}</div>`)
     } else {
       // Avtomatsko centriraj na uporabnikovo lokacijo
       if (navigator.geolocation) {
@@ -246,6 +252,12 @@ export default function Zemljevid({ izbranaPot }) {
 
   return (
     <div style={{ position: 'relative', height: '100%' }}>
+      <style>{`
+        @keyframes ciljPulse {
+          0% { transform: scale(0.8); opacity: 0.8; }
+          100% { transform: scale(2.2); opacity: 0; }
+        }
+      `}</style>
 
       <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
 
