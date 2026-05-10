@@ -34,7 +34,7 @@ function formatRazdalja(m) {
   return `${(m / 1000).toFixed(2)} km`
 }
 
-export default function Navigacija({ izbranaPot, gpxTocke }) {
+export default function Navigacija({ izbranaPot, gpxTocke, avtomatskiStart, onGPSZacet }) {
   const [gps, setGps] = useState(null)
   const [aktivna, setAktivna] = useState(false)
   const [napaka, setNapaka] = useState(null)
@@ -52,6 +52,14 @@ export default function Navigacija({ izbranaPot, gpxTocke }) {
   const cilj = gpxTocke?.length > 0
     ? gpxTocke[gpxTocke.length - 1]
     : izbranaPot ? { lat: izbranaPot.lat, lon: izbranaPot.lon } : null
+
+  // Avtomatski start GPS
+  useEffect(() => {
+    if (avtomatskiStart && !aktivna) {
+      zacniNavigacijo()
+      if (onGPSZacet) onGPSZacet()
+    }
+  }, [avtomatskiStart])
 
   // Kompas
   useEffect(() => {

@@ -14,18 +14,25 @@ export default function App() {
   const [aktiven, setAktiven] = useState('domov')
   const [izbranaPot, setIzbranaPot] = useState(null)
   const [potDetail, setPotDetail] = useState(null)
+  const [zacniGPS, setZacniGPS] = useState(false)
 
-  function odpriDetail(pot) { setPotDetail(pot) }
-
-  function zacniPohod(pot) {
-    setPotDetail(null)
-    setIzbranaPot(pot)
-    setAktiven('zemljevid')
+  function odpriDetail(pot) {
+    setPotDetail(pot)
   }
 
-  function naZadaj() { setPotDetail(null) }
+  function zacniNavigacijo(pot) {
+    // Klik "Začni pohod + GPS" v PotDetail
+    setPotDetail(null)
+    setIzbranaPot(pot)
+    setZacniGPS(true)  // Signal za avtomatski start GPS
+    setAktiven('nav2')
+  }
 
-  function preklopi(zaslon) { setPotDetail(null); setAktiven(zaslon) }
+  function preklopi(zaslon) {
+    setPotDetail(null)
+    setZacniGPS(false)
+    setAktiven(zaslon)
+  }
 
   return (
     <>
@@ -34,7 +41,11 @@ export default function App() {
       <Header />
       <main className="vsebina">
         {potDetail ? (
-          <PotDetail pot={potDetail} onIzberiIzhodisce={zacniPohod} onNazaj={naZadaj} />
+          <PotDetail
+            pot={potDetail}
+            onZacniNavigacijo={zacniNavigacijo}
+            onNazaj={() => setPotDetail(null)}
+          />
         ) : (
           <>
             {aktiven === 'domov' && <Domov onOdpriPot={odpriDetail} />}
@@ -43,16 +54,18 @@ export default function App() {
                 onOdpriPot={odpriDetail}
                 onPotDoKoce={(koca) => {
                   setIzbranaPot({ ime: koca.ime, regija: koca.regija, lat: koca.lat, lon: koca.lon })
-                  setAktiven('zemljevid')
+                  setAktiven('nav2')
                 }}
               />
             )}
-            {aktiven === 'zemljevid' && (
-              <div style={{ position: 'relative', height: '100%' }}>
-                <Zemljevid izbranaPot={izbranaPot} />
-              </div>
+            {aktiven === 'zemljevid' && <Zemljevid izbranaPot={izbranaPot} />}
+            {aktiven === 'nav2' && (
+              <Navigacija
+                izbranaPot={izbranaPot}
+                avtomatskiStart={zacniGPS}
+                onGPSZacet={() => setZacniGPS(false)}
+              />
             )}
-            {aktiven === 'nav2' && <Navigacija izbranaPot={izbranaPot} />}
             {aktiven === 'profil' && <Profil />}
           </>
         )}

@@ -469,16 +469,10 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 8, borderTop: '0.5px solid var(--rob)', paddingTop: 10 }}>
-                <button onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}&travelmode=driving`, '_blank')} style={{
-                  flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-                  padding: '8px', background: 'white', borderRadius: 8, border: '0.5px solid var(--rob)', color: 'var(--besedilo)', fontSize: 12, fontWeight: 600, cursor: 'pointer',
-                }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-                  Navigacija
-                </button>
                 <button onClick={() => onOdpriPot && onOdpriPot(p)} style={{
-                  flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-                  padding: '8px', background: 'linear-gradient(135deg, #1F5C1F, #3A9A3A)', borderRadius: 8, border: 'none', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+                  padding: '9px', background: 'linear-gradient(135deg, #1F5C1F, #3A9A3A)', borderRadius: 8, border: 'none', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                  boxShadow: '0 3px 10px rgba(45,122,45,0.3)',
                 }}>▶ Odpri pot</button>
               </div>
             </div>
