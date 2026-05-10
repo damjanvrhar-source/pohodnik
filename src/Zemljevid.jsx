@@ -338,17 +338,16 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
 
       {sledenje && (
         <button onClick={prekiniPot} style={{
-          position: 'absolute', bottom: 16 + spodajOffset + 186, right: 12,
+          position: 'absolute', bottom: 16 + spodajOffset, left: 12,
           background: '#DC2626', color: 'white', border: 'none',
-          borderRadius: 12, padding: '11px 16px', fontSize: 13,
-          fontWeight: 700, cursor: 'pointer', zIndex: 1000,
+          borderRadius: 12, padding: '12px 20px', fontSize: 14,
+          fontWeight: 800, cursor: 'pointer', zIndex: 1000,
           boxShadow: '0 4px 14px rgba(220,38,38,0.5)',
-          display: 'flex', alignItems: 'center', gap: 7,
-          minWidth: 80, justifyContent: 'center',
+          display: 'flex', alignItems: 'center', gap: 8,
           animation: 'prekiniPulse 2s ease infinite',
         }}>
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
-          Prekini
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="1"/></svg>
+          Prekini pot
         </button>
       )}
 
