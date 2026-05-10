@@ -44,21 +44,15 @@ function ProfilVisine({ tocke, dolzina, onZapri }) {
   }).join(' ')
   const areaPoints = `${pad},${h - pad} ${points} ${w - pad},${h - pad}`
   const vzpon = visine.reduce((acc, v, i) => i > 0 && v > visine[i-1] ? acc + (v - visine[i-1]) : acc, 0)
-
   return (
-    <div style={{
-      position: 'absolute', bottom: 0, left: 0, right: 0,
-      background: 'white', borderTop: `2px solid ${ZELENA}`,
-      zIndex: 1000, padding: '8px 12px 6px',
-      boxShadow: '0 -4px 12px rgba(0,0,0,0.1)',
-    }}>
+    <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'white', borderTop: `2px solid ${ZELENA}`, zIndex: 1000, padding: '8px 12px 6px', boxShadow: '0 -4px 12px rgba(0,0,0,0.1)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
         <span style={{ fontSize: 11, fontWeight: 700, color: ZELENA }}>Profil višine</span>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <span style={{ fontSize: 11, color: '#6B7280' }}>▲ {Math.round(vzpon)} m</span>
           <span style={{ fontSize: 11, color: '#6B7280' }}>{Math.round(min)}–{Math.round(max)} m</span>
           <span style={{ fontSize: 11, color: '#6B7280' }}>{dolzina} km</span>
-          <button onClick={onZapri} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#9CA3AF', fontSize: 16, padding: 0, lineHeight: 1 }}>✕</button>
+          <button onClick={onZapri} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#9CA3AF', fontSize: 16, padding: 0 }}>✕</button>
         </div>
       </div>
       <svg viewBox={`0 0 ${w} ${h}`} style={{ width: '100%', height: 65 }} preserveAspectRatio="none">
@@ -75,7 +69,7 @@ function ProfilVisine({ tocke, dolzina, onZapri }) {
   )
 }
 
-export default function Zemljevid({ izbranaPot }) {
+export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   const mapRef = useRef(null)
   const mapInstanca = useRef(null)
   const gpsMarker = useRef(null)
@@ -94,6 +88,18 @@ export default function Zemljevid({ izbranaPot }) {
   const [gpxTocke, setGpxTocke] = useState([])
   const [prikazProfila, setPrikazProfila] = useState(false)
   const [jeTopoPogled, setJeTopoPogled] = useState(false)
+  const [pohod, setPohod] = useState(false) // Ali je pohod aktiven
+
+  // Avtomatski GPS start
+  useEffect(() => {
+    if (avtomatskiStart) {
+      setTimeout(() => {
+        zageniGPS()
+        setPohod(true)
+        if (onGPSZacet) onGPSZacet()
+      }, 800)
+    }
+  }, [avtomatskiStart])
 
   function preklopi() {
     const map = mapInstanca.current
@@ -108,9 +114,9 @@ export default function Zemljevid({ izbranaPot }) {
       napisi.addTo(map)
       napisiSlojRef.current = napisi
     } else {
-      const topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { attribution: '© OpenTopoMap', maxZoom: 17 })
-      topo.addTo(map)
-      aktivniSloj.current = topo
+      const osm = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { attribution: '© CartoDB', subdomains: 'abcd', maxZoom: 19 })
+      osm.addTo(map)
+      aktivniSloj.current = osm
     }
     setJeTopoPogled(!jeTopoPogled)
   }
@@ -119,8 +125,7 @@ export default function Zemljevid({ izbranaPot }) {
     if (mapInstanca.current) return
     const map = L.map(mapRef.current, { center: ZACETNI_POGLED, zoom: ZACETNI_ZOOM, zoomControl: false })
     const osm = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      attribution: '© OpenStreetMap · © CartoDB',
-      subdomains: 'abcd', maxZoom: 19,
+      attribution: '© OpenStreetMap · © CartoDB', subdomains: 'abcd', maxZoom: 19,
     })
     osm.addTo(map)
     aktivniSloj.current = osm
@@ -129,20 +134,18 @@ export default function Zemljevid({ izbranaPot }) {
 
     if (izbranaPot?.lat && izbranaPot?.lon) {
       map.setView([izbranaPot.lat, izbranaPot.lon], 13)
-      // Pulse cilj marker
       const ciljIkona = L.divIcon({
         className: '',
-        html: `<div style="position:relative;display:flex;align-items:center;justify-content:center;">
-          <div style="position:absolute;width:36px;height:36px;border-radius:50%;background:rgba(220,38,38,0.2);animation:ciljPulse 1.5s ease-out infinite;"></div>
-          <div style="position:absolute;width:24px;height:24px;border-radius:50%;background:rgba(220,38,38,0.3);animation:ciljPulse 1.5s ease-out infinite 0.3s;"></div>
-          <div style="width:14px;height:14px;border-radius:50%;background:#DC2626;border:3px solid white;box-shadow:0 2px 8px rgba(220,38,38,0.6);position:relative;z-index:2;"></div>
+        html: `<div style="position:relative;display:flex;align-items:center;justify-content:center;width:40px;height:40px;">
+          <div style="position:absolute;width:40px;height:40px;border-radius:50%;background:rgba(220,38,38,0.15);animation:ciljPulse 1.5s ease-out infinite;"></div>
+          <div style="position:absolute;width:26px;height:26px;border-radius:50%;background:rgba(220,38,38,0.25);animation:ciljPulse 1.5s ease-out infinite 0.4s;"></div>
+          <div style="width:14px;height:14px;border-radius:50%;background:#DC2626;border:3px solid white;box-shadow:0 2px 8px rgba(220,38,38,0.7);position:relative;z-index:2;"></div>
         </div>`,
-        iconSize: [36, 36], iconAnchor: [18, 18],
+        iconSize: [40, 40], iconAnchor: [20, 20],
       })
       L.marker([izbranaPot.lat, izbranaPot.lon], { icon: ciljIkona }).addTo(map)
         .bindPopup(`<div style="font-weight:700;color:#DC2626;font-size:13px">🏔 ${izbranaPot.ime}</div><div style="font-size:11px;color:#6B7280">${izbranaPot.regija || ''}</div>`)
     } else {
-      // Avtomatsko centriraj na uporabnikovo lokacijo
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(pos => {
           map.setView([pos.coords.latitude, pos.coords.longitude], 13)
@@ -195,6 +198,17 @@ export default function Zemljevid({ izbranaPot }) {
     setGpsStatus('izklopljen')
   }
 
+  function prekiniPot() {
+    ustavi()
+    setPohod(false)
+    const map = mapInstanca.current
+    if (!map) return
+    if (gpsMarker.current) { map.removeLayer(gpsMarker.current); gpsMarker.current = null }
+    if (gpsKrog.current) { map.removeLayer(gpsKrog.current); gpsKrog.current = null }
+    if (potLinija.current) { map.removeLayer(potLinija.current); potLinija.current = null }
+    setPotIme(null); setPotDolzina(null); setGpxTocke([]); setPrikazProfila(false); setVisina(null)
+  }
+
   function nalozGPX(e) {
     const datoteka = e.target.files[0]
     if (!datoteka) return
@@ -207,15 +221,10 @@ export default function Zemljevid({ izbranaPot }) {
       if (potLinija.current) map.removeLayer(potLinija.current)
       const koordinate = tocke.map(t => [t.lat, t.lon])
       potLinija.current = L.polyline(koordinate, { color: ZELENA, weight: 5, opacity: 0.9 }).addTo(map)
-
-      // Start marker
-      const startIkona = L.divIcon({ className: '', html: `<div style="background:#16a34a;color:white;padding:3px 7px;border-radius:6px;font-size:11px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.3)">▶ Start</div>`, iconAnchor: [0, 0] })
+      const startIkona = L.divIcon({ className: '', html: `<div style="background:#16a34a;color:white;padding:3px 7px;border-radius:6px;font-size:11px;font-weight:700;">▶ Start</div>`, iconAnchor: [0, 0] })
       L.marker(koordinate[0], { icon: startIkona }).addTo(map)
-
-      // End marker
-      const endIkona = L.divIcon({ className: '', html: `<div style="background:#dc2626;color:white;padding:3px 7px;border-radius:6px;font-size:11px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,0.3)">⬛ Cilj</div>`, iconAnchor: [0, 0] })
+      const endIkona = L.divIcon({ className: '', html: `<div style="background:#dc2626;color:white;padding:3px 7px;border-radius:6px;font-size:11px;font-weight:700;">⬛ Cilj</div>`, iconAnchor: [0, 0] })
       L.marker(koordinate[koordinate.length - 1], { icon: endIkona }).addTo(map)
-
       map.fitBounds(potLinija.current.getBounds(), { padding: [30, 30] })
       let dolzina = 0
       for (let i = 1; i < koordinate.length; i++) dolzina += map.distance(koordinate[i - 1], koordinate[i])
@@ -228,17 +237,11 @@ export default function Zemljevid({ izbranaPot }) {
   }
 
   function sosKlic() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(pos => {
-        const url = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`
-        window.open(`tel:112`)
-      })
-    } else {
-      window.open('tel:112')
-    }
+    window.open('tel:112')
   }
 
   const spodajOffset = prikazProfila ? 155 : 0
+  const jeAktiven = sledenje || pohod
 
   const btnStil = {
     background: 'white', color: '#1A1A2E',
@@ -254,19 +257,19 @@ export default function Zemljevid({ izbranaPot }) {
     <div style={{ position: 'relative', height: '100%' }}>
       <style>{`
         @keyframes ciljPulse {
-          0% { transform: scale(0.8); opacity: 0.8; }
-          100% { transform: scale(2.2); opacity: 0; }
+          0% { transform: scale(0.8); opacity: 0.9; }
+          100% { transform: scale(2.5); opacity: 0; }
+        }
+        @keyframes prekiniPulse {
+          0%, 100% { box-shadow: 0 4px 14px rgba(220,38,38,0.5); }
+          50% { box-shadow: 0 4px 24px rgba(220,38,38,0.9), 0 0 0 4px rgba(220,38,38,0.2); }
         }
       `}</style>
 
       <div ref={mapRef} style={{ width: '100%', height: '100%' }} />
 
       {/* HUD — zgoraj levo */}
-      <div style={{
-        position: 'absolute', top: 12, left: 12,
-        display: 'flex', flexDirection: 'column', gap: 6,
-        zIndex: 1000, pointerEvents: 'none',
-      }}>
+      <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', flexDirection: 'column', gap: 6, zIndex: 1000, pointerEvents: 'none' }}>
         <div style={{
           background: 'white', borderRadius: 10, padding: '8px 12px',
           fontSize: 12, fontWeight: 700, border: '1px solid #E5E7EB',
@@ -283,60 +286,58 @@ export default function Zemljevid({ izbranaPot }) {
           </div>
         )}
         {potIme && (
-          <div
-            onClick={() => setPrikazProfila(p => !p)}
-            style={{ background: ZELENA, borderRadius: 8, padding: '5px 10px', fontSize: 11, fontWeight: 600, color: 'white', pointerEvents: 'auto', cursor: 'pointer', boxShadow: '0 2px 6px rgba(0,0,0,0.2)' }}>
+          <div onClick={() => setPrikazProfila(p => !p)} style={{ background: ZELENA, borderRadius: 8, padding: '5px 10px', fontSize: 11, fontWeight: 600, color: 'white', pointerEvents: 'auto', cursor: 'pointer' }}>
             🗺 {potIme} · {potDolzina} km {prikazProfila ? '▼' : '▲'}
           </div>
         )}
       </div>
 
-      {/* Preklop pogled — zgoraj desno */}
+      {/* Preklop pogled */}
       <button onClick={preklopi} style={{ ...btnStil, position: 'absolute', top: 12, right: 12, padding: '9px 14px' }}>
-        {jeTopoPogled ? (
-          <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Satelit</>
-        ) : (
-          <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/></svg> Zemljevid</>
-        )}
+        {jeTopoPogled ? '🛰 Satelit' : '🗺 Zemljevid'}
       </button>
 
-
-      {/* Gumbi desno */}
+      {/* GPX */}
       <input ref={gpxInput} type="file" accept=".gpx" style={{ display: 'none' }} onChange={nalozGPX} />
-
       <button onClick={() => gpxInput.current.click()} style={{ ...btnStil, position: 'absolute', bottom: 16 + spodajOffset + 124, right: 12 }}>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         GPX
       </button>
 
+      {/* GPS gumb */}
       <button onClick={sledenje ? ustavi : zageniGPS} style={{
-        ...btnStil,
-        position: 'absolute', bottom: 16 + spodajOffset + 62, right: 12,
-        background: sledenje ? ZELENA : 'white',
-        color: sledenje ? 'white' : ZELENA,
-        border: `1.5px solid ${ZELENA}`,
+        ...btnStil, position: 'absolute', bottom: 16 + spodajOffset + 62, right: 12,
+        background: sledenje ? ZELENA : 'white', color: sledenje ? 'white' : ZELENA, border: `1.5px solid ${ZELENA}`,
       }}>
-        {sledenje ? (
-          <><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg> Ustavi</>
-        ) : (
-          <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg> GPS</>
-        )}
+        {sledenje ? <><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg> Ustavi</> : <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg> GPS</>}
       </button>
 
+      {/* SOS */}
       <button onClick={sosKlic} style={{
         position: 'absolute', bottom: 16 + spodajOffset, right: 12,
-        background: '#DC2626', color: 'white', border: 'none',
-        borderRadius: 12, padding: '11px 16px', fontSize: 14,
-        fontWeight: 800, cursor: 'pointer', zIndex: 1000,
-        boxShadow: '0 4px 14px rgba(220,38,38,0.5)',
-        display: 'flex', alignItems: 'center', gap: 7,
-        minWidth: 80, justifyContent: 'center',
+        background: '#DC2626', color: 'white', border: 'none', borderRadius: 12,
+        padding: '11px 16px', fontSize: 14, fontWeight: 800, cursor: 'pointer', zIndex: 1000,
+        boxShadow: '0 4px 14px rgba(220,38,38,0.5)', display: 'flex', alignItems: 'center', gap: 7, minWidth: 80, justifyContent: 'center',
       }}>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.62 4.38 2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         112
       </button>
 
-      {/* Profil višine */}
+      {/* PREKINI POT — prikaže se ko GPS teče */}
+      {sledenje && (
+        <button onClick={prekiniPot} style={{
+          position: 'absolute', bottom: 16 + spodajOffset, left: 12,
+          background: '#DC2626', color: 'white', border: 'none',
+          borderRadius: 12, padding: '12px 22px', fontSize: 14,
+          fontWeight: 800, cursor: 'pointer', zIndex: 1000,
+          display: 'flex', alignItems: 'center', gap: 8,
+          animation: 'prekiniPulse 2s ease infinite',
+        }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="1"/></svg>
+          Prekini pot
+        </button>
+      )}
+
       {prikazProfila && <ProfilVisine tocke={gpxTocke} dolzina={potDolzina} onZapri={() => setPrikazProfila(false)} />}
     </div>
   )
