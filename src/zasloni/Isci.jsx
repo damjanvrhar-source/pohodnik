@@ -373,14 +373,14 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
     const tOk = tezavnost === 'Vse' || tInfo.ime === tezavnost
     const rOk = regija === 'Vse' || p.regija === regija
     return ujema && tOk && rOk
-  })
+  }).sort((a, b) => a.ime.localeCompare(b.ime, 'sl'))
 
   const filtrirane_koce = BAZA_KOC.filter(k => {
     const q = iskanje.toLowerCase()
     const ujema = k.ime.toLowerCase().includes(q) || k.regija.toLowerCase().includes(q)
     const rOk = regija === 'Vse' || k.regija === regija
     return ujema && rOk
-  })
+  }).sort((a, b) => a.ime.localeCompare(b.ime, 'sl'))
 
   const steviloRezultatov = tab === 'poti' ? filtriranePoti.length : filtrirane_koce.length
 
