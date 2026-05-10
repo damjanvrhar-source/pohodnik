@@ -273,7 +273,33 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     if (map && sledLinija.current) { map.removeLayer(sledLinija.current); sledLinija.current = null }
   }
 
+  function shranijPohod() {
+    if (sledRazdalja < 50) return // Ne shrani če < 50m
+    const pohod = {
+      id: Date.now(),
+      ime: izbranaPot?.ime || 'Prosti pohod',
+      datum: new Date().toLocaleDateString('sl-SI'),
+      cas: sledCas,
+      razdalja: Math.round(sledRazdalja),
+      vzpon: visina || 0,
+      regija: izbranaPot?.regija || '',
+    }
+    try {
+      const obstojechi = JSON.parse(localStorage.getItem('pohodnik_pohodi') || '[]')
+      obstojechi.unshift(pohod)
+      localStorage.setItem('pohodnik_pohodi', JSON.stringify(obstojechi.slice(0, 50)))
+      // Posodobi statistike
+      const stats = JSON.parse(localStorage.getItem('pohodnik_stats') || '{"poti":0,"razdalja":0,"vzpon":0,"cas":0}')
+      stats.poti += 1
+      stats.razdalja += Math.round(sledRazdalja)
+      stats.vzpon += visina || 0
+      stats.cas += sledCas
+      localStorage.setItem('pohodnik_stats', JSON.stringify(stats))
+    } catch(e) {}
+  }
+
   function prekiniPot() {
+    shranijPohod()
     ustavi()
     setPohod(false)
     const map = mapInstanca.current
@@ -284,6 +310,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     if (sledLinija.current) { map.removeLayer(sledLinija.current); sledLinija.current = null }
     sledTocke.current = []
     setPotIme(null); setPotDolzina(null); setGpxTocke([]); setPrikazProfila(false); setVisina(null)
+    setSledRazdalja(0); setSledCas(0)
   }
 
   function nalozGPX(e) {
