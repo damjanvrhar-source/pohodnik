@@ -5,7 +5,6 @@ import Domov from './zasloni/Domov'
 import Isci from './zasloni/Isci'
 import PotDetail from './zasloni/PotDetail'
 import Zemljevid from './zasloni/Zemljevid'
-import Navigacija from './zasloni/Navigacija'
 import Profil from './zasloni/Profil'
 import SplashScreen from './zasloni/SplashScreen'
 
@@ -24,8 +23,8 @@ export default function App() {
     // Klik "Začni pohod + GPS" v PotDetail
     setPotDetail(null)
     setIzbranaPot(pot)
-    setZacniGPS(true)  // Signal za avtomatski start GPS
-    setAktiven('nav2')
+    setZacniGPS(true)
+    setAktiven('zemljevid')  // Odpri zemljevid s ciljem
   }
 
   function preklopi(zaslon) {
@@ -54,18 +53,12 @@ export default function App() {
                 onOdpriPot={odpriDetail}
                 onPotDoKoce={(koca) => {
                   setIzbranaPot({ ime: koca.ime, regija: koca.regija, lat: koca.lat, lon: koca.lon })
-                  setAktiven('nav2')
+                  setAktiven('zemljevid')
                 }}
               />
             )}
-            {aktiven === 'zemljevid' && <Zemljevid izbranaPot={izbranaPot} />}
-            {aktiven === 'nav2' && (
-              <Navigacija
-                izbranaPot={izbranaPot}
-                avtomatskiStart={zacniGPS}
-                onGPSZacet={() => setZacniGPS(false)}
-              />
-            )}
+            {aktiven === 'zemljevid' && <Zemljevid izbranaPot={izbranaPot} avtomatskiStart={zacniGPS} onGPSZacet={() => setZacniGPS(false)} />}
+
             {aktiven === 'profil' && <Profil />}
           </>
         )}

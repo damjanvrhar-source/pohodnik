@@ -32,15 +32,6 @@ const zavihki = [
     )
   },
   {
-    id: 'nav2',
-    ime: 'Navigacija',
-    ikona: (aktiven) => (
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} width={22} height={22}>
-        <polygon points="3 11 22 2 13 21 11 13 3 11" fill={aktiven ? 'rgba(255,255,255,0.3)' : 'none'}/>
-      </svg>
-    )
-  },
-  {
     id: 'profil',
     ime: 'Profil',
     ikona: (aktiven) => (
