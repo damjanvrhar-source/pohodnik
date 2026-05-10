@@ -336,7 +336,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
       {/* Gumbi desno */}
       <input ref={gpxInput} type="file" accept=".gpx" style={{ display: 'none' }} onChange={nalozGPX} />
 
-      {sledenje && (
+      {(sledenje || gpsStatus === 'aktiven ✓' || gpsStatus === 'iskanje...') && (
         <button onClick={prekiniPot} style={{
           position: 'absolute', bottom: 16 + spodajOffset, left: 12,
           background: '#DC2626', color: 'white', border: 'none',
