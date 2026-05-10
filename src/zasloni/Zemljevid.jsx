@@ -12,6 +12,27 @@ L.Icon.Default.mergeOptions({
 const ZACETNI_POGLED = [46.3792, 13.8367]
 const ZACETNI_ZOOM = 10
 const ZELENA = '#2D7A2D'
+
+function formatCas(s) {
+  if (s < 60) return `${s}s`
+  const m = Math.floor(s / 60)
+  if (m < 60) return `${m} min`
+  const h = Math.floor(m / 60)
+  return `${h}h ${m % 60}min`
+}
+
+function formatRazd(m) {
+  if (m < 1000) return `${Math.round(m)} m`
+  return `${(m/1000).toFixed(2)} km`
+}
+
+function izracunajRazd(lat1, lon1, lat2, lon2) {
+  const R = 6371000
+  const dLat = (lat2-lat1)*Math.PI/180
+  const dLon = (lon2-lon1)*Math.PI/180
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+}
 const ZELENA_T = '#1F5C1F'
 
 function parseGPX(vsebina) {
@@ -79,6 +100,8 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   const gpxInput = useRef(null)
   const aktivniSloj = useRef(null)
   const napisiSlojRef = useRef(null)
+  const sledLinija = useRef(null)
+  const sledTocke = useRef([])
 
   const [visina, setVisina] = useState(null)
   const [gpsStatus, setGpsStatus] = useState('izklopljen')
@@ -88,7 +111,11 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   const [gpxTocke, setGpxTocke] = useState([])
   const [prikazProfila, setPrikazProfila] = useState(false)
   const [jeTopoPogled, setJeTopoPogled] = useState(false)
-  const [pohod, setPohod] = useState(false) // Ali je pohod aktiven
+  const [pohod, setPohod] = useState(false)
+  const [sledRazdalja, setSledRazdalja] = useState(0)
+  const [sledCas, setSledCas] = useState(0)
+  const [hitrost, setHitrost] = useState(0)
+  const casTimer = useRef(null)
 
   // Avtomatski GPS start
   useEffect(() => {
@@ -157,18 +184,39 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
       map.remove()
       mapInstanca.current = null
       if (watchId.current) navigator.geolocation.clearWatch(watchId.current)
+      if (casTimer.current) clearInterval(casTimer.current)
+      sprostiWakeLock()
     }
   }, [])
+
+  const wakeLock = useRef(null)
+
+  async function zageniWakeLock() {
+    try {
+      if ('wakeLock' in navigator) {
+        wakeLock.current = await navigator.wakeLock.request('screen')
+      }
+    } catch (e) {}
+  }
+
+  function sprostiWakeLock() {
+    if (wakeLock.current) { wakeLock.current.release(); wakeLock.current = null }
+  }
 
   function zageniGPS() {
     if (!navigator.geolocation) { setGpsStatus('ni podprt'); return }
     setGpsStatus('iskanje...')
     setSledenje(true)
+    setSledRazdalja(0)
+    setSledCas(0)
+    zageniWakeLock()
+    casTimer.current = setInterval(() => setSledCas(s => s + 1), 1000)
     watchId.current = navigator.geolocation.watchPosition(
       (pos) => {
         const { latitude, longitude, altitude, accuracy } = pos.coords
         setGpsStatus('aktiven ✓')
         if (altitude) setVisina(Math.round(altitude))
+        if (pos.coords.speed) setHitrost(Math.round(pos.coords.speed * 3.6))
         const map = mapInstanca.current
         if (!map) return
         if (!gpsMarker.current) {
@@ -186,16 +234,43 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
           gpsKrog.current.setRadius(accuracy)
           map.setView([latitude, longitude])
         }
+
+        // Dodaj točko sledi in riši zeleno črto
+        const prev = sledTocke.current[sledTocke.current.length - 1]
+        if (!prev || Math.abs(prev[0] - latitude) > 0.00008 || Math.abs(prev[1] - longitude) > 0.00008) {
+          if (sledTocke.current.length > 0) {
+            const prej = sledTocke.current[sledTocke.current.length - 1]
+            const R = 6371000
+            const dLat = (latitude - prej[0]) * Math.PI / 180
+            const dLon = (longitude - prej[1]) * Math.PI / 180
+            const a = Math.sin(dLat/2)**2 + Math.cos(prej[0]*Math.PI/180)*Math.cos(latitude*Math.PI/180)*Math.sin(dLon/2)**2
+            const razd = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+            if (razd > 8) setSledRazdalja(d => d + razd)
+          }
+          sledTocke.current.push([latitude, longitude])
+          if (sledTocke.current.length > 1) {
+            if (sledLinija.current) map.removeLayer(sledLinija.current)
+            sledLinija.current = L.polyline(sledTocke.current, {
+              color: ZELENA, weight: 5, opacity: 0.85,
+              lineCap: 'round', lineJoin: 'round',
+            }).addTo(map)
+          }
+        }
       },
       () => { setGpsStatus('napaka — dovoli GPS'); setSledenje(false) },
-      { enableHighAccuracy: true, maximumAge: 3000 }
+      { enableHighAccuracy: true, maximumAge: 8000, timeout: 15000, distanceFilter: 5 }
     )
   }
 
   function ustavi() {
     if (watchId.current) { navigator.geolocation.clearWatch(watchId.current); watchId.current = null }
+    if (casTimer.current) { clearInterval(casTimer.current); casTimer.current = null }
+    sprostiWakeLock()
     setSledenje(false)
     setGpsStatus('izklopljen')
+    sledTocke.current = []
+    const map = mapInstanca.current
+    if (map && sledLinija.current) { map.removeLayer(sledLinija.current); sledLinija.current = null }
   }
 
   function prekiniPot() {
@@ -206,6 +281,8 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     if (gpsMarker.current) { map.removeLayer(gpsMarker.current); gpsMarker.current = null }
     if (gpsKrog.current) { map.removeLayer(gpsKrog.current); gpsKrog.current = null }
     if (potLinija.current) { map.removeLayer(potLinija.current); potLinija.current = null }
+    if (sledLinija.current) { map.removeLayer(sledLinija.current); sledLinija.current = null }
+    sledTocke.current = []
     setPotIme(null); setPotDolzina(null); setGpxTocke([]); setPrikazProfila(false); setVisina(null)
   }
 
@@ -323,7 +400,33 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
         112
       </button>
 
-      {/* PREKINI POT — prikaže se ko GPS teče */}
+      {/* STATS PANEL — med aktivnim pohodom */}
+      {sledenje && (
+        <div style={{
+          position: 'absolute', bottom: 16 + spodajOffset + 62, left: 12,
+          background: 'white', borderRadius: 14, padding: '10px 12px',
+          zIndex: 1000, boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+          border: '1px solid #E5E7EB', minWidth: 200,
+        }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+            {[
+              { i: '📏', v: formatRazd(sledRazdalja), l: 'prehojena' },
+              { i: '⏱', v: formatCas(sledCas), l: 'čas hoje' },
+              { i: '⚡', v: `${hitrost} km/h`, l: 'hitrost' },
+              { i: '▲', v: visina ? `${visina} m` : '–', l: 'višina' },
+              izbranaPot?.lat ? { i: '📍', v: (() => { const gpsEl = gpsMarker.current; if (!gpsEl) return '–'; const pos = gpsEl.getLatLng(); return formatRazd(izracunajRazd(pos.lat, pos.lng, izbranaPot.lat, izbranaPot.lon)) })(), l: 'do cilja' } : null,
+              { i: '🕐', v: sledCas > 0 && sledRazdalja > 0 ? (() => { const eta = ((izbranaPot?.lat && gpsMarker.current) ? izracunajRazd(gpsMarker.current.getLatLng().lat, gpsMarker.current.getLatLng().lng, izbranaPot.lat, izbranaPot.lon) : 0) / (sledRazdalja / sledCas); return eta > 0 ? formatCas(Math.round(eta)) : '–' })() : '–', l: 'ETA' },
+            ].filter(Boolean).map((h, i) => (
+              <div key={i} style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 9, color: '#9CA3AF', marginBottom: 1 }}>{h.i} {h.l}</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: ZELENA }}>{h.v}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* PREKINI POT — prikaže se ko GPS teče */}}
       {sledenje && (
         <button onClick={prekiniPot} style={{
           position: 'absolute', bottom: 16 + spodajOffset, left: 12,
