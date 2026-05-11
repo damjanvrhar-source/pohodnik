@@ -174,6 +174,8 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   const napisiSlojRef = useRef(null)
   const sledLinija = useRef(null)
   const sledTocke = useRef([])
+  const snopMarker = useRef(null)
+  const gpsLokacija = useRef(null)
 
   const [visina, setVisina] = useState(null)
   const [gpsStatus, setGpsStatus] = useState('izklopljen')
@@ -260,9 +262,11 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
         ? e.webkitCompassHeading
         : (360 - (e.alpha || 0))
       smerRef.current = smer
-      // Posodobi GPS marker ikono s puščico
-      if (gpsMarker.current) {
-        gpsMarker.current.setIcon(ustvariGPSIkono(smer))
+      // Posodobi snop direktno ob vsaki orientaciji
+      const lokacija = gpsLokacija.current
+      if (lokacija && map) {
+        if (snopMarker.current) map.removeLayer(snopMarker.current)
+        snopMarker.current = L.marker(lokacija, { icon: ustvariSnopIkono(smer), zIndexOffset: -100 }).addTo(map)
       }
     }
     if (window.DeviceOrientationEvent) {
@@ -285,32 +289,36 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     }
   }, [])
 
-  function ustvariGPSIkono(smer) {
-    // Snop = sektor/stožec iz pike v smer gledanja
-    const s = smer * Math.PI / 180
-    const r = 48  // dolžina snopa
-    const kot = 35 * Math.PI / 180  // širina snopa
-    const x1 = 50 + r * Math.sin(s - kot)
-    const y1 = 50 - r * Math.cos(s - kot)
-    const x2 = 50 + r * Math.sin(s + kot)
-    const y2 = 50 - r * Math.cos(s + kot)
-
+  function ustvariGPSIkono() {
     return L.divIcon({
       className: '',
-      html: `<div style="position:relative;width:100px;height:100px;">
-        <svg width="100" height="100" viewBox="0 0 100 100" style="position:absolute;top:0;left:0;">
-          <!-- Snop svetlobe -->
-          <path d="M50,50 L${x1.toFixed(1)},${y1.toFixed(1)} A${r},${r} 0 0,1 ${x2.toFixed(1)},${y2.toFixed(1)} Z"
-            fill="rgba(45,122,45,0.25)" stroke="rgba(45,122,45,0.4)" stroke-width="0.5"/>
-        </svg>
-        <!-- GPS pika -->
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-          width:14px;height:14px;border-radius:50%;
-          background:${ZELENA};border:3px solid white;
-          box-shadow:0 0 0 3px rgba(45,122,45,0.35);
-          z-index:2;"></div>
-      </div>`,
-      iconSize: [100, 100], iconAnchor: [50, 50],
+      html: `<div style="width:14px;height:14px;border-radius:50%;background:${ZELENA};border:3px solid white;box-shadow:0 0 0 4px rgba(45,122,45,0.3);"></div>`,
+      iconSize: [14, 14], iconAnchor: [7, 7],
+    })
+  }
+
+  function ustvariSnopIkono(smer) {
+    const s = smer * Math.PI / 180
+    const r = 60
+    const kot = 30 * Math.PI / 180
+    const cx = 70, cy = 70
+    const x1 = cx + r * Math.sin(s - kot)
+    const y1 = cy - r * Math.cos(s - kot)
+    const x2 = cx + r * Math.sin(s + kot)
+    const y2 = cy - r * Math.cos(s + kot)
+    return L.divIcon({
+      className: '',
+      html: `<svg width="140" height="140" viewBox="0 0 140 140" style="overflow:visible;">
+        <defs>
+          <radialGradient id="snopGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="${ZELENA}" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="${ZELENA}" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <path d="M${cx},${cy} L${x1.toFixed(1)},${y1.toFixed(1)} A${r},${r} 0 0,1 ${x2.toFixed(1)},${y2.toFixed(1)} Z"
+          fill="url(#snopGrad)" stroke="${ZELENA}" stroke-width="1" stroke-opacity="0.4"/>
+      </svg>`,
+      iconSize: [140, 140], iconAnchor: [cx, cy],
     })
   }
 
@@ -347,12 +355,17 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
         const map = mapInstanca.current
         if (!map) return
         if (!gpsMarker.current) {
-          gpsMarker.current = L.marker([latitude, longitude], { icon: ustvariGPSIkono(smerRef.current) }).addTo(map)
+          gpsLokacija.current = [latitude, longitude]
+          gpsMarker.current = L.marker([latitude, longitude], { icon: ustvariGPSIkono() }).addTo(map)
+          snopMarker.current = L.marker([latitude, longitude], { icon: ustvariSnopIkono(smerRef.current), zIndexOffset: -100 }).addTo(map)
           gpsKrog.current = L.circle([latitude, longitude], { radius: accuracy, color: ZELENA, fillColor: ZELENA, fillOpacity: 0.08, weight: 1 }).addTo(map)
           map.setView([latitude, longitude], 15)
         } else {
           gpsMarker.current.setLatLng([latitude, longitude])
-          gpsMarker.current.setIcon(ustvariGPSIkono(smerRef.current))
+          gpsLokacija.current = [latitude, longitude]
+          // Posodobi snop
+          if (snopMarker.current) map.removeLayer(snopMarker.current)
+          snopMarker.current = L.marker([latitude, longitude], { icon: ustvariSnopIkono(smerRef.current), zIndexOffset: -100 }).addTo(map)
           gpsKrog.current.setLatLng([latitude, longitude])
           gpsKrog.current.setRadius(accuracy)
           map.setView([latitude, longitude])
@@ -394,6 +407,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     sledTocke.current = []
     const map = mapInstanca.current
     if (map && sledLinija.current) { map.removeLayer(sledLinija.current); sledLinija.current = null }
+    if (map && snopMarker.current) { map.removeLayer(snopMarker.current); snopMarker.current = null }
   }
 
   function shranijPohod() {
