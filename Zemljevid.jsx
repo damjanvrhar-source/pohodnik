@@ -358,7 +358,6 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     setSledenje(true)
     setSledRazdalja(0)
     setSledCas(0)
-    predvajajZvok('start')
     zageniWakeLock()
     casTimer.current = setInterval(() => setSledCas(s => s + 1), 1000)
     watchId.current = navigator.geolocation.watchPosition(
@@ -606,7 +605,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
       </button>
 
       {/* GPS gumb */}
-      <button onClick={sledenje ? ustavi : zageniGPS} style={{
+      <button onClick={sledenje ? ustavi : () => { predvajajZvok('start'); zageniGPS() }} style={{
         ...btnStil, position: 'absolute', bottom: 16 + spodajOffset + 62, right: 12,
         background: sledenje ? ZELENA : 'white', color: sledenje ? 'white' : ZELENA, border: `1.5px solid ${ZELENA}`,
       }}>
