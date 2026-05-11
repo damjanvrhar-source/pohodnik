@@ -256,26 +256,37 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
       }
     }
 
-    // Kompas — orientacija telefona
+    // Kompas — poskusi z DeviceOrientationEvent
     function onOrientacija(e) {
-      const smer = e.webkitCompassHeading !== undefined
-        ? e.webkitCompassHeading
-        : (360 - (e.alpha || 0))
+      let smer = 0
+      if (e.webkitCompassHeading !== undefined && e.webkitCompassHeading !== null) {
+        smer = e.webkitCompassHeading
+      } else if (e.absolute && e.alpha !== null) {
+        smer = 360 - e.alpha
+      } else {
+        return // Ni veljavnih podatkov
+      }
       smerRef.current = smer
-      // Posodobi snop direktno ob vsaki orientaciji
       const lokacija = gpsLokacija.current
       if (lokacija && map) {
         if (snopMarker.current) map.removeLayer(snopMarker.current)
         snopMarker.current = L.marker(lokacija, { icon: ustvariSnopIkono(smer), zIndexOffset: -100 }).addTo(map)
       }
     }
-    if (window.DeviceOrientationEvent) {
+
+    if (typeof DeviceOrientationEvent !== 'undefined') {
       if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // iOS 13+
         DeviceOrientationEvent.requestPermission()
-          .then(p => { if (p === 'granted') window.addEventListener('deviceorientation', onOrientacija) })
-          .catch(() => {})
+          .then(p => {
+            if (p === 'granted') {
+              window.addEventListener('deviceorientationabsolute', onOrientacija, true)
+              window.addEventListener('deviceorientation', onOrientacija, true)
+            }
+          }).catch(() => {})
       } else {
-        window.addEventListener('deviceorientation', onOrientacija)
+        window.addEventListener('deviceorientationabsolute', onOrientacija, true)
+        window.addEventListener('deviceorientation', onOrientacija, true)
       }
     }
 
@@ -285,7 +296,8 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
       if (watchId.current) navigator.geolocation.clearWatch(watchId.current)
       if (casTimer.current) clearInterval(casTimer.current)
       sprostiWakeLock()
-      window.removeEventListener('deviceorientation', onOrientacija)
+      window.removeEventListener('deviceorientation', onOrientacija, true)
+      window.removeEventListener('deviceorientationabsolute', onOrientacija, true)
     }
   }, [])
 
@@ -352,6 +364,10 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
         setGpsStatus('aktiven ✓')
         if (altitude) setVisina(Math.round(altitude))
         if (pos.coords.speed) setHitrost(Math.round(pos.coords.speed * 3.6))
+        // GPS heading kot fallback za snop
+        if (pos.coords.heading !== null && !isNaN(pos.coords.heading) && pos.coords.speed > 0.5) {
+          smerRef.current = pos.coords.heading
+        }
         const map = mapInstanca.current
         if (!map) return
         if (!gpsMarker.current) {
@@ -363,9 +379,13 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
         } else {
           gpsMarker.current.setLatLng([latitude, longitude])
           gpsLokacija.current = [latitude, longitude]
-          // Posodobi snop
+          // Snop — vedno prikaži z zadnjo znano smerjo
           if (snopMarker.current) map.removeLayer(snopMarker.current)
-          snopMarker.current = L.marker([latitude, longitude], { icon: ustvariSnopIkono(smerRef.current), zIndexOffset: -100 }).addTo(map)
+          snopMarker.current = L.marker([latitude, longitude], { 
+            icon: ustvariSnopIkono(smerRef.current), 
+            zIndexOffset: -100,
+            interactive: false 
+          }).addTo(map)
           gpsKrog.current.setLatLng([latitude, longitude])
           gpsKrog.current.setRadius(accuracy)
           map.setView([latitude, longitude])
@@ -533,6 +553,29 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
             🗺 {potIme} · {potDolzina} km {prikazProfila ? '▼' : '▲'}
           </div>
         )}
+        <button
+          onClick={() => {
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+              DeviceOrientationEvent.requestPermission().then(p => {
+                if (p === 'granted') {
+                  window.addEventListener('deviceorientation', (e) => {
+                    const smer = e.webkitCompassHeading ?? (360 - (e.alpha || 0))
+                    smerRef.current = smer
+                    const lok = gpsLokacija.current
+                    const map = mapInstanca.current
+                    if (lok && map) {
+                      if (snopMarker.current) map.removeLayer(snopMarker.current)
+                      snopMarker.current = L.marker(lok, { icon: ustvariSnopIkono(smer), zIndexOffset: -100, interactive: false }).addTo(map)
+                    }
+                  }, true)
+                }
+              }).catch(() => {})
+            }
+          }}
+          style={{ background: 'white', border: '1px solid #E5E7EB', borderRadius: 8, padding: '5px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer', pointerEvents: 'auto', display: 'flex', alignItems: 'center', gap: 4, boxShadow: '0 2px 6px rgba(0,0,0,0.1)' }}
+        >
+          🧭 Kompas
+        </button>
       </div>
 
       {/* Preklop pogled */}
