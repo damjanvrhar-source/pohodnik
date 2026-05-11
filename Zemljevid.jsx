@@ -286,21 +286,31 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   }, [])
 
   function ustvariGPSIkono(smer) {
+    // Snop = sektor/stožec iz pike v smer gledanja
+    const s = smer * Math.PI / 180
+    const r = 48  // dolžina snopa
+    const kot = 35 * Math.PI / 180  // širina snopa
+    const x1 = 50 + r * Math.sin(s - kot)
+    const y1 = 50 - r * Math.cos(s - kot)
+    const x2 = 50 + r * Math.sin(s + kot)
+    const y2 = 50 - r * Math.cos(s + kot)
+
     return L.divIcon({
       className: '',
-      html: `<div style="position:relative;width:40px;height:40px;display:flex;align-items:center;justify-content:center;">
-        <!-- Krog natančnosti ozadje -->
-        <div style="position:absolute;width:40px;height:40px;border-radius:50%;background:rgba(45,122,45,0.15);"></div>
-        <!-- Puščica smeri -->
-        <div style="position:absolute;transform:rotate(${smer}deg);transform-origin:center center;width:40px;height:40px;display:flex;align-items:flex-start;justify-content:center;">
-          <svg width="14" height="20" viewBox="0 0 14 20" style="margin-top:0px;">
-            <path d="M7 0 L14 20 L7 14 L0 20 Z" fill="${ZELENA}" opacity="0.9"/>
-          </svg>
-        </div>
+      html: `<div style="position:relative;width:100px;height:100px;">
+        <svg width="100" height="100" viewBox="0 0 100 100" style="position:absolute;top:0;left:0;">
+          <!-- Snop svetlobe -->
+          <path d="M50,50 L${x1.toFixed(1)},${y1.toFixed(1)} A${r},${r} 0 0,1 ${x2.toFixed(1)},${y2.toFixed(1)} Z"
+            fill="rgba(45,122,45,0.25)" stroke="rgba(45,122,45,0.4)" stroke-width="0.5"/>
+        </svg>
         <!-- GPS pika -->
-        <div style="width:12px;height:12px;border-radius:50%;background:${ZELENA};border:2.5px solid white;box-shadow:0 0 0 3px rgba(45,122,45,0.3);position:relative;z-index:2;"></div>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+          width:14px;height:14px;border-radius:50%;
+          background:${ZELENA};border:3px solid white;
+          box-shadow:0 0 0 3px rgba(45,122,45,0.35);
+          z-index:2;"></div>
       </div>`,
-      iconSize: [40, 40], iconAnchor: [20, 20],
+      iconSize: [100, 100], iconAnchor: [50, 50],
     })
   }
 
