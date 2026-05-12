@@ -268,6 +268,21 @@ const BAZA_KOC = [
 ]
 
 
+// Webcam baza za poti
+const WEBCAM_URL = {
+  1:  'https://www.foto-webcam.eu/webcam/kredarica/',
+  2:  'https://www.foto-webcam.eu/webcam/kredarica/',
+  3:  'https://www.foto-webcam.eu/webcam/mangart/',
+  4:  'https://www.foto-webcam.eu/webcam/ratece/',
+  5:  'https://www.foto-webcam.eu/webcam/kranjska-gora/',
+  33: 'https://www.foto-webcam.eu/webcam/jezersko/',
+  38: 'https://www.velika-planina.si/webcam',
+  48: 'https://www.foto-webcam.eu/webcam/jezersko/',
+  62: 'https://www.foto-webcam.eu/webcam/smarjeta/',
+  67: 'https://www.foto-webcam.eu/webcam/sneznik/',
+}
+const WEBCAM_DEFAULT = 'https://www.foto-webcam.eu'
+
 function IkonaPoti({ razred }) {
   const [pulse, setPulse] = useState(false)
   const barve = {
@@ -465,8 +480,18 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 8, borderTop: '0.5px solid var(--rob)', paddingTop: 10 }}>
+                <button
+                  onClick={() => window.open(WEBCAM_URL[p.id] || WEBCAM_DEFAULT, '_blank')}
+                  style={{
+                    padding: '9px 10px', background: 'white', borderRadius: 8,
+                    border: '1px solid var(--rob)', color: 'var(--besedilo2)',
+                    fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+                  }}
+                  title="Webcam"
+                >📷</button>
                 <button onClick={() => onOdpriPot && onOdpriPot(p)} style={{
-                  width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+                  flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
                   padding: '9px', background: 'linear-gradient(135deg, #1F5C1F, #3A9A3A)', borderRadius: 8, border: 'none', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer',
                   boxShadow: '0 3px 10px rgba(45,122,45,0.3)',
                 }}>▶ Odpri pot</button>
