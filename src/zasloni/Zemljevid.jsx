@@ -16,7 +16,7 @@ const ZELENA = '#2D7A2D'
 // ============================================================
 // ZVOČNI EFEKTI — Web Audio API
 // ============================================================
-function predvajajZvok(tip) {
+function  {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)()
 
@@ -527,7 +527,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   }
 
   function sosKlic() {
-    predvajajZvok('sos')
+    
     setTimeout(() => window.open('tel:112'), 500)
   }
 
