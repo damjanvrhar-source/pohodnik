@@ -174,7 +174,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   const napisiSlojRef = useRef(null)
   const sledLinija = useRef(null)
   const sledTocke = useRef([])
-  const snopMarker = useRef(null)
+  const snopLayer = useRef(null)
   const gpsLokacija = useRef(null)
 
   const [visina, setVisina] = useState(null)
@@ -308,67 +308,34 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     })
   }
 
-  function ustvariKombiniranoIkono(smer) {
-    const deg = (smer || 0)
-    // Snop kot Canvas element - najbolj zanesljivo
-    const size = 100
-    const cx = size/2, cy = size/2
-    const r = 50
-    const kot = 30 * Math.PI / 180
-    const s = (deg - 90) * Math.PI / 180  // -90 ker SVG 0 je desno, mi hočemo gor
-    const x1 = cx + r * Math.cos(s - kot)
-    const y1 = cy + r * Math.sin(s - kot)
-    const x2 = cx + r * Math.cos(s + kot)
-    const y2 = cy + r * Math.sin(s + kot)
+  function ustvariGPSPika() {
     return L.divIcon({
       className: '',
-      html: `<div style="position:relative;width:${size}px;height:${size}px;">
-        <canvas id="snop-canvas-${Math.round(deg)}" width="${size}" height="${size}" style="position:absolute;top:0;left:0;"></canvas>
-        <div style="position:absolute;width:14px;height:14px;left:${cx-7}px;top:${cy-7}px;border-radius:50%;background:${ZELENA};border:3px solid white;box-shadow:0 0 0 4px rgba(45,122,45,0.3);z-index:10;"></div>
-        <script>
-          (function(){
-            var c=document.getElementById('snop-canvas-${Math.round(deg)}');
-            if(!c)return;
-            var ctx=c.getContext('2d');
-            ctx.beginPath();
-            ctx.moveTo(${cx},${cy});
-            ctx.lineTo(${x1.toFixed(1)},${y1.toFixed(1)});
-            ctx.arc(${cx},${cy},${r},${(s-kot).toFixed(4)},${(s+kot).toFixed(4)});
-            ctx.closePath();
-            ctx.fillStyle='rgba(45,122,45,0.35)';
-            ctx.fill();
-            ctx.strokeStyle='rgba(45,122,45,0.6)';
-            ctx.lineWidth=1.5;
-            ctx.stroke();
-          })();
-        </script>
-      </div>`,
-      iconSize: [size, size],
-      iconAnchor: [cx, cy],
+      html: `<div style="width:14px;height:14px;border-radius:50%;background:${ZELENA};border:3px solid white;box-shadow:0 0 0 4px rgba(45,122,45,0.3);"></div>`,
+      iconSize: [14, 14], iconAnchor: [7, 7],
     })
   }
 
-  function ustvariSnopIkono(smer) {
-    const s = (smer || 0) * Math.PI / 180
-    const r = 60
-    const kot = 30 * Math.PI / 180
-    const cx = 65, cy = 65
-    const x1 = (cx + r * Math.sin(s - kot)).toFixed(1)
-    const y1 = (cy - r * Math.cos(s - kot)).toFixed(1)
-    const x2 = (cx + r * Math.sin(s + kot)).toFixed(1)
-    const y2 = (cy - r * Math.cos(s + kot)).toFixed(1)
-    return L.divIcon({
-      className: '',
-      html: `<svg width="130" height="130" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
-        <path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z"
-          fill="rgba(45,122,45,0.35)"
-          stroke="rgba(45,122,45,0.7)"
-          stroke-width="1.5"
-          stroke-linejoin="round"/>
-      </svg>`,
-      iconSize: [130, 130],
-      iconAnchor: [cx, cy],
-    })
+  function posodobiSnop(lat, lon, smer) {
+    const map = mapInstanca.current
+    if (!map) return
+    if (snopLayer.current) map.removeLayer(snopLayer.current)
+    const deg = smer || 0
+    const R = 0.0005
+    const kot = 30
+    const tocke = [[lat, lon]]
+    for (let a = deg - kot; a <= deg + kot; a += 3) {
+      const rad = (a - 90) * Math.PI / 180
+      tocke.push([
+        lat + R * Math.cos(rad),
+        lon + R * Math.sin(rad) / Math.cos(lat * Math.PI / 180)
+      ])
+    }
+    tocke.push([lat, lon])
+    snopLayer.current = L.polygon(tocke, {
+      color: ZELENA, fillColor: ZELENA,
+      fillOpacity: 0.3, weight: 1.5, opacity: 0.6, interactive: false,
+    }).addTo(map)
   }
 
   const wakeLock = useRef(null)
@@ -403,24 +370,20 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
         // GPS heading - posodobi snop med gibanjem
         if (pos.coords.heading !== null && !isNaN(pos.coords.heading)) {
           smerRef.current = pos.coords.heading
-          if (gpsMarker.current) {
-            gpsMarker.current.setIcon(ustvariKombiniranoIkono(pos.coords.heading))
-          }
+          const lok = gpsLokacija.current
+          if (lok) posodobiSnop(lok[0], lok[1], pos.coords.heading)
         }
         const map = mapInstanca.current
         if (!map) return
         if (!gpsMarker.current) {
           gpsLokacija.current = [latitude, longitude]
-          gpsMarker.current = L.marker([latitude, longitude], { 
-            icon: ustvariKombiniranoIkono(smerRef.current),
-            zIndexOffset: 100,
-          }).addTo(map)
+          gpsMarker.current = L.marker([latitude, longitude], { icon: ustvariGPSPika(), zIndexOffset: 100 }).addTo(map)
           gpsKrog.current = L.circle([latitude, longitude], { radius: accuracy, color: ZELENA, fillColor: ZELENA, fillOpacity: 0.08, weight: 1 }).addTo(map)
           map.setView([latitude, longitude], 15)
         } else {
           gpsLokacija.current = [latitude, longitude]
           gpsMarker.current.setLatLng([latitude, longitude])
-          gpsMarker.current.setIcon(ustvariKombiniranoIkono(smerRef.current))
+          posodobiSnop(latitude, longitude, smerRef.current)
           gpsKrog.current.setLatLng([latitude, longitude])
           gpsKrog.current.setRadius(accuracy)
           map.setView([latitude, longitude])
@@ -462,6 +425,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     sledTocke.current = []
     const map = mapInstanca.current
     if (map && sledLinija.current) { map.removeLayer(sledLinija.current); sledLinija.current = null }
+    if (map && snopLayer.current) { map.removeLayer(snopLayer.current); snopLayer.current = null }
 
   }
 
@@ -598,9 +562,8 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
                     const lok = gpsLokacija.current
                     const map = mapInstanca.current
                     if (lok && map) {
-                      if (gpsMarker.current) {
-                        gpsMarker.current.setIcon(ustvariKombiniranoIkono(smer))
-                      }
+                      const lok2 = gpsLokacija.current
+                      if (lok2) posodobiSnop(lok2[0], lok2[1], smer)
                     }
                   }, true)
                 }
