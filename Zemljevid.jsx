@@ -306,15 +306,14 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
         if (!gpsMarker.current) {
           gpsLokacija.current = [latitude, longitude]
           gpsMarker.current = L.marker([latitude, longitude], { icon: ustvariGPSPika(), zIndexOffset: 100 }).addTo(map)
-          gpsKrog.current = L.circle([latitude, longitude], { radius: accuracy, color: ZELENA, fillColor: ZELENA, fillOpacity: 0.08, weight: 1 }).addTo(map)
+
           map.setView([latitude, longitude], 15)
           posodobiSnop(latitude, longitude, smerRef.current)
         } else {
           gpsLokacija.current = [latitude, longitude]
           gpsMarker.current.setLatLng([latitude, longitude])
           posodobiSnop(latitude, longitude, smerRef.current)
-          gpsKrog.current.setLatLng([latitude, longitude])
-          gpsKrog.current.setRadius(accuracy)
+
           map.setView([latitude, longitude])
         }
 
@@ -390,7 +389,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     const map = mapInstanca.current
     if (!map) return
     if (gpsMarker.current) { map.removeLayer(gpsMarker.current); gpsMarker.current = null }
-    if (gpsKrog.current) { map.removeLayer(gpsKrog.current); gpsKrog.current = null }
+
     if (potLinija.current) { map.removeLayer(potLinija.current); potLinija.current = null }
     if (sledLinija.current) { map.removeLayer(sledLinija.current); sledLinija.current = null }
     sledTocke.current = []
