@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 function izracunajCas(km, vzpon) {
   const ure = (parseFloat(km) / 4) + (vzpon / 600)
@@ -36,22 +36,6 @@ const IZHODISCA = {
   ],
 }
 
-// Webcam baza — ID poti → webcam podatki
-const WEBCAM = {
-  1:  { ime: 'Triglav — Kredarica', url: 'https://www.bergfex.com/webcams/12285/', slika: 'https://photos.webcams.travel/preview/1224856200.jpg' },
-  3:  { ime: 'Mangart — pogled', url: 'https://www.bergfex.com/webcams/12286/', slika: 'https://www.foto-webcam.eu/webcam/ratece/current/800.jpg' },
-  33: { ime: 'Grintovec — Kokra', url: 'https://www.bergfex.com/webcams/12287/', slika: 'https://www.foto-webcam.eu/webcam/kranjska-gora/current/800.jpg' },
-  38: { ime: 'Velika planina', url: 'https://www.velika-planina.si/webcam', slika: 'https://www.foto-webcam.eu/webcam/velika-planina/current/800.jpg' },
-  48: { ime: 'Stol — pogled', url: 'https://www.bergfex.com/webcams/', slika: 'https://www.foto-webcam.eu/webcam/jezersko/current/800.jpg' },
-  67: { ime: 'Snežnik', url: 'https://www.bergfex.com/webcams/', slika: 'https://www.foto-webcam.eu/webcam/sneznik/current/800.jpg' },
-}
-
-// Generični webcam za vse ostale — Kredarica kot default
-const WEBCAM_DEFAULT = {
-  ime: 'Alpski pogled',
-  url: 'https://www.foto-webcam.eu',
-  slika: 'https://www.foto-webcam.eu/webcam/ratece/current/800.jpg'
-}
 
 function tezavnostInfo(t) {
   if (!t) return { razred: 'lahka', ime: 'Lahka', barva: '#065F46', ozadje: '#D1FAE5' }
@@ -84,60 +68,6 @@ function StatChip({ ikona, vrednost, opis }) {
   )
 }
 
-function WebcamKartica({ potId }) {
-  const [nalaganje, setNalaganje] = useState(true)
-  const [napaka, setNapaka] = useState(false)
-  const cam = WEBCAM[potId] || WEBCAM_DEFAULT
-  const ts = Date.now()
-
-  return (
-    <div style={{ background: 'white', borderRadius: 14, overflow: 'hidden', marginBottom: 16, border: '0.5px solid var(--rob)', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-      <div style={{ padding: '10px 14px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--besedilo2)', textTransform: 'uppercase', letterSpacing: '1px' }}>📷 Webcam</div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--besedilo)', marginTop: 2 }}>{cam.ime}</div>
-        </div>
-        <button
-          onClick={() => window.open(cam.url, '_blank')}
-          style={{ background: 'var(--zelena-sv)', border: 'none', borderRadius: 8, padding: '6px 12px', fontSize: 11, fontWeight: 700, color: 'var(--zelena-t)', cursor: 'pointer' }}
-        >
-          Odpri ↗
-        </button>
-      </div>
-
-      <div style={{ position: 'relative', height: 180, background: '#1a1a1a' }}>
-        {nalaganje && !napaka && (
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 8 }}>
-            <div style={{ fontSize: 28 }}>📡</div>
-            <div style={{ fontSize: 12, color: '#9CA3AF' }}>Nalagam sliko...</div>
-          </div>
-        )}
-        {napaka ? (
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 8 }}>
-            <div style={{ fontSize: 28 }}>🌫️</div>
-            <div style={{ fontSize: 12, color: '#9CA3AF' }}>Webcam ni dosegljiv</div>
-            <button onClick={() => window.open('https://www.foto-webcam.eu', '_blank')} style={{ fontSize: 11, color: '#6B7280', background: 'none', border: '1px solid #374151', borderRadius: 6, padding: '4px 10px', cursor: 'pointer' }}>
-              Odpri foto-webcam.eu
-            </button>
-          </div>
-        ) : (
-          <img
-            src={`${cam.slika}?t=${ts}`}
-            alt={cam.ime}
-            onLoad={() => setNalaganje(false)}
-            onError={() => { setNalaganje(false); setNapaka(true) }}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: nalaganje ? 0 : 1, transition: 'opacity 0.3s' }}
-          />
-        )}
-        {!nalaganje && !napaka && (
-          <div style={{ position: 'absolute', bottom: 6, right: 8, background: 'rgba(0,0,0,0.6)', color: 'white', fontSize: 10, padding: '2px 6px', borderRadius: 4 }}>
-            🔴 LIVE
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
 
 export default function PotDetail({ pot, onZacniNavigacijo, onNazaj }) {
   const izhodisca = IZHODISCA[pot.id] || [{
@@ -186,9 +116,6 @@ export default function PotDetail({ pot, onZacniNavigacijo, onNazaj }) {
         <StatChip ikona="▲" vrednost={`${pot.vzpon} m`} opis="vzpon" />
         <StatChip ikona="⏱" vrednost={cas} opis="čas" />
       </div>
-
-      {/* Webcam */}
-      <WebcamKartica potId={pot.id} />
 
       {/* Izhodišča */}
       <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--besedilo2)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 10 }}>
