@@ -268,82 +268,6 @@ const BAZA_KOC = [
 ]
 
 
-// Webcam baza — direktne ARSO in slovenske kamere za vsak vrh posebej
-const WEBCAM_URL = {
-  // Triglav in okolica — Kredarica ARSO
-  1:  'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  2:  'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  3:  'https://meteo.arso.gov.si/pda/kamere/bovec/',
-  4:  'https://meteo.arso.gov.si/pda/kamere/bovec/',
-  5:  'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  6:  'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  7:  'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  8:  'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  13: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  14: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  15: 'https://meteo.arso.gov.si/pda/kamere/bovec/',
-  16: 'https://meteo.arso.gov.si/pda/kamere/bovec/',
-  17: 'https://meteo.arso.gov.si/pda/kamere/bovec/',
-  18: 'https://meteo.arso.gov.si/pda/kamere/bovec/',
-  24: 'https://meteo.arso.gov.si/pda/kamere/bovec/',
-  25: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  26: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  27: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  28: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  29: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  30: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  31: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  // Kamniške Alpe — Lisca ARSO
-  33: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  34: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  35: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  36: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  37: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  38: 'https://www.velika-planina.si/webcam/',
-  39: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  40: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  41: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  42: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  43: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  44: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  45: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  46: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  47: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  // Karavanke — Kredarica ARSO
-  48: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  49: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  50: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  51: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  52: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  53: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  54: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  55: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  56: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  57: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  // Pohorje — Maribor ARSO
-  72: 'https://meteo.arso.gov.si/pda/kamere/maribor/',
-  73: 'https://meteo.arso.gov.si/pda/kamere/maribor/',
-  74: 'https://meteo.arso.gov.si/pda/kamere/maribor/',
-  // Primorska — Koper ARSO
-  66: 'https://meteo.arso.gov.si/pda/kamere/koper/',
-  67: 'https://meteo.arso.gov.si/pda/kamere/koper/',
-  68: 'https://meteo.arso.gov.si/pda/kamere/koper/',
-  69: 'https://meteo.arso.gov.si/pda/kamere/koper/',
-  70: 'https://meteo.arso.gov.si/pda/kamere/koper/',
-  71: 'https://meteo.arso.gov.si/pda/kamere/koper/',
-  // Gorenjska
-  62: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
-  63: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  64: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  65: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
-  // Štajerska/Koroška — Celje ARSO
-  80: 'https://meteo.arso.gov.si/pda/kamere/celje/',
-  81: 'https://meteo.arso.gov.si/pda/kamere/celje/',
-  82: 'https://meteo.arso.gov.si/pda/kamere/celje/',
-  83: 'https://meteo.arso.gov.si/pda/kamere/celje/',
-  84: 'https://meteo.arso.gov.si/pda/kamere/celje/',
-}
-const WEBCAM_DEFAULT = 'https://meteo.arso.gov.si/pda/kamere/kredarica/'
 
 function IkonaPoti({ razred }) {
   const [pulse, setPulse] = useState(false)
@@ -542,16 +466,7 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 8, borderTop: '0.5px solid var(--rob)', paddingTop: 10 }}>
-                <button
-                  onClick={() => window.open(WEBCAM_URL[p.id] || WEBCAM_DEFAULT, '_blank')}
-                  style={{
-                    padding: '9px 10px', background: 'white', borderRadius: 8,
-                    border: '1px solid var(--rob)', color: 'var(--besedilo2)',
-                    fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-                  }}
-                  title="Webcam"
-                >📷</button>
+
                 <button onClick={() => onOdpriPot && onOdpriPot(p)} style={{
                   flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
                   padding: '9px', background: 'linear-gradient(135deg, #1F5C1F, #3A9A3A)', borderRadius: 8, border: 'none', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer',
