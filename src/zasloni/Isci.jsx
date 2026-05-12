@@ -268,20 +268,48 @@ const BAZA_KOC = [
 ]
 
 
-// Webcam baza za poti
+// Webcam baza za poti — slovenske kamere
 const WEBCAM_URL = {
+  // Triglav / Julijske Alpe
   1:  'https://www.foto-webcam.eu/webcam/kredarica/',
   2:  'https://www.foto-webcam.eu/webcam/kredarica/',
-  3:  'https://www.foto-webcam.eu/webcam/mangart/',
-  4:  'https://www.foto-webcam.eu/webcam/ratece/',
+  3:  'https://www.foto-webcam.eu/webcam/log-pod-mangartom/',
+  4:  'https://www.foto-webcam.eu/webcam/tamar/',
   5:  'https://www.foto-webcam.eu/webcam/kranjska-gora/',
-  33: 'https://www.foto-webcam.eu/webcam/jezersko/',
-  38: 'https://www.velika-planina.si/webcam',
+  6:  'https://www.foto-webcam.eu/webcam/kranjska-gora/',
+  7:  'https://www.foto-webcam.eu/webcam/vrsic/',
+  8:  'https://www.foto-webcam.eu/webcam/kranjska-gora/',
+  13: 'https://www.foto-webcam.eu/webcam/bohinj/',
+  14: 'https://www.foto-webcam.eu/webcam/bohinj/',
+  15: 'https://www.foto-webcam.eu/webcam/bovec/',
+  24: 'https://www.foto-webcam.eu/webcam/bovec/',
+  25: 'https://www.foto-webcam.eu/webcam/bohinj/',
+  26: 'https://www.foto-webcam.eu/webcam/vogel/',
+  27: 'https://www.foto-webcam.eu/webcam/bled/',
+  28: 'https://www.foto-webcam.eu/webcam/pokljuka/',
+  30: 'https://www.foto-webcam.eu/webcam/kranjska-gora/',
+  31: 'https://www.foto-webcam.eu/webcam/bled/',
+  // Kamniške Alpe
+  33: 'https://www.foto-webcam.eu/webcam/kamnik/',
+  34: 'https://www.foto-webcam.eu/webcam/kamnik/',
+  38: 'https://www.velika-planina.si/webcam/',
+  43: 'https://www.foto-webcam.eu/webcam/kamnik/',
+  44: 'https://www.foto-webcam.eu/webcam/logarska-dolina/',
+  // Karavanke
   48: 'https://www.foto-webcam.eu/webcam/jezersko/',
-  62: 'https://www.foto-webcam.eu/webcam/smarjeta/',
-  67: 'https://www.foto-webcam.eu/webcam/sneznik/',
+  49: 'https://www.foto-webcam.eu/webcam/jezersko/',
+  53: 'https://www.foto-webcam.eu/webcam/jezersko/',
+  // Primorska
+  67: 'https://www.arso.gov.si/vreme/napoved/krajevna/sneznik.html',
+  68: 'https://www.foto-webcam.eu/webcam/portoroz/',
+  // Pohorje
+  72: 'https://www.foto-webcam.eu/webcam/rogla/',
+  73: 'https://www.foto-webcam.eu/webcam/rogla/',
+  74: 'https://www.foto-webcam.eu/webcam/rogla/',
+  // Gorenjska
+  62: 'https://www.foto-webcam.eu/webcam/smarjetna-gora/',
 }
-const WEBCAM_DEFAULT = 'https://www.foto-webcam.eu'
+const WEBCAM_DEFAULT = 'https://www.foto-webcam.eu/webcam/kredarica/'
 
 function IkonaPoti({ razred }) {
   const [pulse, setPulse] = useState(false)
