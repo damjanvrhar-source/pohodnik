@@ -207,8 +207,6 @@ const BAZA_KOC = [
   { id: 51, ime: 'Dom na Menini',                     visina: 1508, regija: 'Savinjske Alpe',       tel: '+38638398000',  lezisca: 40,  odprta: 'Jun–Oct',  lat: 46.2500, lon: 14.7833, km: 4,  vzpon: 600  },
   { id: 52, ime: 'Koča na Smrekovcu',                 visina: 1577, regija: 'Savinjske Alpe',       tel: '+38638399000',  lezisca: 35,  odprta: 'Jun–Sep',  lat: 46.4833, lon: 14.7167, km: 4,  vzpon: 500  },
   { id: 53, ime: 'Dom na Pokljuki',                   visina: 1330, regija: 'Gorenjska',            tel: '+38645720100',  lezisca: 40,  odprta: 'Cel leto', lat: 46.3331, lon: 13.9828, km: 2,  vzpon: 200  },
-  { id: 54, ime: 'Koča pri Savici',                   visina: 653,  regija: 'Gorenjska',            tel: '+38645723456',  lezisca: 25,  odprta: 'Apr–Oct',  lat: 46.3, lon: 13.8681, km: 1,  vzpon: 100  },
-  { id: 55, ime: 'Dom na Voglu',                      visina: 1535, regija: 'Gorenjska',            tel: '+38645729100',  lezisca: 30,  odprta: 'Jun–Sep',  lat: 46.2711, lon: 13.8319, km: 1,  vzpon: 50   },
   { id: 56, ime: 'Koča na Raduhi — Koroška',         visina: 2062, regija: 'Koroška',              tel: '+38628702000',  lezisca: 30,  odprta: 'Jul–Sep',  lat: 46.4167, lon: 14.7333, km: 5,  vzpon: 800  },
   { id: 57, ime: 'Dom na Donački gori',               visina: 884,  regija: 'Štajerska',            tel: '+38627961000',  lezisca: 20,  odprta: 'Jun–Sep',  lat: 46.3167, lon: 15.8167, km: 3,  vzpon: 350  },
   { id: 58, ime: 'Dom na Boču',                       visina: 979,  regija: 'Štajerska',            tel: '+38635721000',  lezisca: 25,  odprta: 'Jun–Sep',  lat: 46.2167, lon: 15.6667, km: 3,  vzpon: 400  },
@@ -243,7 +241,6 @@ const BAZA_KOC = [
   { id: 87, ime: 'Zavetišče pod Špičkom',             visina: 1055, regija: 'Julijske Alpe',        tel: '+38653891234',  lezisca: 20,  odprta: 'Jun–Sep',  lat: 46.2333, lon: 13.7167, km: 3,  vzpon: 400  },
   { id: 88, ime: 'Vojkova koča na Nanosu',            visina: 1262, regija: 'Primorska',            tel: '+38653641000',  lezisca: 35,  odprta: 'Jun–Oct',  lat: 45.7667, lon: 14.0333, km: 3,  vzpon: 450  },
   { id: 89, ime: 'Tumova koča na Slavniku',           visina: 1028, regija: 'Primorska',            tel: '+38641711129',  lezisca: 25,  odprta: 'Jun–Sep',  lat: 45.5333, lon: 13.9667, km: 4,  vzpon: 500  },
-  { id: 90, ime: 'Kocbekov dom na Korošici',          visina: 1808, regija: 'Kamniške Alpe',        tel: '+38641711130',  lezisca: 50,  odprta: 'Jun–Oct',  lat: 46.3500, lon: 14.5833, km: 5,  vzpon: 900  },
   { id: 91, ime: 'Mozirska koča na Golteh',           visina: 1200, regija: 'Savinjske Alpe',       tel: '+38638398001',  lezisca: 40,  odprta: 'Jun–Oct',  lat: 46.4500, lon: 14.8167, km: 4,  vzpon: 600  },
   { id: 92, ime: 'Koča Draga Karolina na Snežniku',  visina: 1796, regija: 'Primorska',            tel: '+38641711131',  lezisca: 25,  odprta: 'Jun–Sep',  lat: 45.5833, lon: 14.4500, km: 5,  vzpon: 700  },
   { id: 93, ime: 'Domžalski dom na Veliki planini',   visina: 1534, regija: 'Kamniške Alpe',        tel: '+38641711132',  lezisca: 45,  odprta: 'Cel leto', lat: 46.3167, lon: 14.6333, km: 3,  vzpon: 380  },
@@ -268,7 +265,6 @@ const BAZA_KOC = [
   { id: 112, ime: 'Koča Antona Bavčerja na Čavnu', visina: 1185, regija: 'Primorska', tel: '+38641711215', lezisca: 25, odprta: 'Jun–Sep', lat: 45.9167, lon: 13.7833, km: 3, vzpon: 500 },
   { id: 113, ime: 'Planinska koča na Sv. Jakobu', visina: 1058, regija: 'Gorenjska', tel: '+38641711216', lezisca: 20, odprta: 'Jun–Sep', lat: 46.35, lon: 14.2, km: 2, vzpon: 300 },
   { id: 114, ime: 'Dom na Paškem Kozjaku', visina: 1274, regija: 'Štajerska', tel: '+38641711217', lezisca: 25, odprta: 'Jun–Sep', lat: 46.5333, lon: 15.1833, km: 3, vzpon: 450 },
-  { id: 115, ime: 'Mozirska koča na Golteh', visina: 1200, regija: 'Savinjske Alpe', tel: '+38638398002', lezisca: 35, odprta: 'Jun–Oct', lat: 46.45, lon: 14.8167, km: 4, vzpon: 600 },
 ]
 
 
