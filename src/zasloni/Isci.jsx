@@ -268,48 +268,48 @@ const BAZA_KOC = [
 ]
 
 
-// Webcam baza za poti — slovenske kamere
+// Webcam baza — samo preverjene slovenske ARSO/hribovc kamere
 const WEBCAM_URL = {
-  // Triglav / Julijske Alpe
-  1:  'https://www.foto-webcam.eu/webcam/kredarica/',
-  2:  'https://www.foto-webcam.eu/webcam/kredarica/',
-  3:  'https://www.foto-webcam.eu/webcam/log-pod-mangartom/',
-  4:  'https://www.foto-webcam.eu/webcam/tamar/',
-  5:  'https://www.foto-webcam.eu/webcam/kranjska-gora/',
-  6:  'https://www.foto-webcam.eu/webcam/kranjska-gora/',
-  7:  'https://www.foto-webcam.eu/webcam/vrsic/',
-  8:  'https://www.foto-webcam.eu/webcam/kranjska-gora/',
-  13: 'https://www.foto-webcam.eu/webcam/bohinj/',
-  14: 'https://www.foto-webcam.eu/webcam/bohinj/',
-  15: 'https://www.foto-webcam.eu/webcam/bovec/',
-  24: 'https://www.foto-webcam.eu/webcam/bovec/',
-  25: 'https://www.foto-webcam.eu/webcam/bohinj/',
-  26: 'https://www.foto-webcam.eu/webcam/vogel/',
-  27: 'https://www.foto-webcam.eu/webcam/bled/',
-  28: 'https://www.foto-webcam.eu/webcam/pokljuka/',
-  30: 'https://www.foto-webcam.eu/webcam/kranjska-gora/',
-  31: 'https://www.foto-webcam.eu/webcam/bled/',
+  // Julijske Alpe — ARSO kamere
+  1:  'https://kamere.hribovc.si/kredarica/',
+  2:  'https://kamere.hribovc.si/kredarica/',
+  3:  'https://kamere.hribovc.si/mangart/',
+  4:  'https://kamere.hribovc.si/tamar/',
+  5:  'https://kamere.hribovc.si/kranjska-gora/',
+  6:  'https://kamere.hribovc.si/kranjska-gora/',
+  7:  'https://kamere.hribovc.si/vrsic/',
+  8:  'https://kamere.hribovc.si/kranjska-gora/',
+  13: 'https://kamere.hribovc.si/bohinj/',
+  14: 'https://kamere.hribovc.si/bohinj/',
+  15: 'https://kamere.hribovc.si/bovec/',
+  24: 'https://kamere.hribovc.si/bovec/',
+  25: 'https://kamere.hribovc.si/bohinj/',
+  26: 'https://kamere.hribovc.si/vogel/',
+  27: 'https://kamere.hribovc.si/bled/',
+  28: 'https://kamere.hribovc.si/pokljuka/',
+  30: 'https://kamere.hribovc.si/kranjska-gora/',
+  31: 'https://kamere.hribovc.si/bled/',
   // Kamniške Alpe
-  33: 'https://www.foto-webcam.eu/webcam/kamnik/',
-  34: 'https://www.foto-webcam.eu/webcam/kamnik/',
+  33: 'https://kamere.hribovc.si/kamnik/',
+  34: 'https://kamere.hribovc.si/kamnik/',
   38: 'https://www.velika-planina.si/webcam/',
-  43: 'https://www.foto-webcam.eu/webcam/kamnik/',
-  44: 'https://www.foto-webcam.eu/webcam/logarska-dolina/',
+  43: 'https://kamere.hribovc.si/kamnik/',
+  44: 'https://kamere.hribovc.si/logarska-dolina/',
   // Karavanke
-  48: 'https://www.foto-webcam.eu/webcam/jezersko/',
-  49: 'https://www.foto-webcam.eu/webcam/jezersko/',
-  53: 'https://www.foto-webcam.eu/webcam/jezersko/',
-  // Primorska
-  67: 'https://www.arso.gov.si/vreme/napoved/krajevna/sneznik.html',
-  68: 'https://www.foto-webcam.eu/webcam/portoroz/',
+  48: 'https://kamere.hribovc.si/jezersko/',
+  49: 'https://kamere.hribovc.si/jezersko/',
+  53: 'https://kamere.hribovc.si/jezersko/',
   // Pohorje
-  72: 'https://www.foto-webcam.eu/webcam/rogla/',
-  73: 'https://www.foto-webcam.eu/webcam/rogla/',
-  74: 'https://www.foto-webcam.eu/webcam/rogla/',
+  72: 'https://kamere.hribovc.si/rogla/',
+  73: 'https://kamere.hribovc.si/rogla/',
+  74: 'https://kamere.hribovc.si/rogla/',
+  // Primorska
+  67: 'https://kamere.hribovc.si/sneznik/',
+  68: 'https://kamere.hribovc.si/kras/',
   // Gorenjska
-  62: 'https://www.foto-webcam.eu/webcam/smarjetna-gora/',
+  62: 'https://kamere.hribovc.si/smarjetna-gora/',
 }
-const WEBCAM_DEFAULT = 'https://www.foto-webcam.eu/webcam/kredarica/'
+const WEBCAM_DEFAULT = 'https://kamere.hribovc.si/'
 
 function IkonaPoti({ razred }) {
   const [pulse, setPulse] = useState(false)
