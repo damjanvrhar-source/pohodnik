@@ -268,48 +268,82 @@ const BAZA_KOC = [
 ]
 
 
-// Webcam baza — samo preverjene slovenske ARSO/hribovc kamere
+// Webcam baza — direktne ARSO in slovenske kamere za vsak vrh posebej
 const WEBCAM_URL = {
-  // Julijske Alpe — ARSO kamere
-  1:  'https://kamere.hribovc.si/kredarica/',
-  2:  'https://kamere.hribovc.si/kredarica/',
-  3:  'https://kamere.hribovc.si/mangart/',
-  4:  'https://kamere.hribovc.si/tamar/',
-  5:  'https://kamere.hribovc.si/kranjska-gora/',
-  6:  'https://kamere.hribovc.si/kranjska-gora/',
-  7:  'https://kamere.hribovc.si/vrsic/',
-  8:  'https://kamere.hribovc.si/kranjska-gora/',
-  13: 'https://kamere.hribovc.si/bohinj/',
-  14: 'https://kamere.hribovc.si/bohinj/',
-  15: 'https://kamere.hribovc.si/bovec/',
-  24: 'https://kamere.hribovc.si/bovec/',
-  25: 'https://kamere.hribovc.si/bohinj/',
-  26: 'https://kamere.hribovc.si/vogel/',
-  27: 'https://kamere.hribovc.si/bled/',
-  28: 'https://kamere.hribovc.si/pokljuka/',
-  30: 'https://kamere.hribovc.si/kranjska-gora/',
-  31: 'https://kamere.hribovc.si/bled/',
-  // Kamniške Alpe
-  33: 'https://kamere.hribovc.si/kamnik/',
-  34: 'https://kamere.hribovc.si/kamnik/',
+  // Triglav in okolica — Kredarica ARSO
+  1:  'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  2:  'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  3:  'https://meteo.arso.gov.si/pda/kamere/bovec/',
+  4:  'https://meteo.arso.gov.si/pda/kamere/bovec/',
+  5:  'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  6:  'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  7:  'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  8:  'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  13: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  14: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  15: 'https://meteo.arso.gov.si/pda/kamere/bovec/',
+  16: 'https://meteo.arso.gov.si/pda/kamere/bovec/',
+  17: 'https://meteo.arso.gov.si/pda/kamere/bovec/',
+  18: 'https://meteo.arso.gov.si/pda/kamere/bovec/',
+  24: 'https://meteo.arso.gov.si/pda/kamere/bovec/',
+  25: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  26: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  27: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  28: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  29: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  30: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  31: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  // Kamniške Alpe — Lisca ARSO
+  33: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  34: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  35: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  36: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  37: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
   38: 'https://www.velika-planina.si/webcam/',
-  43: 'https://kamere.hribovc.si/kamnik/',
-  44: 'https://kamere.hribovc.si/logarska-dolina/',
-  // Karavanke
-  48: 'https://kamere.hribovc.si/jezersko/',
-  49: 'https://kamere.hribovc.si/jezersko/',
-  53: 'https://kamere.hribovc.si/jezersko/',
-  // Pohorje
-  72: 'https://kamere.hribovc.si/rogla/',
-  73: 'https://kamere.hribovc.si/rogla/',
-  74: 'https://kamere.hribovc.si/rogla/',
-  // Primorska
-  67: 'https://kamere.hribovc.si/sneznik/',
-  68: 'https://kamere.hribovc.si/kras/',
+  39: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  40: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  41: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  42: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  43: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  44: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  45: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  46: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  47: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  // Karavanke — Kredarica ARSO
+  48: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  49: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  50: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  51: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  52: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  53: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  54: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  55: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  56: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  57: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  // Pohorje — Maribor ARSO
+  72: 'https://meteo.arso.gov.si/pda/kamere/maribor/',
+  73: 'https://meteo.arso.gov.si/pda/kamere/maribor/',
+  74: 'https://meteo.arso.gov.si/pda/kamere/maribor/',
+  // Primorska — Koper ARSO
+  66: 'https://meteo.arso.gov.si/pda/kamere/koper/',
+  67: 'https://meteo.arso.gov.si/pda/kamere/koper/',
+  68: 'https://meteo.arso.gov.si/pda/kamere/koper/',
+  69: 'https://meteo.arso.gov.si/pda/kamere/koper/',
+  70: 'https://meteo.arso.gov.si/pda/kamere/koper/',
+  71: 'https://meteo.arso.gov.si/pda/kamere/koper/',
   // Gorenjska
-  62: 'https://kamere.hribovc.si/smarjetna-gora/',
+  62: 'https://meteo.arso.gov.si/pda/kamere/kredarica/',
+  63: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  64: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  65: 'https://meteo.arso.gov.si/pda/kamere/lisca/',
+  // Štajerska/Koroška — Celje ARSO
+  80: 'https://meteo.arso.gov.si/pda/kamere/celje/',
+  81: 'https://meteo.arso.gov.si/pda/kamere/celje/',
+  82: 'https://meteo.arso.gov.si/pda/kamere/celje/',
+  83: 'https://meteo.arso.gov.si/pda/kamere/celje/',
+  84: 'https://meteo.arso.gov.si/pda/kamere/celje/',
 }
-const WEBCAM_DEFAULT = 'https://kamere.hribovc.si/'
+const WEBCAM_DEFAULT = 'https://meteo.arso.gov.si/pda/kamere/kredarica/'
 
 function IkonaPoti({ razred }) {
   const [pulse, setPulse] = useState(false)
