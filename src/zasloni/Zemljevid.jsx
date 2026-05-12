@@ -115,79 +115,11 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   const [prikazProfila, setPrikazProfila] = useState(false)
   const [jeTopoPogled, setJeTopoPogled] = useState(false)
   const [pohod, setPohod] = useState(false)
-  const [offline, setOffline] = useState(!navigator.onLine)
-  const [prenasanje, setPrenasanje] = useState(false)
-  const [preneseno, setPreneseno] = useState(0)
-  const [skupajTiles, setSkupajTiles] = useState(0)
   const [sledRazdalja, setSledRazdalja] = useState(0)
   const [sledCas, setSledCas] = useState(0)
   const [hitrost, setHitrost] = useState(0)
   const casTimer = useRef(null)
   const smerRef = useRef(0)
-
-  // Service Worker + offline detekcija
-  useEffect(() => {
-    // Registriraj SW
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {})
-      navigator.serviceWorker.addEventListener('message', e => {
-        if (e.data.tip === 'napredek') {
-          setPreneseno(e.data.preneseno)
-          setSkupajTiles(e.data.skupaj)
-        }
-        if (e.data.tip === 'koncano') {
-          setPrenasanje(false)
-          setPreneseno(0)
-        }
-      })
-    }
-    // Online/offline
-    const onOnline = () => setOffline(false)
-    const onOffline = () => setOffline(true)
-    window.addEventListener('online', onOnline)
-    window.addEventListener('offline', onOffline)
-    return () => {
-      window.removeEventListener('online', onOnline)
-      window.removeEventListener('offline', onOffline)
-    }
-  }, [])
-
-  function generirajTile(lat, lon, zoom) {
-    const n = Math.pow(2, zoom)
-    const x = Math.floor((lon + 180) / 360 * n)
-    const y = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * n)
-    return { x, y, z: zoom }
-  }
-
-  async function prenesiObmocje() {
-    if (!izbranaPot?.lat) {
-      alert('Najprej izberi pot!')
-      return
-    }
-    if (!('serviceWorker' in navigator)) {
-      alert('Offline prenos ni podprt v tem brskalniku.')
-      return
-    }
-    const sw = await navigator.serviceWorker.ready
-    // Generiraj tile-e za območje okoli poti (zoom 10-15)
-    const tiles = []
-    const subdomains = ['a', 'b', 'c', 'd']
-    for (let z = 10; z <= 15; z++) {
-      const delta = 0.15 / Math.pow(2, z - 10)
-      for (let dlat = -delta; dlat <= delta; dlat += delta / 3) {
-        for (let dlon = -delta * 1.5; dlon <= delta * 1.5; dlon += delta / 3) {
-          const t = generirajTile(izbranaPot.lat + dlat, izbranaPot.lon + dlon, z)
-          const sub = subdomains[(t.x + t.y) % 4]
-          tiles.push(`https://${sub}.basemaps.cartocdn.com/rastertiles/voyager/${t.z}/${t.x}/${t.y}.png`)
-        }
-      }
-    }
-    const unikatni = [...new Set(tiles)]
-    setPrenasanje(true)
-    setSkupajTiles(unikatni.length)
-    setPreneseno(0)
-    sw.active.postMessage({ tip: 'prenesi-obmocje', tiles: unikatni })
-  }
 
   // Avtomatski GPS start
   useEffect(() => {
@@ -571,42 +503,14 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
         </button>
       </div>
 
-      {/* Offline indikator */}
-      {offline && (
-        <div style={{
-          position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)',
-          background: '#FEF3C7', border: '1px solid #F59E0B', borderRadius: 8,
-          padding: '5px 12px', fontSize: 11, fontWeight: 700, color: '#92400E',
-          zIndex: 1000, display: 'flex', alignItems: 'center', gap: 5,
-        }}>
-          📵 Offline — cachiran zemljevid
-        </div>
-      )}
-
-      {/* Prenos območja */}
-      {prenasanje && (
-        <div style={{
-          position: 'absolute', top: 50, left: '50%', transform: 'translateX(-50%)',
-          background: 'white', borderRadius: 12, padding: '10px 16px',
-          zIndex: 1000, boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-          minWidth: 200, textAlign: 'center',
-        }}>
-          <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6 }}>⬇️ Prenašam offline zemljevid...</div>
-          <div style={{ background: '#E5E7EB', borderRadius: 4, height: 6, overflow: 'hidden' }}>
-            <div style={{ background: ZELENA, height: '100%', width: `${skupajTiles > 0 ? (preneseno/skupajTiles*100) : 0}%`, transition: 'width 0.3s' }} />
-          </div>
-          <div style={{ fontSize: 11, color: '#6B7280', marginTop: 4 }}>{preneseno} / {skupajTiles} tile-ov</div>
-        </div>
-      )}
-
-      {/* Preklop pogled */}}
+      {/* Preklop pogled */}
       <button onClick={preklopi} style={{ ...btnStil, position: 'absolute', top: 12, right: 12, padding: '9px 14px' }}>
         {jeTopoPogled ? '🛰 Satelit' : '🗺 Zemljevid'}
       </button>
 
       {/* GPX */}
       <input ref={gpxInput} type="file" accept=".gpx" style={{ display: 'none' }} onChange={nalozGPX} />
-      <button onClick={() => gpxInput.current.click()} style={{ ...btnStil, position: 'absolute', bottom: 16 + spodajOffset + 186, right: 12 }}>
+      <button onClick={() => gpxInput.current.click()} style={{ ...btnStil, position: 'absolute', bottom: 16 + spodajOffset + 124, right: 12 }}>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         GPX
       </button>
