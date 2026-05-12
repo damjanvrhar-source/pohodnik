@@ -13,77 +13,6 @@ const ZACETNI_POGLED = [46.3792, 13.8367]
 const ZACETNI_ZOOM = 10
 const ZELENA = '#2D7A2D'
 
-// ============================================================
-// ZVOČNI EFEKTI — Web Audio API
-// ============================================================
-function predvajajZvok(tip) {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)()
-
-    if (tip === 'start') {
-      // Motivacijski vzhajajoči akord — C E G
-      [[261, 0], [329, 0.15], [392, 0.3]].forEach(([freq, delay]) => {
-        const osc = ctx.createOscillator()
-        const gain = ctx.createGain()
-        osc.connect(gain); gain.connect(ctx.destination)
-        osc.type = 'sine'
-        osc.frequency.value = freq
-        gain.gain.setValueAtTime(0, ctx.currentTime + delay)
-        gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + delay + 0.05)
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.5)
-        osc.start(ctx.currentTime + delay)
-        osc.stop(ctx.currentTime + delay + 0.5)
-      })
-    }
-
-    else if (tip === 'gps') {
-      // Kratki ping — GPS najden
-      const osc = ctx.createOscillator()
-      const gain = ctx.createGain()
-      osc.connect(gain); gain.connect(ctx.destination)
-      osc.type = 'sine'
-      osc.frequency.setValueAtTime(880, ctx.currentTime)
-      osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.1)
-      gain.gain.setValueAtTime(0.3, ctx.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
-      osc.start(ctx.currentTime)
-      osc.stop(ctx.currentTime + 0.3)
-    }
-
-    else if (tip === 'prekini') {
-      // Padajoči ton — konec pohoda
-      [[523, 0], [392, 0.2], [261, 0.4]].forEach(([freq, delay]) => {
-        const osc = ctx.createOscillator()
-        const gain = ctx.createGain()
-        osc.connect(gain); gain.connect(ctx.destination)
-        osc.type = 'sine'
-        osc.frequency.value = freq
-        gain.gain.setValueAtTime(0.25, ctx.currentTime + delay)
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.4)
-        osc.start(ctx.currentTime + delay)
-        osc.stop(ctx.currentTime + delay + 0.4)
-      })
-    }
-
-    else if (tip === 'sos') {
-      // SOS alarm — trikratni urgentni signal
-      for (let i = 0; i < 3; i++) {
-        const osc = ctx.createOscillator()
-        const gain = ctx.createGain()
-        osc.connect(gain); gain.connect(ctx.destination)
-        osc.type = 'square'
-        osc.frequency.value = 880
-        const t = ctx.currentTime + i * 0.4
-        gain.gain.setValueAtTime(0.4, t)
-        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3)
-        osc.start(t)
-        osc.stop(t + 0.3)
-      }
-    }
-
-    setTimeout(() => ctx.close(), 3000)
-  } catch(e) {}
-}
 
 function formatCas(s) {
   if (s < 60) return `${s}s`
@@ -320,28 +249,21 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     const map = mapInstanca.current
     if (!map) return
     if (snopLayer.current) { map.removeLayer(snopLayer.current); snopLayer.current = null }
-    const deg = (smer || 0)
-    // R v metrih pretvorimo v stopinje (pribl. 1 stopinja = 111000m)
-    const Rm = 120  // 120 metrov dolžina snopa
-    const R = Rm / 111000
-    const kot = 35  // kot v stopinjah
-    const tocke = [[lat, lon]]
-    for (let a = deg - kot; a <= deg + kot; a += 2) {
-      const rad = (a) * Math.PI / 180
-      tocke.push([
-        lat + R * Math.cos((90 - a) * Math.PI / 180),
-        lon + R * Math.sin((a) * Math.PI / 180) / Math.cos(lat * Math.PI / 180)
-      ])
-    }
-    tocke.push([lat, lon])
-    snopLayer.current = L.polygon(tocke, {
-      color: '#2D7A2D',
-      fillColor: '#2D7A2D',
-      fillOpacity: 0.4,
-      weight: 2,
-      opacity: 0.8,
-      interactive: false,
-    }).addTo(map)
+    // Sever = 0, Vzhod = 90, Jug = 180, Zahod = 270
+    const deg = smer || 0
+    const d = 0.002  // ~220m - dovolj velik da je viden
+    const kot = 35 * Math.PI / 180
+    const sRad = deg * Math.PI / 180
+    // 3 točke: pike levo, desno od snopa + konica
+    const latKos = Math.cos(lat * Math.PI / 180)
+    const p1lat = lat + d * Math.cos(sRad - kot)
+    const p1lon = lon + d * Math.sin(sRad - kot) / latKos
+    const p2lat = lat + d * Math.cos(sRad + kot)
+    const p2lon = lon + d * Math.sin(sRad + kot) / latKos
+    snopLayer.current = L.polygon(
+      [[lat, lon], [p1lat, p1lon], [p2lat, p2lon]],
+      { color: '#2D7A2D', fillColor: '#2D7A2D', fillOpacity: 0.45, weight: 2, opacity: 0.8, interactive: false }
+    ).addTo(map)
   }
 
   const wakeLock = useRef(null)
@@ -504,7 +426,6 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   }
 
   function sosKlic() {
-    predvajajZvok('sos')
     setTimeout(() => window.open('tel:112'), 500)
   }
 
