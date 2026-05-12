@@ -196,7 +196,6 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   useEffect(() => {
     if (avtomatskiStart) {
       setTimeout(() => {
-        predvajajZvok('start')
         zageniGPS()
         setPohod(true)
         if (onGPSZacet) onGPSZacet()
@@ -310,26 +309,36 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   }
 
   function ustvariKombiniranoIkono(smer) {
-    const s = (smer || 0) * Math.PI / 180
-    const r = 55
-    const kot = 28 * Math.PI / 180
-    // Snop + pika v eni ikoni, sidrišče v centru pike
-    const cx = 65, cy = 65
-    const x1 = (cx + r * Math.sin(s - kot)).toFixed(1)
-    const y1 = (cy - r * Math.cos(s - kot)).toFixed(1)
-    const x2 = (cx + r * Math.sin(s + kot)).toFixed(1)
-    const y2 = (cy - r * Math.cos(s + kot)).toFixed(1)
+    const deg = smer || 0
     return L.divIcon({
       className: '',
-      html: `
-        <svg width="130" height="130" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block;">
-          <path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z"
-            fill="rgba(45,122,45,0.3)" stroke="rgba(45,122,45,0.6)" stroke-width="1.5"/>
-          <circle cx="${cx}" cy="${cy}" r="8" fill="${ZELENA}" stroke="white" stroke-width="3"/>
-          <circle cx="${cx}" cy="${cy}" r="12" fill="rgba(45,122,45,0.25)" stroke="none"/>
-        </svg>`,
-      iconSize: [130, 130],
-      iconAnchor: [cx, cy],
+      html: `<div style="position:relative;width:80px;height:80px;">
+        <!-- Snop - rotiran div s CSS -->
+        <div style="
+          position:absolute;
+          width:0;height:0;
+          left:40px;top:40px;
+          border-left:22px solid transparent;
+          border-right:22px solid transparent;
+          border-bottom:55px solid rgba(45,122,45,0.35);
+          transform:rotate(${deg}deg) translateY(-55px);
+          transform-origin:0px 0px;
+          filter:drop-shadow(0 0 3px rgba(45,122,45,0.4));
+        "></div>
+        <!-- GPS pika -->
+        <div style="
+          position:absolute;
+          width:14px;height:14px;
+          left:33px;top:33px;
+          border-radius:50%;
+          background:${ZELENA};
+          border:3px solid white;
+          box-shadow:0 0 0 4px rgba(45,122,45,0.3);
+          z-index:10;
+        "></div>
+      </div>`,
+      iconSize: [80, 80],
+      iconAnchor: [40, 40],
     })
   }
 
@@ -381,7 +390,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     watchId.current = navigator.geolocation.watchPosition(
       (pos) => {
         const { latitude, longitude, altitude, accuracy } = pos.coords
-        if (gpsStatus !== 'aktiven ✓') predvajajZvok('gps')
+        if (gpsStatus !== 'aktiven ✓')
         setGpsStatus('aktiven ✓')
         if (altitude) setVisina(Math.round(altitude))
         if (pos.coords.speed) setHitrost(Math.round(pos.coords.speed * 3.6))
@@ -476,7 +485,6 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   }
 
   function prekiniPot() {
-    predvajajZvok('prekini')
     shranijPohod()
     ustavi()
     setPohod(false)
@@ -612,7 +620,8 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
       </button>
 
       {/* GPS gumb */}
-      <button onClick={sledenje ? ustavi : () => { predvajajZvok('start'); zageniGPS() }} style={{
+      <button onClick={sledenje ? ustavi : () => {
+ zageniGPS() }} style={{
         ...btnStil, position: 'absolute', bottom: 16 + spodajOffset + 62, right: 12,
         background: sledenje ? ZELENA : 'white', color: sledenje ? 'white' : ZELENA, border: `1.5px solid ${ZELENA}`,
       }}>
