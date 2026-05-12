@@ -309,36 +309,42 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   }
 
   function ustvariKombiniranoIkono(smer) {
-    const deg = smer || 0
+    const deg = (smer || 0)
+    // Snop kot Canvas element - najbolj zanesljivo
+    const size = 100
+    const cx = size/2, cy = size/2
+    const r = 50
+    const kot = 30 * Math.PI / 180
+    const s = (deg - 90) * Math.PI / 180  // -90 ker SVG 0 je desno, mi hočemo gor
+    const x1 = cx + r * Math.cos(s - kot)
+    const y1 = cy + r * Math.sin(s - kot)
+    const x2 = cx + r * Math.cos(s + kot)
+    const y2 = cy + r * Math.sin(s + kot)
     return L.divIcon({
       className: '',
-      html: `<div style="position:relative;width:80px;height:80px;">
-        <!-- Snop - rotiran div s CSS -->
-        <div style="
-          position:absolute;
-          width:0;height:0;
-          left:40px;top:40px;
-          border-left:22px solid transparent;
-          border-right:22px solid transparent;
-          border-bottom:55px solid rgba(45,122,45,0.35);
-          transform:rotate(${deg}deg) translateY(-55px);
-          transform-origin:0px 0px;
-          filter:drop-shadow(0 0 3px rgba(45,122,45,0.4));
-        "></div>
-        <!-- GPS pika -->
-        <div style="
-          position:absolute;
-          width:14px;height:14px;
-          left:33px;top:33px;
-          border-radius:50%;
-          background:${ZELENA};
-          border:3px solid white;
-          box-shadow:0 0 0 4px rgba(45,122,45,0.3);
-          z-index:10;
-        "></div>
+      html: `<div style="position:relative;width:${size}px;height:${size}px;">
+        <canvas id="snop-canvas-${Math.round(deg)}" width="${size}" height="${size}" style="position:absolute;top:0;left:0;"></canvas>
+        <div style="position:absolute;width:14px;height:14px;left:${cx-7}px;top:${cy-7}px;border-radius:50%;background:${ZELENA};border:3px solid white;box-shadow:0 0 0 4px rgba(45,122,45,0.3);z-index:10;"></div>
+        <script>
+          (function(){
+            var c=document.getElementById('snop-canvas-${Math.round(deg)}');
+            if(!c)return;
+            var ctx=c.getContext('2d');
+            ctx.beginPath();
+            ctx.moveTo(${cx},${cy});
+            ctx.lineTo(${x1.toFixed(1)},${y1.toFixed(1)});
+            ctx.arc(${cx},${cy},${r},${(s-kot).toFixed(4)},${(s+kot).toFixed(4)});
+            ctx.closePath();
+            ctx.fillStyle='rgba(45,122,45,0.35)';
+            ctx.fill();
+            ctx.strokeStyle='rgba(45,122,45,0.6)';
+            ctx.lineWidth=1.5;
+            ctx.stroke();
+          })();
+        </script>
       </div>`,
-      iconSize: [80, 80],
-      iconAnchor: [40, 40],
+      iconSize: [size, size],
+      iconAnchor: [cx, cy],
     })
   }
 
