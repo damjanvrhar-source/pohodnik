@@ -16,7 +16,7 @@ const ZELENA = '#2D7A2D'
 // ============================================================
 // ZVOČNI EFEKTI — Web Audio API
 // ============================================================
-function  {
+function predvajajZvok(tip) {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)()
 
