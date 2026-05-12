@@ -174,6 +174,8 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   const napisiSlojRef = useRef(null)
   const sledLinija = useRef(null)
   const sledTocke = useRef([])
+  const snopMarker = useRef(null)
+  const gpsLokacija = useRef(null)
 
   const [visina, setVisina] = useState(null)
   const [gpsStatus, setGpsStatus] = useState('izklopljen')
@@ -188,12 +190,12 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   const [sledCas, setSledCas] = useState(0)
   const [hitrost, setHitrost] = useState(0)
   const casTimer = useRef(null)
+  const smerRef = useRef(0)
 
   // Avtomatski GPS start
   useEffect(() => {
     if (avtomatskiStart) {
       setTimeout(() => {
-        predvajajZvok('start')
         zageniGPS()
         setPohod(true)
         if (onGPSZacet) onGPSZacet()
@@ -253,14 +255,115 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
       }
     }
 
+    // Kompas — poskusi z DeviceOrientationEvent
+    function onOrientacija(e) {
+      let smer = 0
+      if (e.webkitCompassHeading !== undefined && e.webkitCompassHeading !== null) {
+        smer = e.webkitCompassHeading
+      } else if (e.absolute && e.alpha !== null) {
+        smer = 360 - e.alpha
+      } else {
+        return // Ni veljavnih podatkov
+      }
+      smerRef.current = smer
+      const lokacija = gpsLokacija.current
+      if (lokacija && map) {
+        if (snopMarker.current) map.removeLayer(snopMarker.current)
+        snopMarker.current = L.marker(lokacija, { icon: ustvariSnopIkono(smer), zIndexOffset: -100 }).addTo(map)
+      }
+    }
+
+    if (typeof DeviceOrientationEvent !== 'undefined') {
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // iOS 13+
+        DeviceOrientationEvent.requestPermission()
+          .then(p => {
+            if (p === 'granted') {
+              window.addEventListener('deviceorientationabsolute', onOrientacija, true)
+              window.addEventListener('deviceorientation', onOrientacija, true)
+            }
+          }).catch(() => {})
+      } else {
+        window.addEventListener('deviceorientationabsolute', onOrientacija, true)
+        window.addEventListener('deviceorientation', onOrientacija, true)
+      }
+    }
+
     return () => {
       map.remove()
       mapInstanca.current = null
       if (watchId.current) navigator.geolocation.clearWatch(watchId.current)
       if (casTimer.current) clearInterval(casTimer.current)
       sprostiWakeLock()
+      window.removeEventListener('deviceorientation', onOrientacija, true)
+      window.removeEventListener('deviceorientationabsolute', onOrientacija, true)
     }
   }, [])
+
+  function ustvariGPSIkono() {
+    return L.divIcon({
+      className: '',
+      html: `<div style="width:14px;height:14px;border-radius:50%;background:${ZELENA};border:3px solid white;box-shadow:0 0 0 4px rgba(45,122,45,0.3);"></div>`,
+      iconSize: [14, 14], iconAnchor: [7, 7],
+    })
+  }
+
+  function ustvariKombiniranoIkono(smer) {
+    const deg = smer || 0
+    return L.divIcon({
+      className: '',
+      html: `<div style="position:relative;width:80px;height:80px;">
+        <!-- Snop - rotiran div s CSS -->
+        <div style="
+          position:absolute;
+          width:0;height:0;
+          left:40px;top:40px;
+          border-left:22px solid transparent;
+          border-right:22px solid transparent;
+          border-bottom:55px solid rgba(45,122,45,0.35);
+          transform:rotate(${deg}deg) translateY(-55px);
+          transform-origin:0px 0px;
+          filter:drop-shadow(0 0 3px rgba(45,122,45,0.4));
+        "></div>
+        <!-- GPS pika -->
+        <div style="
+          position:absolute;
+          width:14px;height:14px;
+          left:33px;top:33px;
+          border-radius:50%;
+          background:${ZELENA};
+          border:3px solid white;
+          box-shadow:0 0 0 4px rgba(45,122,45,0.3);
+          z-index:10;
+        "></div>
+      </div>`,
+      iconSize: [80, 80],
+      iconAnchor: [40, 40],
+    })
+  }
+
+  function ustvariSnopIkono(smer) {
+    const s = (smer || 0) * Math.PI / 180
+    const r = 60
+    const kot = 30 * Math.PI / 180
+    const cx = 65, cy = 65
+    const x1 = (cx + r * Math.sin(s - kot)).toFixed(1)
+    const y1 = (cy - r * Math.cos(s - kot)).toFixed(1)
+    const x2 = (cx + r * Math.sin(s + kot)).toFixed(1)
+    const y2 = (cy - r * Math.cos(s + kot)).toFixed(1)
+    return L.divIcon({
+      className: '',
+      html: `<svg width="130" height="130" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
+        <path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z"
+          fill="rgba(45,122,45,0.35)"
+          stroke="rgba(45,122,45,0.7)"
+          stroke-width="1.5"
+          stroke-linejoin="round"/>
+      </svg>`,
+      iconSize: [130, 130],
+      iconAnchor: [cx, cy],
+    })
+  }
 
   const wakeLock = useRef(null)
 
@@ -282,29 +385,36 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     setSledenje(true)
     setSledRazdalja(0)
     setSledCas(0)
-    predvajajZvok('start')
     zageniWakeLock()
     casTimer.current = setInterval(() => setSledCas(s => s + 1), 1000)
     watchId.current = navigator.geolocation.watchPosition(
       (pos) => {
         const { latitude, longitude, altitude, accuracy } = pos.coords
-        if (gpsStatus !== 'aktiven ✓') predvajajZvok('gps')
+        if (gpsStatus !== 'aktiven ✓')
         setGpsStatus('aktiven ✓')
         if (altitude) setVisina(Math.round(altitude))
         if (pos.coords.speed) setHitrost(Math.round(pos.coords.speed * 3.6))
+        // GPS heading - posodobi snop med gibanjem
+        if (pos.coords.heading !== null && !isNaN(pos.coords.heading)) {
+          smerRef.current = pos.coords.heading
+          if (gpsMarker.current) {
+            gpsMarker.current.setIcon(ustvariKombiniranoIkono(pos.coords.heading))
+          }
+        }
         const map = mapInstanca.current
         if (!map) return
         if (!gpsMarker.current) {
-          const ikona = L.divIcon({
-            className: '',
-            html: `<div style="width:16px;height:16px;border-radius:50%;background:${ZELENA};border:3px solid white;box-shadow:0 0 0 4px rgba(45,122,45,0.3);"></div>`,
-            iconSize: [16, 16], iconAnchor: [8, 8],
-          })
-          gpsMarker.current = L.marker([latitude, longitude], { icon: ikona }).addTo(map)
+          gpsLokacija.current = [latitude, longitude]
+          gpsMarker.current = L.marker([latitude, longitude], { 
+            icon: ustvariKombiniranoIkono(smerRef.current),
+            zIndexOffset: 100,
+          }).addTo(map)
           gpsKrog.current = L.circle([latitude, longitude], { radius: accuracy, color: ZELENA, fillColor: ZELENA, fillOpacity: 0.08, weight: 1 }).addTo(map)
           map.setView([latitude, longitude], 15)
         } else {
+          gpsLokacija.current = [latitude, longitude]
           gpsMarker.current.setLatLng([latitude, longitude])
+          gpsMarker.current.setIcon(ustvariKombiniranoIkono(smerRef.current))
           gpsKrog.current.setLatLng([latitude, longitude])
           gpsKrog.current.setRadius(accuracy)
           map.setView([latitude, longitude])
@@ -346,6 +456,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     sledTocke.current = []
     const map = mapInstanca.current
     if (map && sledLinija.current) { map.removeLayer(sledLinija.current); sledLinija.current = null }
+
   }
 
   function shranijPohod() {
@@ -374,7 +485,6 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   }
 
   function prekiniPot() {
-    predvajajZvok('prekini')
     shranijPohod()
     ustavi()
     setPohod(false)
@@ -471,6 +581,30 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
             🗺 {potIme} · {potDolzina} km {prikazProfila ? '▼' : '▲'}
           </div>
         )}
+        <button
+          onClick={() => {
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+              DeviceOrientationEvent.requestPermission().then(p => {
+                if (p === 'granted') {
+                  window.addEventListener('deviceorientation', (e) => {
+                    const smer = e.webkitCompassHeading ?? (360 - (e.alpha || 0))
+                    smerRef.current = smer
+                    const lok = gpsLokacija.current
+                    const map = mapInstanca.current
+                    if (lok && map) {
+                      if (gpsMarker.current) {
+                        gpsMarker.current.setIcon(ustvariKombiniranoIkono(smer))
+                      }
+                    }
+                  }, true)
+                }
+              }).catch(() => {})
+            }
+          }}
+          style={{ background: 'white', border: '1px solid #E5E7EB', borderRadius: 8, padding: '5px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer', pointerEvents: 'auto', display: 'flex', alignItems: 'center', gap: 4, boxShadow: '0 2px 6px rgba(0,0,0,0.1)' }}
+        >
+          🧭 Kompas
+        </button>
       </div>
 
       {/* Preklop pogled */}
@@ -486,7 +620,8 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
       </button>
 
       {/* GPS gumb */}
-      <button onClick={sledenje ? ustavi : zageniGPS} style={{
+      <button onClick={sledenje ? ustavi : () => {
+ zageniGPS() }} style={{
         ...btnStil, position: 'absolute', bottom: 16 + spodajOffset + 62, right: 12,
         background: sledenje ? ZELENA : 'white', color: sledenje ? 'white' : ZELENA, border: `1.5px solid ${ZELENA}`,
       }}>
