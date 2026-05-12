@@ -380,6 +380,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
           gpsMarker.current = L.marker([latitude, longitude], { icon: ustvariGPSPika(), zIndexOffset: 100 }).addTo(map)
           gpsKrog.current = L.circle([latitude, longitude], { radius: accuracy, color: ZELENA, fillColor: ZELENA, fillOpacity: 0.08, weight: 1 }).addTo(map)
           map.setView([latitude, longitude], 15)
+          posodobiSnop(latitude, longitude, smerRef.current)
         } else {
           gpsLokacija.current = [latitude, longitude]
           gpsMarker.current.setLatLng([latitude, longitude])
