@@ -319,22 +319,28 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   function posodobiSnop(lat, lon, smer) {
     const map = mapInstanca.current
     if (!map) return
-    if (snopLayer.current) map.removeLayer(snopLayer.current)
-    const deg = smer || 0
-    const R = 0.0005
-    const kot = 30
+    if (snopLayer.current) { map.removeLayer(snopLayer.current); snopLayer.current = null }
+    const deg = (smer || 0)
+    // R v metrih pretvorimo v stopinje (pribl. 1 stopinja = 111000m)
+    const Rm = 120  // 120 metrov dolžina snopa
+    const R = Rm / 111000
+    const kot = 35  // kot v stopinjah
     const tocke = [[lat, lon]]
-    for (let a = deg - kot; a <= deg + kot; a += 3) {
-      const rad = (a - 90) * Math.PI / 180
+    for (let a = deg - kot; a <= deg + kot; a += 2) {
+      const rad = (a) * Math.PI / 180
       tocke.push([
-        lat + R * Math.cos(rad),
-        lon + R * Math.sin(rad) / Math.cos(lat * Math.PI / 180)
+        lat + R * Math.cos((90 - a) * Math.PI / 180),
+        lon + R * Math.sin((a) * Math.PI / 180) / Math.cos(lat * Math.PI / 180)
       ])
     }
     tocke.push([lat, lon])
     snopLayer.current = L.polygon(tocke, {
-      color: ZELENA, fillColor: ZELENA,
-      fillOpacity: 0.3, weight: 1.5, opacity: 0.6, interactive: false,
+      color: '#2D7A2D',
+      fillColor: '#2D7A2D',
+      fillOpacity: 0.4,
+      weight: 2,
+      opacity: 0.8,
+      interactive: false,
     }).addTo(map)
   }
 
