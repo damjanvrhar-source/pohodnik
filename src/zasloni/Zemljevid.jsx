@@ -13,77 +13,6 @@ const ZACETNI_POGLED = [46.3792, 13.8367]
 const ZACETNI_ZOOM = 10
 const ZELENA = '#2D7A2D'
 
-// ============================================================
-// ZVOČNI EFEKTI — Web Audio API
-// ============================================================
-function predvajajZvok(tip) {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)()
-
-    if (tip === 'start') {
-      // Motivacijski vzhajajoči akord — C E G
-      [[261, 0], [329, 0.15], [392, 0.3]].forEach(([freq, delay]) => {
-        const osc = ctx.createOscillator()
-        const gain = ctx.createGain()
-        osc.connect(gain); gain.connect(ctx.destination)
-        osc.type = 'sine'
-        osc.frequency.value = freq
-        gain.gain.setValueAtTime(0, ctx.currentTime + delay)
-        gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + delay + 0.05)
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.5)
-        osc.start(ctx.currentTime + delay)
-        osc.stop(ctx.currentTime + delay + 0.5)
-      })
-    }
-
-    else if (tip === 'gps') {
-      // Kratki ping — GPS najden
-      const osc = ctx.createOscillator()
-      const gain = ctx.createGain()
-      osc.connect(gain); gain.connect(ctx.destination)
-      osc.type = 'sine'
-      osc.frequency.setValueAtTime(880, ctx.currentTime)
-      osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.1)
-      gain.gain.setValueAtTime(0.3, ctx.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3)
-      osc.start(ctx.currentTime)
-      osc.stop(ctx.currentTime + 0.3)
-    }
-
-    else if (tip === 'prekini') {
-      // Padajoči ton — konec pohoda
-      [[523, 0], [392, 0.2], [261, 0.4]].forEach(([freq, delay]) => {
-        const osc = ctx.createOscillator()
-        const gain = ctx.createGain()
-        osc.connect(gain); gain.connect(ctx.destination)
-        osc.type = 'sine'
-        osc.frequency.value = freq
-        gain.gain.setValueAtTime(0.25, ctx.currentTime + delay)
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.4)
-        osc.start(ctx.currentTime + delay)
-        osc.stop(ctx.currentTime + delay + 0.4)
-      })
-    }
-
-    else if (tip === 'sos') {
-      // SOS alarm — trikratni urgentni signal
-      for (let i = 0; i < 3; i++) {
-        const osc = ctx.createOscillator()
-        const gain = ctx.createGain()
-        osc.connect(gain); gain.connect(ctx.destination)
-        osc.type = 'square'
-        osc.frequency.value = 880
-        const t = ctx.currentTime + i * 0.4
-        gain.gain.setValueAtTime(0.4, t)
-        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3)
-        osc.start(t)
-        osc.stop(t + 0.3)
-      }
-    }
-
-    setTimeout(() => ctx.close(), 3000)
-  } catch(e) {}
-}
 
 function formatCas(s) {
   if (s < 60) return `${s}s`
@@ -174,7 +103,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   const napisiSlojRef = useRef(null)
   const sledLinija = useRef(null)
   const sledTocke = useRef([])
-  const snopMarker = useRef(null)
+  const snopLayer = useRef(null)
   const gpsLokacija = useRef(null)
 
   const [visina, setVisina] = useState(null)
@@ -186,11 +115,79 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   const [prikazProfila, setPrikazProfila] = useState(false)
   const [jeTopoPogled, setJeTopoPogled] = useState(false)
   const [pohod, setPohod] = useState(false)
+  const [offline, setOffline] = useState(!navigator.onLine)
+  const [prenasanje, setPrenasanje] = useState(false)
+  const [preneseno, setPreneseno] = useState(0)
+  const [skupajTiles, setSkupajTiles] = useState(0)
   const [sledRazdalja, setSledRazdalja] = useState(0)
   const [sledCas, setSledCas] = useState(0)
   const [hitrost, setHitrost] = useState(0)
   const casTimer = useRef(null)
   const smerRef = useRef(0)
+
+  // Service Worker + offline detekcija
+  useEffect(() => {
+    // Registriraj SW
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {})
+      navigator.serviceWorker.addEventListener('message', e => {
+        if (e.data.tip === 'napredek') {
+          setPreneseno(e.data.preneseno)
+          setSkupajTiles(e.data.skupaj)
+        }
+        if (e.data.tip === 'koncano') {
+          setPrenasanje(false)
+          setPreneseno(0)
+        }
+      })
+    }
+    // Online/offline
+    const onOnline = () => setOffline(false)
+    const onOffline = () => setOffline(true)
+    window.addEventListener('online', onOnline)
+    window.addEventListener('offline', onOffline)
+    return () => {
+      window.removeEventListener('online', onOnline)
+      window.removeEventListener('offline', onOffline)
+    }
+  }, [])
+
+  function generirajTile(lat, lon, zoom) {
+    const n = Math.pow(2, zoom)
+    const x = Math.floor((lon + 180) / 360 * n)
+    const y = Math.floor((1 - Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI) / 2 * n)
+    return { x, y, z: zoom }
+  }
+
+  async function prenesiObmocje() {
+    if (!izbranaPot?.lat) {
+      alert('Najprej izberi pot!')
+      return
+    }
+    if (!('serviceWorker' in navigator)) {
+      alert('Offline prenos ni podprt v tem brskalniku.')
+      return
+    }
+    const sw = await navigator.serviceWorker.ready
+    // Generiraj tile-e za območje okoli poti (zoom 10-15)
+    const tiles = []
+    const subdomains = ['a', 'b', 'c', 'd']
+    for (let z = 10; z <= 15; z++) {
+      const delta = 0.15 / Math.pow(2, z - 10)
+      for (let dlat = -delta; dlat <= delta; dlat += delta / 3) {
+        for (let dlon = -delta * 1.5; dlon <= delta * 1.5; dlon += delta / 3) {
+          const t = generirajTile(izbranaPot.lat + dlat, izbranaPot.lon + dlon, z)
+          const sub = subdomains[(t.x + t.y) % 4]
+          tiles.push(`https://${sub}.basemaps.cartocdn.com/rastertiles/voyager/${t.z}/${t.x}/${t.y}.png`)
+        }
+      }
+    }
+    const unikatni = [...new Set(tiles)]
+    setPrenasanje(true)
+    setSkupajTiles(unikatni.length)
+    setPreneseno(0)
+    sw.active.postMessage({ tip: 'prenesi-obmocje', tiles: unikatni })
+  }
 
   // Avtomatski GPS start
   useEffect(() => {
@@ -308,61 +305,33 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     })
   }
 
-  function ustvariKombiniranoIkono(smer) {
-    const deg = smer || 0
+  function ustvariGPSPika() {
     return L.divIcon({
       className: '',
-      html: `<div style="position:relative;width:80px;height:80px;">
-        <!-- Snop - rotiran div s CSS -->
-        <div style="
-          position:absolute;
-          width:0;height:0;
-          left:40px;top:40px;
-          border-left:22px solid transparent;
-          border-right:22px solid transparent;
-          border-bottom:55px solid rgba(45,122,45,0.35);
-          transform:rotate(${deg}deg) translateY(-55px);
-          transform-origin:0px 0px;
-          filter:drop-shadow(0 0 3px rgba(45,122,45,0.4));
-        "></div>
-        <!-- GPS pika -->
-        <div style="
-          position:absolute;
-          width:14px;height:14px;
-          left:33px;top:33px;
-          border-radius:50%;
-          background:${ZELENA};
-          border:3px solid white;
-          box-shadow:0 0 0 4px rgba(45,122,45,0.3);
-          z-index:10;
-        "></div>
-      </div>`,
-      iconSize: [80, 80],
-      iconAnchor: [40, 40],
+      html: `<div style="width:14px;height:14px;border-radius:50%;background:${ZELENA};border:3px solid white;box-shadow:0 0 0 4px rgba(45,122,45,0.3);"></div>`,
+      iconSize: [14, 14], iconAnchor: [7, 7],
     })
   }
 
-  function ustvariSnopIkono(smer) {
-    const s = (smer || 0) * Math.PI / 180
-    const r = 60
-    const kot = 30 * Math.PI / 180
-    const cx = 65, cy = 65
-    const x1 = (cx + r * Math.sin(s - kot)).toFixed(1)
-    const y1 = (cy - r * Math.cos(s - kot)).toFixed(1)
-    const x2 = (cx + r * Math.sin(s + kot)).toFixed(1)
-    const y2 = (cy - r * Math.cos(s + kot)).toFixed(1)
-    return L.divIcon({
-      className: '',
-      html: `<svg width="130" height="130" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
-        <path d="M${cx},${cy} L${x1},${y1} A${r},${r} 0 0,1 ${x2},${y2} Z"
-          fill="rgba(45,122,45,0.35)"
-          stroke="rgba(45,122,45,0.7)"
-          stroke-width="1.5"
-          stroke-linejoin="round"/>
-      </svg>`,
-      iconSize: [130, 130],
-      iconAnchor: [cx, cy],
-    })
+  function posodobiSnop(lat, lon, smer) {
+    const map = mapInstanca.current
+    if (!map) return
+    if (snopLayer.current) { map.removeLayer(snopLayer.current); snopLayer.current = null }
+    // Sever = 0, Vzhod = 90, Jug = 180, Zahod = 270
+    const deg = smer || 0
+    const d = 0.002  // ~220m - dovolj velik da je viden
+    const kot = 35 * Math.PI / 180
+    const sRad = deg * Math.PI / 180
+    // 3 točke: pike levo, desno od snopa + konica
+    const latKos = Math.cos(lat * Math.PI / 180)
+    const p1lat = lat + d * Math.cos(sRad - kot)
+    const p1lon = lon + d * Math.sin(sRad - kot) / latKos
+    const p2lat = lat + d * Math.cos(sRad + kot)
+    const p2lon = lon + d * Math.sin(sRad + kot) / latKos
+    snopLayer.current = L.polygon(
+      [[lat, lon], [p1lat, p1lon], [p2lat, p2lon]],
+      { color: '#2D7A2D', fillColor: '#2D7A2D', fillOpacity: 0.45, weight: 2, opacity: 0.8, interactive: false }
+    ).addTo(map)
   }
 
   const wakeLock = useRef(null)
@@ -397,26 +366,22 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
         // GPS heading - posodobi snop med gibanjem
         if (pos.coords.heading !== null && !isNaN(pos.coords.heading)) {
           smerRef.current = pos.coords.heading
-          if (gpsMarker.current) {
-            gpsMarker.current.setIcon(ustvariKombiniranoIkono(pos.coords.heading))
-          }
+          const lok = gpsLokacija.current
+          if (lok) posodobiSnop(lok[0], lok[1], pos.coords.heading)
         }
         const map = mapInstanca.current
         if (!map) return
         if (!gpsMarker.current) {
           gpsLokacija.current = [latitude, longitude]
-          gpsMarker.current = L.marker([latitude, longitude], { 
-            icon: ustvariKombiniranoIkono(smerRef.current),
-            zIndexOffset: 100,
-          }).addTo(map)
-          gpsKrog.current = L.circle([latitude, longitude], { radius: accuracy, color: ZELENA, fillColor: ZELENA, fillOpacity: 0.08, weight: 1 }).addTo(map)
+          gpsMarker.current = L.marker([latitude, longitude], { icon: ustvariGPSPika(), zIndexOffset: 100 }).addTo(map)
+
           map.setView([latitude, longitude], 15)
+          posodobiSnop(latitude, longitude, smerRef.current)
         } else {
           gpsLokacija.current = [latitude, longitude]
           gpsMarker.current.setLatLng([latitude, longitude])
-          gpsMarker.current.setIcon(ustvariKombiniranoIkono(smerRef.current))
-          gpsKrog.current.setLatLng([latitude, longitude])
-          gpsKrog.current.setRadius(accuracy)
+          posodobiSnop(latitude, longitude, smerRef.current)
+
           map.setView([latitude, longitude])
         }
 
@@ -456,6 +421,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     sledTocke.current = []
     const map = mapInstanca.current
     if (map && sledLinija.current) { map.removeLayer(sledLinija.current); sledLinija.current = null }
+    if (map && snopLayer.current) { map.removeLayer(snopLayer.current); snopLayer.current = null }
 
   }
 
@@ -491,7 +457,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     const map = mapInstanca.current
     if (!map) return
     if (gpsMarker.current) { map.removeLayer(gpsMarker.current); gpsMarker.current = null }
-    if (gpsKrog.current) { map.removeLayer(gpsKrog.current); gpsKrog.current = null }
+
     if (potLinija.current) { map.removeLayer(potLinija.current); potLinija.current = null }
     if (sledLinija.current) { map.removeLayer(sledLinija.current); sledLinija.current = null }
     sledTocke.current = []
@@ -527,7 +493,6 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   }
 
   function sosKlic() {
-    
     setTimeout(() => window.open('tel:112'), 500)
   }
 
@@ -592,9 +557,8 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
                     const lok = gpsLokacija.current
                     const map = mapInstanca.current
                     if (lok && map) {
-                      if (gpsMarker.current) {
-                        gpsMarker.current.setIcon(ustvariKombiniranoIkono(smer))
-                      }
+                      const lok2 = gpsLokacija.current
+                      if (lok2) posodobiSnop(lok2[0], lok2[1], smer)
                     }
                   }, true)
                 }
@@ -607,14 +571,42 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
         </button>
       </div>
 
-      {/* Preklop pogled */}
+      {/* Offline indikator */}
+      {offline && (
+        <div style={{
+          position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)',
+          background: '#FEF3C7', border: '1px solid #F59E0B', borderRadius: 8,
+          padding: '5px 12px', fontSize: 11, fontWeight: 700, color: '#92400E',
+          zIndex: 1000, display: 'flex', alignItems: 'center', gap: 5,
+        }}>
+          📵 Offline — cachiran zemljevid
+        </div>
+      )}
+
+      {/* Prenos območja */}
+      {prenasanje && (
+        <div style={{
+          position: 'absolute', top: 50, left: '50%', transform: 'translateX(-50%)',
+          background: 'white', borderRadius: 12, padding: '10px 16px',
+          zIndex: 1000, boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+          minWidth: 200, textAlign: 'center',
+        }}>
+          <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6 }}>⬇️ Prenašam offline zemljevid...</div>
+          <div style={{ background: '#E5E7EB', borderRadius: 4, height: 6, overflow: 'hidden' }}>
+            <div style={{ background: ZELENA, height: '100%', width: `${skupajTiles > 0 ? (preneseno/skupajTiles*100) : 0}%`, transition: 'width 0.3s' }} />
+          </div>
+          <div style={{ fontSize: 11, color: '#6B7280', marginTop: 4 }}>{preneseno} / {skupajTiles} tile-ov</div>
+        </div>
+      )}
+
+      {/* Preklop pogled */}}
       <button onClick={preklopi} style={{ ...btnStil, position: 'absolute', top: 12, right: 12, padding: '9px 14px' }}>
         {jeTopoPogled ? '🛰 Satelit' : '🗺 Zemljevid'}
       </button>
 
       {/* GPX */}
       <input ref={gpxInput} type="file" accept=".gpx" style={{ display: 'none' }} onChange={nalozGPX} />
-      <button onClick={() => gpxInput.current.click()} style={{ ...btnStil, position: 'absolute', bottom: 16 + spodajOffset + 124, right: 12 }}>
+      <button onClick={() => gpxInput.current.click()} style={{ ...btnStil, position: 'absolute', bottom: 16 + spodajOffset + 186, right: 12 }}>
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         GPX
       </button>
