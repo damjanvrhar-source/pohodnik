@@ -119,7 +119,11 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   const [sledCas, setSledCas] = useState(0)
   const [hitrost, setHitrost] = useState(0)
   const casTimer = useRef(null)
+  const timerWorker = useRef(null)
   const smerRef = useRef(0)
+  const [kompasSmeri, setKompasSmeri] = useState(null)
+  const [kompasAktiven, setKompasAktiven] = useState(false)
+  const jeGibanje = useRef(false)
 
   // Avtomatski GPS start
   useEffect(() => {
@@ -222,6 +226,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
       map.remove()
       mapInstanca.current = null
       if (watchId.current) navigator.geolocation.clearWatch(watchId.current)
+      if (timerWorker.current) { timerWorker.current.postMessage('stop'); timerWorker.current.terminate() }
       if (casTimer.current) clearInterval(casTimer.current)
       sprostiWakeLock()
       window.removeEventListener('deviceorientation', onOrientacija, true)
@@ -287,14 +292,28 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     setSledRazdalja(0)
     setSledCas(0)
     zageniWakeLock()
-    casTimer.current = setInterval(() => setSledCas(s => s + 1), 1000)
+    jeGibanje.current = false
+    // Web Worker timer - teče tudi ko je ekran ugasnjen
+    if (typeof Worker !== 'undefined') {
+      timerWorker.current = new Worker('/timer-worker.js')
+      timerWorker.current.onmessage = () => setSledCas(s => s + 1)
+    }
     watchId.current = navigator.geolocation.watchPosition(
       (pos) => {
         const { latitude, longitude, altitude, accuracy } = pos.coords
         if (gpsStatus !== 'aktiven ✓')
         setGpsStatus('aktiven ✓')
         if (altitude) setVisina(Math.round(altitude))
-        if (pos.coords.speed) setHitrost(Math.round(pos.coords.speed * 3.6))
+        if (pos.coords.speed !== null) {
+          const kmh = Math.round(pos.coords.speed * 3.6)
+          setHitrost(kmh)
+          // Začni timer šele ko se premikaš
+          if (kmh > 0 && !jeGibanje.current) {
+            jeGibanje.current = true
+            if (timerWorker.current) timerWorker.current.postMessage('start')
+            else casTimer.current = setInterval(() => setSledCas(s => s + 1), 1000)
+          }
+        }
         // GPS heading - posodobi snop med gibanjem
         if (pos.coords.heading !== null && !isNaN(pos.coords.heading)) {
           smerRef.current = pos.coords.heading
@@ -480,27 +499,31 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
         )}
         <button
           onClick={() => {
+            const aktivirajKompas = () => {
+              setKompasAktiven(true)
+              window.addEventListener('deviceorientation', (e) => {
+                const smer = e.webkitCompassHeading ?? (e.alpha !== null ? (360 - e.alpha) : null)
+                if (smer === null) return
+                smerRef.current = smer
+                setKompasSmeri(Math.round(smer))
+                const lok = gpsLokacija.current
+                if (lok) posodobiSnop(lok[0], lok[1], smer)
+              }, true)
+            }
             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
               DeviceOrientationEvent.requestPermission().then(p => {
-                if (p === 'granted') {
-                  window.addEventListener('deviceorientation', (e) => {
-                    const smer = e.webkitCompassHeading ?? (360 - (e.alpha || 0))
-                    smerRef.current = smer
-                    const lok = gpsLokacija.current
-                    const map = mapInstanca.current
-                    if (lok && map) {
-                      const lok2 = gpsLokacija.current
-                      if (lok2) posodobiSnop(lok2[0], lok2[1], smer)
-                    }
-                  }, true)
-                }
+                if (p === 'granted') aktivirajKompas()
               }).catch(() => {})
+            } else {
+              aktivirajKompas()
             }
           }}
-          style={{ background: 'white', border: '1px solid #E5E7EB', borderRadius: 8, padding: '5px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer', pointerEvents: 'auto', display: 'flex', alignItems: 'center', gap: 4, boxShadow: '0 2px 6px rgba(0,0,0,0.1)' }}
+          style={{ background: kompasAktiven ? ZELENA : 'white', border: `1px solid ${kompasAktiven ? ZELENA : '#E5E7EB'}`, borderRadius: 8, padding: '5px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer', pointerEvents: 'auto', display: 'flex', alignItems: 'center', gap: 4, boxShadow: '0 2px 6px rgba(0,0,0,0.1)', color: kompasAktiven ? 'white' : '#1A1A2E' }}
         >
-          🧭 Kompas
+          <span style={{ display: 'inline-block', transform: `rotate(${kompasSmeri || 0}deg)`, transition: 'transform 0.3s ease', fontSize: 14 }}>🧭</span>
+          {kompasSmeri !== null ? `${kompasSmeri}°` : 'Kompas'}
         </button>
+
       </div>
 
       {/* Preklop pogled */}
