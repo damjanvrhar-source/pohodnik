@@ -68,9 +68,13 @@ const zavihki = [
 export default function BottomNav({ aktiven, onPreklop }) {
   const [pritisnjeno, setPritisnjeno] = useState(null)
 
+  const [bouncing, setBouncing] = useState(null)
+
   function klik(id) {
     setPritisnjeno(id)
+    setBouncing(id)
     setTimeout(() => setPritisnjeno(null), 300)
+    setTimeout(() => setBouncing(null), 400)
     onPreklop(id)
   }
 
@@ -112,6 +116,7 @@ export default function BottomNav({ aktiven, onPreklop }) {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               width: 36, height: 28,
               filter: jeAktiven ? 'drop-shadow(0 0 6px rgba(255,255,255,0.5))' : 'none',
+              animation: bouncing === z.id ? 'navBounce 0.4s cubic-bezier(0.34,1.56,0.64,1) both' : 'none',
             }}>
               {z.ikona(jeAktiven)}
             </div>

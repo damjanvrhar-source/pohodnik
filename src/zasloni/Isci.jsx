@@ -553,27 +553,31 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
           </div>
         )}
 
-        {tab === 'poti' && filtriranePoti.map(p => {
+        {tab === 'poti' && filtriranePoti.map((p, idx) => {
           const info = tezavnostInfo(p.tezavnost)
           const cas = izracunajCas(p.dolzina, p.vzpon)
+          const delayKlasa = `pot-d${Math.min(idx + 1, 10)}`
           return (
-            <div key={p.id} style={{ background: 'white', borderRadius: 14, padding: '13px 14px', marginBottom: 9, border: '0.5px solid var(--rob)', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <div key={p.id} className={`pot-kartica anim-pot-slide ${delayKlasa}`} style={{ background: 'white', borderRadius: 14, padding: '13px 14px', marginBottom: 9, border: '0.5px solid var(--rob)', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 11, marginBottom: 8 }}>
                 <IkonaPoti razred={info.razred} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 3, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                    {p.ime}<span className={`tezavnost ${info.razred}`}>{info.ime}</span>
+                    {p.ime}<span className={`tezavnost ${info.razred} anim-badge-pop`}>{info.ime}</span>
                   </div>
                   <div style={{ fontSize: 11, color: 'var(--besedilo2)' }}>{p.regija} · {p.dolzina} km · ▲{p.vzpon} m · ⏱ {cas}</div>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 8, borderTop: '0.5px solid var(--rob)', paddingTop: 10 }}>
 
-                <button onClick={() => onOdpriPot && onOdpriPot(p)} style={{
+                <button onClick={() => onOdpriPot && onOdpriPot(p)} className="btn-shimmer" style={{
                   flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-                  padding: '9px', background: 'linear-gradient(135deg, #1F5C1F, #3A9A3A)', borderRadius: 8, border: 'none', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                  padding: '9px', borderRadius: 8, border: 'none', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer',
                   boxShadow: '0 3px 10px rgba(45,122,45,0.3)',
-                }}>▶ Odpri pot</button>
+                }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                  Odpri pot
+                </button>
               </div>
             </div>
           )

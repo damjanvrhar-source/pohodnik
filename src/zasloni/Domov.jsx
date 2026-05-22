@@ -60,6 +60,7 @@ function IkonaPoti({ razred }) {
         transform: pulse ? 'scale(1.15)' : 'scale(1)',
         transition: 'transform 0.2s cubic-bezier(0.34,1.56,0.64,1)',
         boxShadow: pulse ? `0 4px 14px ${b.rob}40` : `0 2px 6px ${b.rob}20`,
+        animation: pulse ? 'none' : 'goraDiha 3s ease-in-out infinite',
       }}
     >
       <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
@@ -78,6 +79,7 @@ export default function Domov({ onOdpriPot }) {
   const [vreme, setVreme] = useState(null)
   const [nalaganje, setNalaganje] = useState(true)
   const [stats, setStats] = useState({ poti: 0, razdalja: 0, vzpon: 0, cas: 0 })
+  const [animStats, setAnimStats] = useState({ poti: 0, razdalja: 0, vzpon: 0, cas: 0 })
 
   useEffect(() => {
     try {
