@@ -124,6 +124,10 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   const [kompasSmeri, setKompasSmeri] = useState(null)
   const [kompasAktiven, setKompasAktiven] = useState(false)
   const jeGibanje = useRef(false)
+  const sledRazdaljRef = useRef(0)
+  const sledCasRef = useRef(0)
+  const vzponRef = useRef(0)
+  const zadnjaVisinaRef = useRef(null)
 
   // Avtomatski GPS start
   useEffect(() => {
@@ -293,17 +297,28 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
     setSledCas(0)
     zageniWakeLock()
     jeGibanje.current = false
+    sledRazdaljRef.current = 0
+    sledCasRef.current = 0
+    vzponRef.current = 0
+    zadnjaVisinaRef.current = null
     // Web Worker timer - teče tudi ko je ekran ugasnjen
     if (typeof Worker !== 'undefined') {
       timerWorker.current = new Worker('/timer-worker.js')
-      timerWorker.current.onmessage = () => setSledCas(s => s + 1)
+      timerWorker.current.onmessage = () => setSledCas(s => { sledCasRef.current = s + 1; return s + 1 })
     }
     watchId.current = navigator.geolocation.watchPosition(
       (pos) => {
         const { latitude, longitude, altitude, accuracy } = pos.coords
         if (gpsStatus !== 'aktiven ✓')
         setGpsStatus('aktiven ✓')
-        if (altitude) setVisina(Math.round(altitude))
+        if (altitude) {
+          const alt = Math.round(altitude)
+          setVisina(alt)
+          if (zadnjaVisinaRef.current !== null && alt > zadnjaVisinaRef.current) {
+            vzponRef.current += alt - zadnjaVisinaRef.current
+          }
+          zadnjaVisinaRef.current = alt
+        }
         if (pos.coords.speed !== null) {
           const kmh = Math.round(pos.coords.speed * 3.6)
           setHitrost(kmh)
@@ -346,7 +361,9 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
             const dLon = (longitude - prej[1]) * Math.PI / 180
             const a = Math.sin(dLat/2)**2 + Math.cos(prej[0]*Math.PI/180)*Math.cos(latitude*Math.PI/180)*Math.sin(dLon/2)**2
             const razd = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
-            if (razd > 8) setSledRazdalja(d => d + razd)
+            if (razd > 8) {
+              setSledRazdalja(d => { sledRazdaljRef.current = d + razd; return d + razd })
+            }
           }
           sledTocke.current.push([latitude, longitude])
           if (sledTocke.current.length > 1) {
@@ -377,26 +394,28 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   }
 
   function shranijPohod() {
-    if (sledRazdalja < 50) return // Ne shrani če < 50m
+    const razd = sledRazdaljRef.current
+    const cas = sledCasRef.current
+    const vzp = Math.round(vzponRef.current)
+    if (razd < 50) return // Ne shrani če < 50m
     const pohod = {
       id: Date.now(),
       ime: izbranaPot?.ime || 'Prosti pohod',
       datum: new Date().toLocaleDateString('sl-SI'),
-      cas: sledCas,
-      razdalja: Math.round(sledRazdalja),
-      vzpon: visina || 0,
+      cas: cas,
+      razdalja: Math.round(razd),
+      vzpon: vzp,
       regija: izbranaPot?.regija || '',
     }
     try {
       const obstojechi = JSON.parse(localStorage.getItem('pohodnik_pohodi') || '[]')
       obstojechi.unshift(pohod)
       localStorage.setItem('pohodnik_pohodi', JSON.stringify(obstojechi.slice(0, 50)))
-      // Posodobi statistike
       const stats = JSON.parse(localStorage.getItem('pohodnik_stats') || '{"poti":0,"razdalja":0,"vzpon":0,"cas":0}')
       stats.poti += 1
-      stats.razdalja += Math.round(sledRazdalja)
-      stats.vzpon += visina || 0
-      stats.cas += sledCas
+      stats.razdalja += Math.round(razd)
+      stats.vzpon += vzp
+      stats.cas += cas
       localStorage.setItem('pohodnik_stats', JSON.stringify(stats))
     } catch(e) {}
   }
