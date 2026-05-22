@@ -91,7 +91,7 @@ function ProfilVisine({ tocke, dolzina, onZapri }) {
   )
 }
 
-export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
+export default function Zemljevid({ izbranaPot, offlineObmocje, avtomatskiStart, onGPSZacet, onOfflineOdprto }) {
   const mapRef = useRef(null)
   const mapInstanca = useRef(null)
   const gpsMarker = useRef(null)
@@ -132,6 +132,15 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   const sledCasRef = useRef(0)
   const vzponRef = useRef(0)
   const zadnjaVisinaRef = useRef(null)
+
+  // Leti na offline območje
+  useEffect(() => {
+    if (offlineObmocje && mapInstanca.current) {
+      const map = mapInstanca.current
+      map.setView([parseFloat(offlineObmocje.lat), parseFloat(offlineObmocje.lon)], offlineObmocje.zoom || 13, { animate: true, duration: 1 })
+      if (onOfflineOdprto) onOfflineOdprto()
+    }
+  }, [offlineObmocje])
 
   // Avtomatski GPS start
   useEffect(() => {

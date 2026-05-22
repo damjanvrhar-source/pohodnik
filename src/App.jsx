@@ -27,6 +27,15 @@ export default function App() {
     setAktiven('zemljevid')  // Odpri zemljevid s ciljem
   }
 
+  const [offlineObmocje, setOfflineObmocje] = useState(null)
+
+  function odpriOfflineObmocje(obmocje) {
+    setIzbranaPot(null)
+    setOfflineObmocje(obmocje)
+    setZacniGPS(false)
+    setAktiven('zemljevid')
+  }
+
   function preklopi(zaslon) {
     setPotDetail(null)
     setZacniGPS(false)
@@ -57,9 +66,9 @@ export default function App() {
                 }}
               />
             )}
-            {aktiven === 'zemljevid' && <Zemljevid izbranaPot={izbranaPot} avtomatskiStart={zacniGPS} onGPSZacet={() => setZacniGPS(false)} />}
+            {aktiven === 'zemljevid' && <Zemljevid izbranaPot={izbranaPot} offlineObmocje={offlineObmocje} avtomatskiStart={zacniGPS} onGPSZacet={() => setZacniGPS(false)} onOfflineOdprto={() => setOfflineObmocje(null)} />}
 
-            {aktiven === 'profil' && <Profil />}
+            {aktiven === 'profil' && <Profil onOdpriObmocje={odpriOfflineObmocje} />}
           </>
         )}
       </main>

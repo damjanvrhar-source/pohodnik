@@ -19,7 +19,7 @@ function formatDatum(datum) {
   return datum
 }
 
-export default function Profil() {
+export default function Profil({ onOdpriObmocje }) {
   const [urejanje, setUrejanje] = useState(false)
   const [ime, setIme] = useState('')
   const [tempIme, setTempIme] = useState('')
@@ -319,11 +319,18 @@ export default function Profil() {
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                     padding: '9px 0', borderBottom: i < offlineObmocja.length - 1 ? '0.5px solid var(--rob)' : 'none',
                   }}>
-                    <div>
+                    <div style={{ flex: 1 }}>
                       <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--besedilo)' }}>📍 {o.ime}</div>
                       <div style={{ fontSize: 11, color: 'var(--besedilo2)', marginTop: 2 }}>{o.datum} · {o.tiles} tile-ov · ~{Math.round(o.tiles * 15 / 1024 * 10) / 10} MB</div>
                     </div>
-                    <div style={{ fontSize: 10, background: '#D1FAE5', color: '#065F46', padding: '2px 7px', borderRadius: 5, fontWeight: 700 }}>✓ Offline</div>
+                    <button onClick={() => onOdpriObmocje && onOdpriObmocje(o)} className="btn-shimmer" style={{
+                      border: 'none', borderRadius: 8, padding: '6px 12px',
+                      fontSize: 11, fontWeight: 700, color: 'white', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: 4,
+                    }}>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                      Navigacija
+                    </button>
                   </div>
                 ))}
               </div>
