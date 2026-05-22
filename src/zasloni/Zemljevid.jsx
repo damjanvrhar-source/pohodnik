@@ -516,7 +516,7 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
             🗺 {potIme} · {potDolzina} km {prikazProfila ? '▼' : '▲'}
           </div>
         )}
-        <button
+        <div
           onClick={() => {
             const aktivirajKompas = () => {
               setKompasAktiven(true)
@@ -537,11 +537,62 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
               aktivirajKompas()
             }
           }}
-          style={{ background: kompasAktiven ? ZELENA : 'white', border: `1px solid ${kompasAktiven ? ZELENA : '#E5E7EB'}`, borderRadius: 8, padding: '5px 10px', fontSize: 11, fontWeight: 600, cursor: 'pointer', pointerEvents: 'auto', display: 'flex', alignItems: 'center', gap: 4, boxShadow: '0 2px 6px rgba(0,0,0,0.1)', color: kompasAktiven ? 'white' : '#1A1A2E' }}
+          style={{
+            pointerEvents: 'auto', cursor: 'pointer',
+            width: 72, height: 72, borderRadius: '50%',
+            background: kompasAktiven
+              ? 'radial-gradient(circle at 35% 35%, #2D8A2D, #1A5C1A)'
+              : 'radial-gradient(circle at 35% 35%, #2a2a3a, #1a1a2e)',
+            boxShadow: kompasAktiven
+              ? '0 4px 20px rgba(45,122,45,0.6), inset 0 1px 0 rgba(255,255,255,0.15)'
+              : '0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)',
+            border: `2px solid ${kompasAktiven ? 'rgba(100,200,100,0.5)' : 'rgba(255,255,255,0.15)'}`,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            transition: 'all 0.3s ease',
+            position: 'relative', overflow: 'hidden',
+          }}
         >
-          <span style={{ display: 'inline-block', transform: `rotate(${kompasSmeri || 0}deg)`, transition: 'transform 0.3s ease', fontSize: 14 }}>🧭</span>
-          {kompasSmeri !== null ? `${kompasSmeri}°` : 'Kompas'}
-        </button>
+          {/* Kompas rose ozadje */}
+          <svg width="68" height="68" viewBox="0 0 68 68" style={{ position: 'absolute', top: 0, left: 0 }}>
+            {/* Zunanje oznake smeri */}
+            <text x="34" y="10" textAnchor="middle" fontSize="8" fontWeight="800" fill={kompasAktiven ? '#90EE90' : '#FF6B6B'} fontFamily="sans-serif">N</text>
+            <text x="34" y="63" textAnchor="middle" fontSize="7" fontWeight="600" fill="rgba(255,255,255,0.5)" fontFamily="sans-serif">S</text>
+            <text x="61" y="37" textAnchor="middle" fontSize="7" fontWeight="600" fill="rgba(255,255,255,0.5)" fontFamily="sans-serif">E</text>
+            <text x="7" y="37" textAnchor="middle" fontSize="7" fontWeight="600" fill="rgba(255,255,255,0.5)" fontFamily="sans-serif">W</text>
+            {/* Tanke črtice */}
+            {[0,45,90,135,180,225,270,315].map((deg, i) => {
+              const rad = (deg - 90) * Math.PI / 180
+              const r1 = 28, r2 = i % 2 === 0 ? 24 : 26
+              return <line key={deg}
+                x1={34 + r1 * Math.cos(rad)} y1={34 + r1 * Math.sin(rad)}
+                x2={34 + r2 * Math.cos(rad)} y2={34 + r2 * Math.sin(rad)}
+                stroke="rgba(255,255,255,0.3)" strokeWidth={i % 2 === 0 ? 1.5 : 1}
+              />
+            })}
+            {/* Kompas igla */}
+            <g transform={`rotate(${kompasSmeri || 0}, 34, 34)`}>
+              {/* Sever - rdeča */}
+              <polygon points="34,14 37,34 31,34" fill={kompasAktiven ? '#4ADE80' : '#FF4444'} opacity="0.95"/>
+              {/* Jug - bela */}
+              <polygon points="34,54 37,34 31,34" fill="rgba(255,255,255,0.7)"/>
+              {/* Sredinska točka */}
+              <circle cx="34" cy="34" r="3.5" fill="white" opacity="0.9"/>
+              <circle cx="34" cy="34" r="1.5" fill={kompasAktiven ? '#4ADE80' : '#FF4444'}/>
+            </g>
+          </svg>
+          {/* Stopinje spodaj */}
+          {kompasSmeri !== null && (
+            <div style={{
+              position: 'absolute', bottom: 6,
+              fontSize: 9, fontWeight: 800, color: 'white',
+              background: 'rgba(0,0,0,0.4)', padding: '1px 5px', borderRadius: 4,
+              letterSpacing: '0.5px',
+            }}>{kompasSmeri}°</div>
+          )}
+          {!kompasAktiven && (
+            <div style={{ position: 'absolute', bottom: 6, fontSize: 8, color: 'rgba(255,255,255,0.5)', fontWeight: 600 }}>TAP</div>
+          )}
+        </div>
 
       </div>
 
