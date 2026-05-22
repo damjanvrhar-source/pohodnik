@@ -58,6 +58,7 @@ export default function Profil() {
   const [cacheTiles, setCacheTiles] = useState(0)
   const [cacheVelikost, setCacheVelikost] = useState(0)
   const [brisanje, setBrisanje] = useState(false)
+  const [offlineObmocja, setOfflineObmocja] = useState([])
 
   const [prostorSkupaj, setProstorSkupaj] = useState(null)
   const [prostorProst, setProstorProst] = useState(null)
@@ -71,6 +72,11 @@ export default function Profil() {
         setCacheVelikost(Math.round(keys.length * 15 / 1024 * 10) / 10)
       }).catch(() => {})
     }
+    // Naloži seznam offline območij
+    try {
+      const obs = JSON.parse(localStorage.getItem('offline_obmocja') || '[]')
+      setOfflineObmocja(obs)
+    } catch(e) {}
     // Preveri razpoložljiv prostor naprave
     if ('storage' in navigator && 'estimate' in navigator.storage) {
       navigator.storage.estimate().then(({ usage, quota }) => {
@@ -91,6 +97,8 @@ export default function Profil() {
       await caches.delete('pohodnik-tiles-v1')
       setCacheTiles(0)
       setCacheVelikost(0)
+      localStorage.removeItem('offline_obmocja')
+      setOfflineObmocja([])
     } catch(e) {}
     setBrisanje(false)
   }
@@ -287,12 +295,7 @@ export default function Profil() {
                   <span style={{ fontWeight: 700, color: prostorProst < 100 ? '#DC2626' : prostorProst < 500 ? '#F59E0B' : 'var(--zelena)' }}>{prostorProst} MB prosto / {prostorSkupaj} MB skupaj</span>
                 </div>
                 <div style={{ background: '#E5E7EB', borderRadius: 6, height: 8, overflow: 'hidden' }}>
-                  <div style={{
-                    height: '100%', borderRadius: 6,
-                    width: `${Math.min(((prostorSkupaj - prostorProst) / prostorSkupaj) * 100, 100)}%`,
-                    background: prostorProst < 100 ? '#DC2626' : prostorProst < 500 ? '#F59E0B' : 'var(--zelena)',
-                    transition: 'width 0.5s ease',
-                  }} />
+                  <div style={{ height: '100%', borderRadius: 6, width: `${Math.min(((prostorSkupaj - prostorProst) / prostorSkupaj) * 100, 100)}%`, background: prostorProst < 100 ? '#DC2626' : prostorProst < 500 ? '#F59E0B' : 'var(--zelena)', transition: 'width 0.5s ease' }} />
                 </div>
               </div>
             )}
@@ -309,6 +312,22 @@ export default function Profil() {
                 <div style={{ fontSize: 10, color: 'var(--besedilo2)', marginTop: 2 }}>zaseden prostor</div>
               </div>
             </div>
+            {offlineObmocja.length > 0 && (
+              <div style={{ marginBottom: 10 }}>
+                {offlineObmocja.map((o, i) => (
+                  <div key={o.id} style={{
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    padding: '9px 0', borderBottom: i < offlineObmocja.length - 1 ? '0.5px solid var(--rob)' : 'none',
+                  }}>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--besedilo)' }}>📍 {o.ime}</div>
+                      <div style={{ fontSize: 11, color: 'var(--besedilo2)', marginTop: 2 }}>{o.datum} · {o.tiles} tile-ov · ~{Math.round(o.tiles * 15 / 1024 * 10) / 10} MB</div>
+                    </div>
+                    <div style={{ fontSize: 10, background: '#D1FAE5', color: '#065F46', padding: '2px 7px', borderRadius: 5, fontWeight: 700 }}>✓ Offline</div>
+                  </div>
+                ))}
+              </div>
+            )}
             <div style={{ background: 'var(--zelena-sv)', borderRadius: 10, padding: '10px 12px', fontSize: 12, color: 'var(--besedilo2)', lineHeight: 1.5, marginBottom: prostorSkupaj ? 10 : 0 }}>
               ✅ Karte so shranjene za offline uporabo. GPS navigacija deluje brez interneta na prenesenih območjih.
             </div>

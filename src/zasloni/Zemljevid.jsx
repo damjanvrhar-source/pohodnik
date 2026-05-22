@@ -272,6 +272,8 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
       alert('Vaš brskalnik ne podpira offline kart.')
       return
     }
+    const imeObmocja = window.prompt('Ime območja (npr. Triglav, Bled, Pokljuka):')
+    if (!imeObmocja || !imeObmocja.trim()) return
     const bounds = map.getBounds()
     const zoom = map.getZoom()
     const minZoom = Math.max(zoom - 1, 8)
@@ -308,6 +310,22 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
         setPreneseno(true)
         setTimeout(() => setPreneseno(false), 4000)
         navigator.serviceWorker.removeEventListener('message', handler)
+        // Shrani ime območja
+        try {
+          const center = map.getCenter()
+          const zoom = map.getZoom()
+          const obstoječa = JSON.parse(localStorage.getItem('offline_obmocja') || '[]')
+          obstoječa.unshift({
+            id: Date.now(),
+            ime: imeObmocja.trim(),
+            datum: new Date().toLocaleDateString('sl-SI'),
+            tiles: e.data.preneseno,
+            lat: center.lat.toFixed(4),
+            lon: center.lng.toFixed(4),
+            zoom,
+          })
+          localStorage.setItem('offline_obmocja', JSON.stringify(obstoječa.slice(0, 20)))
+        } catch(err) {}
       }
     })
   }
