@@ -558,7 +558,7 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
           const cas = izracunajCas(p.dolzina, p.vzpon)
           const delayKlasa = `pot-d${Math.min(idx + 1, 10)}`
           return (
-            <div key={p.id} className={`pot-kartica anim-pot-slide ${delayKlasa}`} style={{ background: 'white', borderRadius: 14, padding: '13px 14px', marginBottom: 9, border: '0.5px solid var(--rob)', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+            <div key={p.id} className={`pot-kartica anim-pot-slide ${delayKlasa}`} style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f7fdf7 100%)', borderRadius: 14, padding: '13px 14px', marginBottom: 9, border: '1px solid #cce6cc', boxShadow: '0 3px 12px rgba(45,122,45,0.08)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 11, marginBottom: 8 }}>
                 <IkonaPoti razred={info.razred} />
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -584,7 +584,7 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
         })}
 
         {tab === 'koce' && filtrirane_koce.map(k => (
-          <div key={k.id} style={{ background: 'white', borderRadius: 14, padding: '13px 14px', marginBottom: 9, border: '0.5px solid var(--rob)', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div key={k.id} style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f7fdf7 100%)', borderRadius: 14, padding: '13px 14px', marginBottom: 9, border: '1px solid #cce6cc', boxShadow: '0 3px 12px rgba(45,122,45,0.08)' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 11, marginBottom: 8 }}>
               <IkonaKoce />
               <div style={{ flex: 1, minWidth: 0 }}>
@@ -606,7 +606,7 @@ export default function Isci({ onOdpriPot, onPotDoKoce }) {
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
                 Navigacija
               </button>
-              <button onClick={() => onPotDoKoce && onPotDoKoce(k)} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '8px', background: 'linear-gradient(135deg, #1F5C1F, #3A9A3A)', borderRadius: 8, border: 'none', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>▶ Pot</button>
+              <button onClick={() => onPotDoKoce && onPotDoKoce(k)} className="btn-shimmer" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, padding: '8px', borderRadius: 8, border: 'none', color: 'white', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>▶ Pot</button>
             </div>
           </div>
         ))}

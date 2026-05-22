@@ -148,7 +148,7 @@ export default function Profil() {
 
       {/* Zgodovina pohodov */}
       <div style={{
-        background: 'white', borderRadius: 18, padding: 16,
+        background: 'linear-gradient(135deg, #ffffff 0%, #f6fdf6 100%)', borderRadius: 18, padding: 16,
         border: '0.5px solid var(--rob)',
         boxShadow: '0 2px 10px rgba(0,0,0,0.06)',
         animation: 'fadeSlideUp 0.5s ease both',

@@ -60,7 +60,7 @@ function TezavnostPike({ razred }) {
 
 function StatChip({ ikona, vrednost, opis }) {
   return (
-    <div style={{ flex: 1, background: 'var(--zelena-sv)', borderRadius: 10, padding: '10px 8px', textAlign: 'center' }}>
+    <div style={{ flex: 1, background: 'linear-gradient(135deg, #E8F5E8, #D1FAE5)', borderRadius: 10, padding: '10px 8px', textAlign: 'center', border: '1px solid #A7D7A7', boxShadow: '0 2px 6px rgba(45,122,45,0.1)' }}>
       <div style={{ fontSize: 16 }}>{ikona}</div>
       <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--zelena)', marginTop: 2 }}>{vrednost}</div>
       <div style={{ fontSize: 10, color: 'var(--besedilo2)', marginTop: 1 }}>{opis}</div>
@@ -126,7 +126,7 @@ export default function PotDetail({ pot, onZacniNavigacijo, onNazaj }) {
         const izInfo = tezavnostInfo(iz.tezavnost)
         const izCas = izracunajCas(iz.km, iz.vzpon)
         return (
-          <div key={i} style={{ background: 'white', borderRadius: 14, padding: 14, marginBottom: 10, border: '0.5px solid var(--rob)', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+          <div key={i} className="anim-pot-slide" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f8fdf8 100%)', borderRadius: 14, padding: 14, marginBottom: 10, border: '1px solid var(--rob)', boxShadow: '0 4px 14px rgba(45,122,45,0.08)', animationDelay: `${i * 0.08}s` }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
               <div style={{ fontSize: 14, fontWeight: 700, flex: 1, paddingRight: 8 }}>📍 {iz.ime}</div>
               <span className={`tezavnost ${izInfo.razred}`}>{izInfo.ime}</span>
@@ -142,8 +142,8 @@ export default function PotDetail({ pot, onZacniNavigacijo, onNazaj }) {
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
                 Do izhodišča
               </button>
-              <button onClick={() => onZacniNavigacijo({ ...pot, ...iz })} style={{ flex: 2, padding: '10px', background: 'linear-gradient(135deg, #1F5C1F, #3A9A3A)', color: 'white', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, boxShadow: '0 4px 12px rgba(45,122,45,0.35)' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+              <button onClick={() => onZacniNavigacijo({ ...pot, ...iz })} className="btn-shimmer" style={{ flex: 2, padding: '10px', color: 'white', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, boxShadow: '0 4px 12px rgba(45,122,45,0.35)' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
                 Začni pohod + GPS
               </button>
             </div>
