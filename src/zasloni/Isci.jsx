@@ -151,6 +151,14 @@ const BAZA_POTI = [
   { id: 148, ime: 'Pohorje — panoramska pot', regija: 'Pohorje', tezavnost: 'hiking', dolzina: '12', vzpon: 200, lat: 46.5, lon: 15.3833 },
   { id: 149, ime: 'Rogaška Slatina — Janina', regija: 'Štajerska', tezavnost: 'hiking', dolzina: '5', vzpon: 300, lat: 46.2333, lon: 15.6333 },
   { id: 150, ime: 'Rajhenburg', regija: 'Štajerska', tezavnost: 'hiking', dolzina: '4', vzpon: 150, lat: 45.9833, lon: 15.5167 },
+  { id: 151, ime: 'Triglav — iz Bohinja (Stara Fužina)', regija: 'Julijske Alpe', tezavnost: 'demanding_mountain_hiking', dolzina: '22', vzpon: 1900, lat: 46.3794, lon: 13.8369 },
+  { id: 152, ime: 'Triglav — z Rudnega Polja (Pokljuka)', regija: 'Julijske Alpe', tezavnost: 'demanding_mountain_hiking', dolzina: '18', vzpon: 1520, lat: 46.3794, lon: 13.8369 },
+  { id: 153, ime: 'Triglav — čez Prag (Dolina Vrat)', regija: 'Julijske Alpe', tezavnost: 'demanding_mountain_hiking', dolzina: '16', vzpon: 1800, lat: 46.3794, lon: 13.8369 },
+  { id: 154, ime: 'Triglav — iz Zadnjice (Trenta)', regija: 'Julijske Alpe', tezavnost: 'demanding_mountain_hiking', dolzina: '20', vzpon: 1900, lat: 46.3794, lon: 13.8369 },
+  { id: 155, ime: 'Triglav — iz Krme', regija: 'Julijske Alpe', tezavnost: 'demanding_mountain_hiking', dolzina: '17', vzpon: 1700, lat: 46.3794, lon: 13.8369 },
+  { id: 156, ime: 'Golovec — od Fužinskega mosta (PST)', regija: 'Posavsko hribovje', tezavnost: 'hiking', dolzina: '5', vzpon: 150, lat: 46.0517, lon: 14.5528 },
+  { id: 157, ime: 'Golovec — krožna pot (Rakovnik)', regija: 'Posavsko hribovje', tezavnost: 'hiking', dolzina: '4', vzpon: 120, lat: 46.0467, lon: 14.5450 },
+  { id: 158, ime: 'Golovec — od Grubarjevega prekopa do Orel', regija: 'Posavsko hribovje', tezavnost: 'hiking', dolzina: '6', vzpon: 160, lat: 46.0483, lon: 14.5500 },
 ]
 
 const BAZA_KOC = [
