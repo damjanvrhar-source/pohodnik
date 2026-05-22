@@ -123,6 +123,10 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
   const smerRef = useRef(0)
   const [kompasSmeri, setKompasSmeri] = useState(null)
   const [kompasAktiven, setKompasAktiven] = useState(false)
+  const [prenasanje, setPrenasanje] = useState(false)
+  const [prenosNapredek, setPrenosNapredek] = useState(0)
+  const [prenosSkupaj, setPrenosSkupaj] = useState(0)
+  const [preneseno, setPreneseno] = useState(false)
   const jeGibanje = useRef(false)
   const sledRazdaljRef = useRef(0)
   const sledCasRef = useRef(0)
@@ -251,6 +255,60 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
       className: '',
       html: `<div style="width:14px;height:14px;border-radius:50%;background:${ZELENA};border:3px solid white;box-shadow:0 0 0 4px rgba(45,122,45,0.3);"></div>`,
       iconSize: [14, 14], iconAnchor: [7, 7],
+    })
+  }
+
+  function generirajTile(z, x, y, urlTemplate) {
+    return urlTemplate
+      .replace('{z}', z).replace('{x}', x).replace('{y}', y)
+      .replace('{s}', ['a','b','c','d'][Math.floor(Math.random()*4)])
+      .replace('{r}', '')
+  }
+
+  async function prenesiObmocje() {
+    const map = mapInstanca.current
+    if (!map) return
+    if (!('serviceWorker' in navigator)) {
+      alert('Vaš brskalnik ne podpira offline kart.')
+      return
+    }
+    const bounds = map.getBounds()
+    const zoom = map.getZoom()
+    const minZoom = Math.max(zoom - 1, 8)
+    const maxZoom = Math.min(zoom + 2, 16)
+    const urlTemplate = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png'
+    const tiles = []
+    for (let z = minZoom; z <= maxZoom; z++) {
+      const nw = map.project(bounds.getNorthWest(), z)
+      const se = map.project(bounds.getSouthEast(), z)
+      const x1 = Math.floor(nw.x / 256)
+      const x2 = Math.floor(se.x / 256)
+      const y1 = Math.floor(nw.y / 256)
+      const y2 = Math.floor(se.y / 256)
+      for (let x = x1; x <= x2; x++) {
+        for (let y = y1; y <= y2; y++) {
+          tiles.push(generirajTile(z, x, y, urlTemplate))
+        }
+      }
+    }
+    if (tiles.length > 1500) {
+      alert(`Preveč tile-ov (${tiles.length}). Pomanjšaj pogled ali izberi manjše območje.`)
+      return
+    }
+    setPrenasanje(true)
+    setPrenosSkupaj(tiles.length)
+    setPrenosNapredek(0)
+    setPreneseno(false)
+    const sw = await navigator.serviceWorker.ready
+    sw.active.postMessage({ tip: 'prenesi-obmocje', tiles })
+    navigator.serviceWorker.addEventListener('message', function handler(e) {
+      if (e.data.tip === 'napredek') setPrenosNapredek(e.data.preneseno)
+      if (e.data.tip === 'koncano') {
+        setPrenasanje(false)
+        setPreneseno(true)
+        setTimeout(() => setPreneseno(false), 4000)
+        navigator.serviceWorker.removeEventListener('message', handler)
+      }
     })
   }
 
@@ -599,6 +657,29 @@ export default function Zemljevid({ izbranaPot, avtomatskiStart, onGPSZacet }) {
       {/* Preklop pogled */}
       <button onClick={preklopi} style={{ ...btnStil, position: 'absolute', top: 12, right: 12, padding: '9px 14px' }}>
         {jeTopoPogled ? '🛰 Satelit' : '🗺 Zemljevid'}
+      </button>
+
+      {/* Offline prenos */}
+      <button onClick={prenesiObmocje} disabled={prenasanje} style={{
+        ...btnStil, position: 'absolute', bottom: 16 + spodajOffset + 186, right: 12,
+        background: preneseno ? ZELENA : prenasanje ? '#F59E0B' : 'white',
+        color: preneseno || prenasanje ? 'white' : '#1A1A2E',
+        border: `1.5px solid ${preneseno ? ZELENA : prenasanje ? '#F59E0B' : '#D1D5DB'}`,
+        minWidth: 80,
+      }}>
+        {prenasanje ? (
+          <>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: 'spin 1s linear infinite' }}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+            {Math.round((prenosNapredek / Math.max(prenosSkupaj, 1)) * 100)}%
+          </>
+        ) : preneseno ? (
+          <>✓ Shranjeno</>
+        ) : (
+          <>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Offline
+          </>
+        )}
       </button>
 
       {/* GPX */}
