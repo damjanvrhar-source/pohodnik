@@ -59,14 +59,23 @@ export default function Profil() {
   const [cacheVelikost, setCacheVelikost] = useState(0)
   const [brisanje, setBrisanje] = useState(false)
 
+  const [prostorSkupaj, setProstorSkupaj] = useState(null)
+  const [prostorProst, setProstorProst] = useState(null)
+
   useEffect(() => {
     // Preveri koliko tile-ov je v cache-u
     if ('caches' in window) {
       caches.open('pohodnik-tiles-v1').then(async cache => {
         const keys = await cache.keys()
         setCacheTiles(keys.length)
-        // Oceni velikost (vsak tile ~15KB)
         setCacheVelikost(Math.round(keys.length * 15 / 1024 * 10) / 10)
+      }).catch(() => {})
+    }
+    // Preveri razpoložljiv prostor naprave
+    if ('storage' in navigator && 'estimate' in navigator.storage) {
+      navigator.storage.estimate().then(({ usage, quota }) => {
+        setProstorSkupaj(Math.round(quota / 1024 / 1024))
+        setProstorProst(Math.round((quota - usage) / 1024 / 1024))
       }).catch(() => {})
     }
   }, [])
@@ -268,9 +277,25 @@ export default function Profil() {
             <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--besedilo)', marginBottom: 4 }}>
               Ni shranjenih kart
             </div>
-            <div style={{ fontSize: 12, color: 'var(--besedilo2)', lineHeight: 1.5 }}>
+            <div style={{ fontSize: 12, color: 'var(--besedilo2)', lineHeight: 1.5, marginBottom: prostorSkupaj ? 12 : 0 }}>
               V Zemljevidu odpri območje in pritisni gumb <strong>Offline</strong> za prenos kart.
             </div>
+            {prostorSkupaj && (
+              <div style={{ marginTop: 4 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--besedilo2)', marginBottom: 5 }}>
+                  <span>Prostor naprave</span>
+                  <span style={{ fontWeight: 700, color: prostorProst < 100 ? '#DC2626' : prostorProst < 500 ? '#F59E0B' : 'var(--zelena)' }}>{prostorProst} MB prosto / {prostorSkupaj} MB skupaj</span>
+                </div>
+                <div style={{ background: '#E5E7EB', borderRadius: 6, height: 8, overflow: 'hidden' }}>
+                  <div style={{
+                    height: '100%', borderRadius: 6,
+                    width: `${Math.min(((prostorSkupaj - prostorProst) / prostorSkupaj) * 100, 100)}%`,
+                    background: prostorProst < 100 ? '#DC2626' : prostorProst < 500 ? '#F59E0B' : 'var(--zelena)',
+                    transition: 'width 0.5s ease',
+                  }} />
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div>
@@ -284,9 +309,25 @@ export default function Profil() {
                 <div style={{ fontSize: 10, color: 'var(--besedilo2)', marginTop: 2 }}>zaseden prostor</div>
               </div>
             </div>
-            <div style={{ background: 'var(--zelena-sv)', borderRadius: 10, padding: '10px 12px', fontSize: 12, color: 'var(--besedilo2)', lineHeight: 1.5 }}>
+            <div style={{ background: 'var(--zelena-sv)', borderRadius: 10, padding: '10px 12px', fontSize: 12, color: 'var(--besedilo2)', lineHeight: 1.5, marginBottom: prostorSkupaj ? 10 : 0 }}>
               ✅ Karte so shranjene za offline uporabo. GPS navigacija deluje brez interneta na prenesenih območjih.
             </div>
+            {prostorSkupaj && (
+              <div style={{ marginTop: 4 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--besedilo2)', marginBottom: 5 }}>
+                  <span>Prostor naprave</span>
+                  <span style={{ fontWeight: 700 }}>{prostorProst} MB prosto / {prostorSkupaj} MB skupaj</span>
+                </div>
+                <div style={{ background: '#E5E7EB', borderRadius: 6, height: 8, overflow: 'hidden' }}>
+                  <div style={{
+                    height: '100%', borderRadius: 6,
+                    width: `${Math.min(((prostorSkupaj - prostorProst) / prostorSkupaj) * 100, 100)}%`,
+                    background: prostorProst < 100 ? '#DC2626' : prostorProst < 500 ? '#F59E0B' : 'var(--zelena)',
+                    transition: 'width 0.5s ease',
+                  }} />
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
