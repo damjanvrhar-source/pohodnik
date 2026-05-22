@@ -176,6 +176,32 @@ const BAZA_POTI = [
   { id: 173, ime: 'Trdinov vrh — iz Bele krajine', regija: 'Dolenjska', tezavnost: 'mountain_hiking', dolzina: '12', vzpon: 800, lat: 45.8194, lon: 15.2322 },
   { id: 174, ime: 'Kolpa — rečna pot', regija: 'Dolenjska', tezavnost: 'hiking', dolzina: '10', vzpon: 50, lat: 45.5500, lon: 15.1000 },
   { id: 175, ime: 'Pohorje — Ribniško jezero', regija: 'Pohorje', tezavnost: 'hiking', dolzina: '5', vzpon: 150, lat: 46.5000, lon: 15.5167 },
+  // Gorenjska — nove poti
+  { id: 176, ime: 'Bled — krožna pot okoli jezera', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '6', vzpon: 30, lat: 46.3683, lon: 14.1146 },
+  { id: 177, ime: 'Ojstrica nad Blejskim jezerom', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '3', vzpon: 200, lat: 46.3600, lon: 14.0900 },
+  { id: 178, ime: 'Mala Osojnica', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '2', vzpon: 120, lat: 46.3650, lon: 14.1000 },
+  { id: 179, ime: 'Velika Osojnica', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '3', vzpon: 200, lat: 46.3617, lon: 14.0950 },
+  { id: 180, ime: 'Blejski grad', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '1', vzpon: 80, lat: 46.3711, lon: 14.1028 },
+  { id: 181, ime: 'Vintgar — Šum', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '5', vzpon: 60, lat: 46.3933, lon: 14.0794 },
+  { id: 182, ime: 'Pokljuka — Zajamniki', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '5', vzpon: 100, lat: 46.3600, lon: 13.9500 },
+  { id: 183, ime: 'Pokljuka — Uskovnica', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '4', vzpon: 80, lat: 46.3167, lon: 13.9500 },
+  { id: 184, ime: 'Lipanca', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '5', vzpon: 350, lat: 46.3736, lon: 13.9494 },
+  { id: 185, ime: 'Debela peč', regija: 'Gorenjska', tezavnost: 'mountain_hiking', dolzina: '7', vzpon: 550, lat: 46.3850, lon: 13.9350 },
+  { id: 186, ime: 'Viševnik', regija: 'Gorenjska', tezavnost: 'mountain_hiking', dolzina: '6', vzpon: 500, lat: 46.3500, lon: 13.9600 },
+  { id: 187, ime: 'Šmarjetna gora nad Kranjem', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '3', vzpon: 200, lat: 46.2583, lon: 14.3750 },
+  { id: 188, ime: 'Grad Kamen nad Begunjami', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '2', vzpon: 100, lat: 46.3833, lon: 14.2000 },
+  { id: 189, ime: 'Begunje — Kamen — Drežnica', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '6', vzpon: 280, lat: 46.3833, lon: 14.2000 },
+  { id: 190, ime: 'Radovljica — Begunje — krožna', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '8', vzpon: 150, lat: 46.3467, lon: 14.1733 },
+  { id: 191, ime: 'Stara Fužina — dolina Voje', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '6', vzpon: 120, lat: 46.3167, lon: 13.9083 },
+  { id: 192, ime: 'Bohinjska Bistrica — Savica', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '7', vzpon: 150, lat: 46.2833, lon: 13.9333 },
+  { id: 193, ime: 'Ribčev Laz — Ukanc', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '5', vzpon: 30, lat: 46.2997, lon: 13.8681 },
+  { id: 194, ime: 'Kranjska Gora — Jasna', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '3', vzpon: 40, lat: 46.4833, lon: 13.8000 },
+  { id: 195, ime: 'Kranjska Gora — Planica', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '5', vzpon: 80, lat: 46.4833, lon: 13.7167 },
+  { id: 196, ime: 'Zelenci — naravni rezervat', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '2', vzpon: 10, lat: 46.5083, lon: 13.7583 },
+  { id: 197, ime: 'Dolina Tamar', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '4', vzpon: 80, lat: 46.4694, lon: 13.7819 },
+  { id: 198, ime: 'Srednji vrh — Želeče', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '4', vzpon: 280, lat: 46.3800, lon: 14.0900 },
+  { id: 199, ime: 'Brdo pri Kranju — park', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '4', vzpon: 30, lat: 46.2667, lon: 14.3167 },
+  { id: 200, ime: 'Šobec — ob Savi', regija: 'Gorenjska', tezavnost: 'hiking', dolzina: '5', vzpon: 20, lat: 46.3583, lon: 14.1333 },
 ]
 
 const BAZA_KOC = [
@@ -306,6 +332,15 @@ const BAZA_KOC = [
   { id: 128, ime: 'Dom na Šmohorju', visina: 1520, regija: 'Koroška', tel: '+38641711309', lezisca: 30, odprta: 'Jun–Oct', lat: 46.5167, lon: 14.9000, km: 4, vzpon: 550 },
   { id: 129, ime: 'Planinski dom na Kalu', visina: 891, regija: 'Primorska', tel: '+38641711310', lezisca: 20, odprta: 'Jun–Sep', lat: 45.6833, lon: 14.1500, km: 2, vzpon: 300 },
   { id: 130, ime: 'Koča pri Jelenovem studencu', visina: 780, regija: 'Dolenjska', tel: '+38641711311', lezisca: 25, odprta: 'Jun–Sep', lat: 45.6500, lon: 15.1833, km: 3, vzpon: 350 },
+  // Gorenjska — nove koče
+  { id: 131, ime: 'Koča pri Blejskem jezeru', visina: 475, regija: 'Gorenjska', tel: '+38645741500', lezisca: 20, odprta: 'Cel leto', lat: 46.3683, lon: 14.1146, km: 1, vzpon: 30 },
+  { id: 132, ime: 'Dom na Zajamnikih', visina: 1073, regija: 'Gorenjska', tel: '+38645722100', lezisca: 30, odprta: 'Jun–Oct', lat: 46.3600, lon: 13.9500, km: 3, vzpon: 300 },
+  { id: 133, ime: 'Planinska koča Šobec', visina: 495, regija: 'Gorenjska', tel: '+38641711400', lezisca: 15, odprta: 'Apr–Oct', lat: 46.3583, lon: 14.1333, km: 0, vzpon: 0 },
+  { id: 134, ime: 'Dom na Lipanci', visina: 1630, regija: 'Gorenjska', tel: '+38645742600', lezisca: 50, odprta: 'Jun–Oct', lat: 46.3736, lon: 13.9494, km: 3, vzpon: 500 },
+  { id: 135, ime: 'Koča pri Savici', visina: 653, regija: 'Gorenjska', tel: '+38645723456', lezisca: 25, odprta: 'Apr–Oct', lat: 46.3000, lon: 13.8681, km: 1, vzpon: 100 },
+  { id: 136, ime: 'Dom v Tamarju', visina: 1108, regija: 'Gorenjska', tel: '+38645890050', lezisca: 40, odprta: 'Cel leto', lat: 46.4694, lon: 13.7819, km: 4, vzpon: 200 },
+  { id: 137, ime: 'Erjavčeva koča (Vršič)', visina: 1515, regija: 'Gorenjska', tel: '+38645881050', lezisca: 60, odprta: 'Maj–Oct', lat: 46.4353, lon: 13.7483, km: 1, vzpon: 50 },
+  { id: 138, ime: 'Planinska koča Viševnik', visina: 1624, regija: 'Gorenjska', tel: '+38641711401', lezisca: 20, odprta: 'Jun–Sep', lat: 46.3500, lon: 13.9600, km: 3, vzpon: 400 },
 ]
 
 
