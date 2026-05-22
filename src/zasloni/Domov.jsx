@@ -40,9 +40,9 @@ function TezavnostPike({ razred }) {
 function IkonaPoti({ razred }) {
   const [pulse, setPulse] = useState(false)
   const barve = {
-    tezka:   { ozadje: '#FEE2E2', gora: '#C0392B', sneg: '#FADBD8' },
-    srednja: { ozadje: '#FEF3C7', gora: '#D35400', sneg: '#FDEBD0' },
-    lahka:   { ozadje: '#D1FAE5', gora: '#1E8449', sneg: '#A9DFBF' },
+    tezka:   { ozadje: '#FEE2E2', gora1: '#B91C1C', gora2: '#DC2626', sneg: '#FFF', rob: '#991B1B' },
+    srednja: { ozadje: '#FEF3C7', gora1: '#B45309', gora2: '#D97706', sneg: '#FFF', rob: '#92400E' },
+    lahka:   { ozadje: '#D1FAE5', gora1: '#065F46', gora2: '#059669', sneg: '#FFF', rob: '#047857' },
   }
   const b = barve[razred] || barve.lahka
   return (
@@ -52,18 +52,23 @@ function IkonaPoti({ razred }) {
       onTouchStart={() => setPulse(true)}
       onTouchEnd={() => setTimeout(() => setPulse(false), 400)}
       style={{
-        width: 46, height: 46, borderRadius: 11,
-        background: b.ozadje, flexShrink: 0,
+        width: 46, height: 46, borderRadius: 12,
+        background: b.ozadje,
+        border: `1.5px solid ${b.rob}22`,
+        flexShrink: 0,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        transform: pulse ? 'scale(1.18)' : 'scale(1)',
+        transform: pulse ? 'scale(1.15)' : 'scale(1)',
         transition: 'transform 0.2s cubic-bezier(0.34,1.56,0.64,1)',
-        boxShadow: pulse ? `0 0 0 5px ${b.ozadje}80` : 'none',
+        boxShadow: pulse ? `0 4px 14px ${b.rob}40` : `0 2px 6px ${b.rob}20`,
       }}
     >
-      <svg width="26" height="26" viewBox="0 0 40 40" fill="none">
-        <polygon points="20,4 25,14 15,14" fill={b.sneg}/>
-        <polygon points="20,4 34,34 6,34" fill={b.gora}/>
-        <path d="M20 34 C17 30 22 27 19 23" stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.8"/>
+      <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
+        <polygon points="24,6 42,40 6,40" fill={b.rob} opacity="0.15"/>
+        <polygon points="24,6 42,40 6,40" fill={b.gora1}/>
+        <polygon points="24,6 42,40 24,40" fill={b.gora2} opacity="0.6"/>
+        <polygon points="24,6 30,18 18,18" fill={b.sneg} opacity="0.95"/>
+        <path d="M18,18 Q21,22 24,20 Q27,18 30,18" stroke={b.sneg} strokeWidth="1.5" fill="none" opacity="0.7"/>
+        <path d="M6,40 Q12,36 18,38 Q24,40 30,37 Q36,34 42,40" fill={b.gora2} opacity="0.3"/>
       </svg>
     </div>
   )
