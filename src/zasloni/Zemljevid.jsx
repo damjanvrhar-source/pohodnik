@@ -124,6 +124,8 @@ export default function Zemljevid({ izbranaPot, offlineObmocje, avtomatskiStart,
   const [kompasSmeri, setKompasSmeri] = useState(null)
   const [kompasAktiven, setKompasAktiven] = useState(false)
   const [prenasanje, setPrenasanje] = useState(false)
+  const [prikazModal, setPrikazModal] = useState(false)
+  const [imeObmocjaVnos, setImeObmocjaVnos] = useState('')
   const [prenosNapredek, setPrenosNapredek] = useState(0)
   const [prenosSkupaj, setPrenosSkupaj] = useState(0)
   const [preneseno, setPreneseno] = useState(false)
@@ -281,9 +283,9 @@ export default function Zemljevid({ izbranaPot, offlineObmocje, avtomatskiStart,
       alert('Vaš brskalnik ne podpira offline kart.')
       return
     }
-    const imeObmocja = window.prompt('Ime območja (npr. Triglav, Bled, Pokljuka):')
-    if (!imeObmocja || !imeObmocja.trim()) return
-    const bounds = map.getBounds()
+    setPrikazModal(true)
+    return
+
     const zoom = map.getZoom()
     const minZoom = Math.max(zoom - 1, 8)
     const maxZoom = Math.min(zoom + 2, 16)
@@ -764,6 +766,57 @@ export default function Zemljevid({ izbranaPot, offlineObmocje, avtomatskiStart,
       )}
 
       {prikazProfila && <ProfilVisine tocke={gpxTocke} dolzina={potDolzina} onZapri={() => setPrikazProfila(false)} />}
+
+      {/* Modal za ime območja */}
+      {prikazModal && (
+        <div style={{
+          position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)',
+          zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          backdropFilter: 'blur(4px)', animation: 'fadeIn 0.2s ease',
+        }}>
+          <div style={{
+            background: 'white', borderRadius: 20, padding: '28px 24px',
+            width: '85%', maxWidth: 340,
+            boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+            animation: 'scaleIn 0.25s cubic-bezier(0.34,1.56,0.64,1)',
+          }}>
+            <div style={{ fontSize: 36, textAlign: 'center', marginBottom: 8 }}>🗺</div>
+            <div style={{ fontSize: 17, fontWeight: 800, color: '#1A2E1A', textAlign: 'center', marginBottom: 6 }}>
+              Shrani offline karte
+            </div>
+            <div style={{ fontSize: 12, color: '#6B7D6B', textAlign: 'center', marginBottom: 18, lineHeight: 1.5 }}>
+              Karte za trenutni pogled bodo shranjene za offline uporabo.
+            </div>
+            <input
+              autoFocus
+              value={imeObmocjaVnos}
+              onChange={e => setImeObmocjaVnos(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && potrdiPrenosObmocja()}
+              placeholder="npr. Triglav, Bled, Pokljuka..."
+              style={{
+                width: '100%', padding: '12px 14px', borderRadius: 12,
+                border: '1.5px solid #cce6cc', fontSize: 14, outline: 'none',
+                background: '#f6fdf6', fontFamily: 'inherit', marginBottom: 16,
+                boxSizing: 'border-box',
+              }}
+            />
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button onClick={() => { setPrikazModal(false); setImeObmocjaVnos('') }} style={{
+                flex: 1, padding: '12px', borderRadius: 12, border: '1px solid #D4E4D4',
+                background: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+                color: '#6B7D6B', fontFamily: 'inherit',
+              }}>Prekliči</button>
+              <button onClick={potrdiPrenosObmocja} className="btn-shimmer" style={{
+                flex: 2, padding: '12px', borderRadius: 12, border: 'none',
+                fontSize: 14, fontWeight: 700, cursor: 'pointer',
+                color: 'white', fontFamily: 'inherit',
+              }}>
+                ⬇ Prenesi
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -227,30 +227,37 @@ export default function Profil({ onOdpriObmocje }) {
         ) : (
           <div>
             {pohodi.map((p, i) => (
-              <div key={p.id} style={{
-                padding: '12px 0',
-                borderBottom: i < pohodi.length - 1 ? '0.5px solid var(--rob)' : 'none',
-                animation: `fadeSlideUp 0.3s ease ${i * 0.05}s both`,
+              <div key={p.id} className="anim-pot-slide" style={{
+                background: 'linear-gradient(135deg, #ffffff, #f6fdf6)',
+                borderRadius: 14, padding: '14px', marginBottom: 8,
+                border: '1px solid #cce6cc',
+                boxShadow: '0 3px 12px rgba(45,122,45,0.08)',
+                animationDelay: `${i * 0.06}s`,
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 14, fontWeight: 800, marginBottom: 3, color: 'var(--besedilo)' }}>
+                    <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--besedilo)', marginBottom: 2 }}>
                       🏔 {p.ime}
                     </div>
                     {p.regija && (
-                      <div style={{ fontSize: 11, color: 'var(--zelena)', fontWeight: 600, marginBottom: 4 }}>
-                        {p.regija}
-                      </div>
+                      <div style={{ fontSize: 11, color: 'var(--zelena)', fontWeight: 700 }}>{p.regija}</div>
                     )}
-                    <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: 11, color: 'var(--besedilo2)' }}>📏 {formatRazd(p.razdalja)}</span>
-                      <span style={{ fontSize: 11, color: 'var(--besedilo2)' }}>⏱ {formatCas(p.cas)}</span>
-                      {p.vzpon > 0 && <span style={{ fontSize: 11, color: 'var(--besedilo2)' }}>▲ {p.vzpon} m</span>}
-                    </div>
                   </div>
-                  <div style={{ fontSize: 11, color: 'var(--besedilo2)', fontWeight: 500, marginLeft: 8, flexShrink: 0 }}>
+                  <div style={{ fontSize: 10, color: 'var(--besedilo2)', fontWeight: 500, marginLeft: 8, flexShrink: 0, background: '#F0F5F0', padding: '3px 8px', borderRadius: 6 }}>
                     {p.datum}
                   </div>
+                </div>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  {[
+                    { i: '📏', v: formatRazd(p.razdalja), l: 'razdalja' },
+                    { i: '⏱', v: formatCas(p.cas), l: 'čas' },
+                    ...(p.vzpon > 0 ? [{ i: '▲', v: `${p.vzpon} m`, l: 'vzpon' }] : []),
+                  ].map((s, si) => (
+                    <div key={si} style={{ flex: 1, background: 'var(--zelena-sv)', borderRadius: 8, padding: '6px 4px', textAlign: 'center', border: '1px solid #c8e6c8' }}>
+                      <div style={{ fontSize: 9, color: 'var(--besedilo2)' }}>{s.i} {s.l}</div>
+                      <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--zelena)' }}>{s.v}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
@@ -315,21 +322,34 @@ export default function Profil({ onOdpriObmocje }) {
             {offlineObmocja.length > 0 && (
               <div style={{ marginBottom: 10 }}>
                 {offlineObmocja.map((o, i) => (
-                  <div key={o.id} style={{
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                    padding: '9px 0', borderBottom: i < offlineObmocja.length - 1 ? '0.5px solid var(--rob)' : 'none',
+                  <div key={o.id} className="anim-pot-slide" style={{
+                    background: 'linear-gradient(135deg, #f6fdf6, #edfaed)',
+                    borderRadius: 14, padding: '14px', marginBottom: 8,
+                    border: '1px solid #cce6cc',
+                    boxShadow: '0 3px 12px rgba(45,122,45,0.08)',
+                    animationDelay: `${i * 0.08}s`,
                   }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--besedilo)' }}>📍 {o.ime}</div>
-                      <div style={{ fontSize: 11, color: 'var(--besedilo2)', marginTop: 2 }}>{o.datum} · {o.tiles} tile-ov · ~{Math.round(o.tiles * 15 / 1024 * 10) / 10} MB</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--besedilo)', marginBottom: 3 }}>
+                          🗺 {o.ime}
+                        </div>
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                          <span style={{ fontSize: 10, background: '#D1FAE5', color: '#065F46', padding: '2px 7px', borderRadius: 5, fontWeight: 700 }}>✓ Offline</span>
+                          <span style={{ fontSize: 10, color: 'var(--besedilo2)' }}>{o.datum}</span>
+                          <span style={{ fontSize: 10, color: 'var(--besedilo2)' }}>📦 ~{Math.round(o.tiles * 15 / 1024 * 10) / 10} MB</span>
+                          <span style={{ fontSize: 10, color: 'var(--besedilo2)' }}>{o.tiles} tile-ov</span>
+                        </div>
+                      </div>
                     </div>
                     <button onClick={() => onOdpriObmocje && onOdpriObmocje(o)} className="btn-shimmer" style={{
-                      border: 'none', borderRadius: 8, padding: '6px 12px',
-                      fontSize: 11, fontWeight: 700, color: 'white', cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', gap: 4,
+                      width: '100%', border: 'none', borderRadius: 10, padding: '10px',
+                      fontSize: 13, fontWeight: 700, color: 'white', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                      fontFamily: 'inherit',
                     }}>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-                      Navigacija
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+                      Odpri v zemljevidu
                     </button>
                   </div>
                 ))}
