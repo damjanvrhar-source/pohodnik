@@ -14,8 +14,28 @@ export default function Header() {
       }}>
         <img src={LOGO} alt="Pohodnik" style={{ width: 38, height: 38, borderRadius: 10, objectFit: 'cover', flexShrink: 0, boxShadow: '0 2px 10px rgba(0,0,0,0.3)', animation: 'logoFloat 4s ease-in-out infinite' }} />
         <div>
-          <div style={{ color: 'white', fontSize: 19, fontWeight: 800, letterSpacing: '0.8px', textTransform: 'uppercase', lineHeight: 1 }}>Pohodnik</div>
-          <div style={{ color: 'rgba(255,255,255,0.58)', fontSize: 9, letterSpacing: '1.4px', textTransform: 'uppercase', marginTop: 2 }}>Razišči · Odkrij · Doživi</div>
+          <div style={{ lineHeight: 1, display: 'flex', alignItems: 'baseline', gap: 0 }}>
+            {'POHODNIK'.split('').map((c, i) => (
+              <span key={i} style={{
+                color: 'white',
+                fontSize: 19,
+                fontWeight: 800,
+                letterSpacing: '0.8px',
+                display: 'inline-block',
+                animation: `fadeSlideUp 0.4s ease ${i * 0.06}s both, letterPulse 3s ease-in-out ${i * 0.15 + 1}s infinite`,
+                textShadow: '0 0 20px rgba(255,255,255,0.3)',
+              }}>{c}</span>
+            ))}
+          </div>
+          <div style={{
+            fontSize: 9, letterSpacing: '1.4px', textTransform: 'uppercase', marginTop: 3,
+            background: 'linear-gradient(90deg, rgba(255,255,255,0.4), rgba(255,255,255,0.8), rgba(255,255,255,0.4))',
+            backgroundSize: '200% auto',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            animation: 'btnShimmer 3s linear infinite',
+          }}>Razišči · Odkrij · Doživi</div>
         </div>
       </header>
       <div style={{ position: 'fixed', top: 'var(--header-h)', left: 0, right: 0, height: 3, background: 'linear-gradient(90deg, #A8D5A8 0%, #5DBF5D 50%, #A8D5A8 100%)', backgroundSize: '200% auto', animation: 'btnShimmer 3s linear infinite', zIndex: 100 }} />

@@ -395,3 +395,9 @@ button:active {
 .pot-d8  { animation-delay: 0.24s; }
 .pot-d9  { animation-delay: 0.27s; }
 .pot-d10 { animation-delay: 0.30s; }
+
+/* Letter pulse za header */
+@keyframes letterPulse {
+  0%, 100% { transform: translateY(0) scale(1); text-shadow: 0 0 20px rgba(255,255,255,0.3); }
+  50% { transform: translateY(-1.5px) scale(1.05); text-shadow: 0 0 30px rgba(255,255,255,0.7); }
+}
