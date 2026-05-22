@@ -55,6 +55,37 @@ export default function Profil() {
     }
   }
 
+  const [cacheTiles, setCacheTiles] = useState(0)
+  const [cacheVelikost, setCacheVelikost] = useState(0)
+  const [brisanje, setBrisanje] = useState(false)
+
+  useEffect(() => {
+    // Preveri koliko tile-ov je v cache-u
+    if ('caches' in window) {
+      caches.open('pohodnik-tiles-v1').then(async cache => {
+        const keys = await cache.keys()
+        setCacheTiles(keys.length)
+        // Oceni velikost (vsak tile ~15KB)
+        setCacheVelikost(Math.round(keys.length * 15 / 1024 * 10) / 10)
+      }).catch(() => {})
+    }
+  }, [])
+
+  async function izbrisiOfflineKarte() {
+    if (!window.confirm('Izbriši vse offline karte?')) return
+    setBrisanje(true)
+    try {
+      if ('serviceWorker' in navigator) {
+        const sw = await navigator.serviceWorker.ready
+        sw.active.postMessage({ tip: 'izbrisi-cache' })
+      }
+      await caches.delete('pohodnik-tiles-v1')
+      setCacheTiles(0)
+      setCacheVelikost(0)
+    } catch(e) {}
+    setBrisanje(false)
+  }
+
   return (
     <div style={{ padding: 16 }}>
 
@@ -206,6 +237,56 @@ export default function Profil() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      {/* Offline karte */}
+      <div style={{
+        background: 'linear-gradient(135deg, #ffffff 0%, #f6fdf6 100%)',
+        borderRadius: 18, padding: 16, marginTop: 12,
+        border: '1px solid #cce6cc',
+        boxShadow: '0 2px 10px rgba(45,122,45,0.06)',
+        animation: 'fadeSlideUp 0.6s ease both',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+          <div style={{ fontSize: 11, fontWeight: 800, color: 'var(--besedilo2)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+            🗺 Offline karte
+          </div>
+          {cacheTiles > 0 && (
+            <button onClick={izbrisiOfflineKarte} disabled={brisanje} style={{
+              fontSize: 11, color: '#991B1B', background: '#FEE2E2',
+              border: 'none', borderRadius: 6, padding: '3px 8px',
+              cursor: 'pointer', fontWeight: 600, fontFamily: 'inherit',
+            }}>{brisanje ? 'Brišem...' : 'Izbriši vse'}</button>
+          )}
+        </div>
+
+        {cacheTiles === 0 ? (
+          <div style={{ textAlign: 'center', padding: '20px 0' }}>
+            <div style={{ fontSize: 36, marginBottom: 8 }}>🗺</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--besedilo)', marginBottom: 4 }}>
+              Ni shranjenih kart
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--besedilo2)', lineHeight: 1.5 }}>
+              V Zemljevidu odpri območje in pritisni gumb <strong>Offline</strong> za prenos kart.
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
+              <div style={{ flex: 1, background: 'linear-gradient(135deg, #E8F5E8, #D1FAE5)', borderRadius: 12, padding: '12px 10px', textAlign: 'center', border: '1px solid #A7D7A7' }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--zelena)' }}>{cacheTiles.toLocaleString()}</div>
+                <div style={{ fontSize: 10, color: 'var(--besedilo2)', marginTop: 2 }}>shranjenih tile-ov</div>
+              </div>
+              <div style={{ flex: 1, background: 'linear-gradient(135deg, #E8F5E8, #D1FAE5)', borderRadius: 12, padding: '12px 10px', textAlign: 'center', border: '1px solid #A7D7A7' }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--zelena)' }}>~{cacheVelikost} MB</div>
+                <div style={{ fontSize: 10, color: 'var(--besedilo2)', marginTop: 2 }}>zaseden prostor</div>
+              </div>
+            </div>
+            <div style={{ background: 'var(--zelena-sv)', borderRadius: 10, padding: '10px 12px', fontSize: 12, color: 'var(--besedilo2)', lineHeight: 1.5 }}>
+              ✅ Karte so shranjene za offline uporabo. GPS navigacija deluje brez interneta na prenesenih območjih.
+            </div>
           </div>
         )}
       </div>
