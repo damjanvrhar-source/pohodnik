@@ -1,0 +1,134 @@
+[33me3fa48d[m SW v4 - pravi prenos tile-ov
+[33m7cfd03f[m SW v4 - posodobljen cache
+[33mb364aa7[m Fix prikaz offline obmocij
+[33m151242e[m Popravljen prikaz offline obmocij
+[33m1a36ae9[m Popravljen cache ime v Profil
+[33m2a1e026[m Profil se osvezi za offline obmocja
+[33m2c88331[m Dodan sw.js
+[33m0be6a34[m Offline območje se shrani takoj
+[33m51757ea[m Popravljen sw.js
+[33m9023628[m Popravljeno shranjevanje offline območij
+[33ma421602[m SW v3 - pravi prenos tile-ov z zamikom
+[33m971d45f[m Popravljen service worker za offline karte
+[33m6ca6016[m Animiran splash screen
+[33m0441f8c[m Brisanje posamezne offline karte
+[33ma7efa2a[m Popravljeno offline - zeleni zaslon bug
+[33m1868220[m Lepši modal za offline + animirane kartice v profilu
+[33m232338e[m Odstranil 112 in GPX gumb
+[33mff01037[m Offline območja - navigacija direktno iz profila
+[33m7722d9d[m Offline območja - vpis imena + seznam v profilu
+[33mca2746b[m Offline območja - vpis imena + seznam v profilu
+[33mcc8346c[m Offline karte sekcija v profilu
+[33m4d3ad7f[m Offline gumb - prenos kart za trenutno območje
+[33m701724d[m Animirane črke POHODNIK - slide in + pulse + shimmer podpis
+[33me2feee7[m Pravi kompas + gorsko ozadje
+[33m3907fdb[m Shimmer gumbi + zelenkasta ozadja namesto belih
+[33m56b1946[m Živahne animacije povsod
+[33m66f67bd[m Lepše ikone - navigacija, gorske poti, koče
+[33md0ce7c5[m Gorenjska: +25 poti, +8 koč
+[33m374137b[m Popravljeno shranjevanje pohodov - realni vzpon in čas
+[33m89dbb56[m Kompas z smerjo + timer šele ob gibanju + worker v ozadju
+[33mf50fd1c[m Dodana Vercel Analytics
+[33mfe409c7[m Dodane nove poti in koče
+[33mfd52a3f[m Dodane nove poti: Triglav (5 izhodišč) + Golovec (3 poti)
+[33m1dc5eaa[m Service Worker registracija
+[33mc5c08cc[m Popravi index.html
+[33m140d569[m PWA manifest
+[33m2a166b6[m PWA ikone in manifest
+[33mb646e75[m Vse shranjeno
+[33m8fd9fb3[m Popravi smer snopa - kaze naprej
+[33ma97f1ef[m Offline zemljevid
+[33m25dbf98[m Odstrani webcam iz PotDetail
+[33m072b2ab[m Offline zemljevid - Service Worker + prenos obmocja
+[33mb208237[m Odstrani webcam ikono iz iskanja
+[33m58b2300[m Webcam - direktne ARSO kamere po regijah
+[33meb8704c[m Webcam - samo slovenske kamere hribovc.si
+[33m7256dac[m Slovenske webcam kamere
+[33md5cbfb8[m Webcam ikona na vsaki poti
+[33ma19bb3a[m Webcam vrhov v PotDetail
+[33m073eadd[m Odstrani 4 podvojene koce
+[33mf99efb8[m Odstrani natancnostni krog
+[33m8d8bbc8[m Popravi ime funkcije predvajajZvok
+[33mc95921a[m Odstrani zvoke
+[33m9c7f822[m Zemljevid brez zvokov
+[33m0472c38[m Snop - enostaven trikotnik, brez zvokov
+[33md7e8761[m Snop - popravljen izracun koordinat
+[33m30d59e1[m Snop - prikazi takoj ob prvem GPS signalu
+[33m230d41c[m Snop - L.polygon direktno na mapi
+[33mf49b979[m Snop - Canvas risanje
+[33mc3fd529[m Snop - CSS trikotnik namesto SVG
+[33m3f17cc6[m GPS marker - snop in pika v eni ikoni
+[33m9ad475b[m Zvok samo enkrat ob startu navigacije
+[33mfe9c59d[m Snop - vedno prikazan, obraca z GPS heading
+[33m0d7b639[m Kompas snop - iOS gumb + GPS heading fallback
+[33m6661e4f[m Snop smeri - locen layer, posodablja ob vsakem obratu
+[33m5eb2292[m Snop smeri gledanja na GPS markerju
+[33me86e81b[m Smer gledanja - puscica na GPS markerju
+[33m5243664[m Zvocni efekti - start, GPS, prekini, SOS
+[33md6bb127[m Popravi duplikat stats v Domov
+[33m87e46d5[m Domov - statistike iz localStorage
+[33m2a6dcbf[m Belezenje pohodov - zgodovina, statistike
+[33mf2b846c[m Nunito font, bolj zaobljene kartice
+[33m0dadadf[m Premakni index.css v src
+[33m70046e6[m Animacije - fadeSlideUp, bounce, pulse, tap feedback
+[33m5f2cf0c[m Poti in koce po abecedi
+[33m699cdd4[m Stats panel med navigacijo
+[33m27afd9d[m Optimizacija baterije + Wake Lock
+[33m4d60659[m Prekini pot gumb
+[33m8257ede[m Prekini pot - pokaze se ko GPS tece
+[33m313852c[m Zemljevid - popravljen Prekini pot gumb
+[33m7256023[m Popravi prikaz gumba Prekini pot
+[33m7f157d0[m Prekini pot gumb - levo spodaj
+[33mae2d216[m Dodaj gumb Prekini pot na zemljevidu
+[33ma104846[m Odstrani Navigacija zavihek - GPS je v Zemljevidu
+[33mbbef299[m Cilj marker s pulsom, animiran nazaj gumb
+[33m207a09c[m Avtomatski GPS start ob zacetku pohoda
+[33mbd93aac[m 150 poti, 115 koc - nova rekord
+[33m6a3e9b9[m Tocne koordinate poti in koc iz WikiData
+[33m38fc49d[m Navigacija - GPS sled, mini zemljevid, statistike hoje
+[33m8f4e505[m Zemljevid - Google Maps slog + preklop satelit
+[33m96b812c[m Samo satelit, beli napisi krajev
+[33m18ffe01[m Vrni Domov.jsx
+[33m503288e[m Popravi marker - belo ozadje z zelenim robom
+[33mb013b98[m Vecji gumbi na zemljevidu
+[33m4a1e0ae[m Izboljsan zemljevid - zelena tema, SVG gumbi, SOS 112
+[33md5e7f6c[m Dodaj 30 koc iz PZS, 20 novih poti - skupaj 104 poti 95 koc
+[33m1a768bf[m Popravi SVG ikone v Isci in Domov
+[33mb481574[m SVG ikone z barvami po tezavnosti, pulse animacija
+[33m433d455[m Popravi puščico na trikotnik, skupni čas
+[33m9615aa3[m Isci - 85 poti, 58 koc
+[33m7f00d2f[m Poti - dodaj gumba Navigacija in Odpri pot
+[33ma7a6ff1[m Zdruzeni Poti+Koce v Isci, 5 nav gumbov
+[33mdd07e76[m Profil - odstranim znacke
+[33m8f35614[m Profil - zelena hero kartica, boljsi dizajn
+[33m74711bd[m Iskanje - 100 poti, filter regij, boljsi dizajn
+[33m4826d21[m Koce - navigacija do koce z Google Maps
+[33mcc2f787[m Koce - več koč, boljši dizajn
+[33m9473e6a[m Pravi logo z belimi gorami
+[33m656e5cd[m SVG logo - bele gore
+[33m085fb94[m Uporabi ikona-192 za logo
+[33m7f67c6c[m Popravi ime loga
+[33md49b6ec[m Bel okvir okoli loga
+[33m3f3fd84[m Dodaj logo.png
+[33me34e603[m Popravi splash screen logo
+[33m1c2e960[m Header logo kot app ikona
+[33me21b993[m Popravi header logo
+[33m8e2be58[m Logo v header in splash screen
+[33m56cb787[m Izboljšan PotDetail - hero kartica, statistike, boljši dizajn
+[33m964ab1e[m Izboljšan Domov - gumb odpri pot + težavnostne pike
+[33mb135638[m Dodaj splash screen
+[33m7b84be8[m Dodaj navigacijo s kompasom
+[33mb7aca80[m Dodaj gumb pot do koče
+[33m1d3d492[m Manjši weather, večje poti kartice
+[33m65b892c[m Shrani profil lokalno
+[33m786c936[m Nova ikona
+[33mfc32855[m Dodaj satelitski pogled
+[33m3bfda3a[m Popravi navigacijo
+[33med2812d[m Popravi statistike na 0
+[33mee0c89c[m Posodobitev: 69 poti, izhodišča, prazen profil, nova ikona
+[33m857215b[m Dodaj leaflet v odvisnosti
+[33md859a4d[m Poenostavi vite config
+[33m2b896c6[m Popravi gitignore
+[33mc738a1c[m Odstrani node_modules
+[33m31c976c[m Dodaj gitignore
+[33m5e39003[m Pohodnik v1.0

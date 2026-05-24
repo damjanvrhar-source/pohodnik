@@ -1,0 +1,3 @@
+com.pohodnik.app.test
+style WhiteBackgroundDialogTheme
+style WhiteBackgroundTheme

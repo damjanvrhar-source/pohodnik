@@ -186,9 +186,12 @@ export default function Zemljevid({ izbranaPot, offlineObmocje, avtomatskiStart,
     L.control.zoom({ position: 'bottomright' }).addTo(map)
     mapInstanca.current = map
 
+  // Trigger izbranaPot effect
+  if (izbranaPot?.lat) setTimeout(()=>mapInstanca.current&&L.marker([izbranaPot.lat,izbranaPot.lon]).addTo(mapInstanca.current),500)
+
     if (izbranaPot?.lat && izbranaPot?.lon) {
       map.setView([izbranaPot.lat, izbranaPot.lon], 13)
-      const ciljIkona = L.divIcon({
+      if (ciljMarker.current) { map.removeLayer(ciljMarker.current); ciljMarker.current = null }; const ciljIkona = L.divIcon({
         className: '',
         html: `<div style="position:relative;display:flex;align-items:center;justify-content:center;width:40px;height:40px;">
           <div style="position:absolute;width:40px;height:40px;border-radius:50%;background:rgba(220,38,38,0.15);animation:ciljPulse 1.5s ease-out infinite;"></div>
@@ -277,15 +280,22 @@ export default function Zemljevid({ izbranaPot, offlineObmocje, avtomatskiStart,
   }
 
   async function prenesiObmocje() {
-    const map = mapInstanca.current
-    if (!map) return
+    if (!mapInstanca.current) return
     if (!('serviceWorker' in navigator)) {
       alert('Vaš brskalnik ne podpira offline kart.')
       return
     }
+    setImeObmocjaVnos('')
     setPrikazModal(true)
-    return
+  }
 
+  async function potrdiPrenosObmocja() {
+    if (!imeObmocjaVnos.trim()) return
+    const imeObmocja = imeObmocjaVnos.trim()
+    setPrikazModal(false)
+    const map = mapInstanca.current
+    if (!map) return
+    const bounds = map.getBounds()
     const zoom = map.getZoom()
     const minZoom = Math.max(zoom - 1, 8)
     const maxZoom = Math.min(zoom + 2, 16)
@@ -305,40 +315,57 @@ export default function Zemljevid({ izbranaPot, offlineObmocje, avtomatskiStart,
       }
     }
     if (tiles.length > 1500) {
-      alert(`Preveč tile-ov (${tiles.length}). Pomanjšaj pogled ali izberi manjše območje.`)
+      alert(`Preveč tile-ov (${tiles.length}). Pomanjšaj pogled.`)
       return
     }
+    const center = map.getCenter()
+    const trenutniZoom = map.getZoom()
+
+    // Shrani območje TAKOJ (ne čakaj na koncano)
+    try {
+      const obstoječa = JSON.parse(localStorage.getItem('offline_obmocja') || '[]')
+      // Odstrani staro z istim imenom če obstaja
+      const filtrirano = obstoječa.filter(o => o.ime !== imeObmocja)
+      filtrirano.unshift({
+        id: Date.now(), ime: imeObmocja,
+        datum: new Date().toLocaleDateString('sl-SI'),
+        tiles: tiles.length,
+        lat: center.lat.toFixed(4), lon: center.lng.toFixed(4), zoom: trenutniZoom,
+      })
+      localStorage.setItem('offline_obmocja', JSON.stringify(filtrirano.slice(0, 20)))
+    } catch(err) {}
+
     setPrenasanje(true)
     setPrenosSkupaj(tiles.length)
     setPrenosNapredek(0)
     setPreneseno(false)
-    const sw = await navigator.serviceWorker.ready
-    sw.active.postMessage({ tip: 'prenesi-obmocje', tiles })
-    navigator.serviceWorker.addEventListener('message', function handler(e) {
-      if (e.data.tip === 'napredek') setPrenosNapredek(e.data.preneseno)
-      if (e.data.tip === 'koncano') {
+
+    // Prenesi tile-e v background
+    if ('serviceWorker' in navigator) {
+      try {
+        const swReg = await navigator.serviceWorker.ready
+        const sw = swReg.active || swReg.installing || swReg.waiting
+        if (!sw) throw new Error('No SW')
+        sw.postMessage({ tip: 'prenesi-obmocje', tiles })
+        navigator.serviceWorker.addEventListener('message', function handler(e) {
+          if (e.data.tip === 'napredek') setPrenosNapredek(e.data.preneseno)
+          if (e.data.tip === 'koncano') {
+            setPrenasanje(false)
+            setPreneseno(true)
+            setTimeout(() => setPreneseno(false), 4000)
+            navigator.serviceWorker.removeEventListener('message', handler)
+          }
+        })
+      } catch(err) {
         setPrenasanje(false)
         setPreneseno(true)
         setTimeout(() => setPreneseno(false), 4000)
-        navigator.serviceWorker.removeEventListener('message', handler)
-        // Shrani ime območja
-        try {
-          const center = map.getCenter()
-          const zoom = map.getZoom()
-          const obstoječa = JSON.parse(localStorage.getItem('offline_obmocja') || '[]')
-          obstoječa.unshift({
-            id: Date.now(),
-            ime: imeObmocja.trim(),
-            datum: new Date().toLocaleDateString('sl-SI'),
-            tiles: e.data.preneseno,
-            lat: center.lat.toFixed(4),
-            lon: center.lng.toFixed(4),
-            zoom,
-          })
-          localStorage.setItem('offline_obmocja', JSON.stringify(obstoječa.slice(0, 20)))
-        } catch(err) {}
       }
-    })
+    } else {
+      setPrenasanje(false)
+      setPreneseno(true)
+      setTimeout(() => setPreneseno(false), 4000)
+    }
   }
 
   function posodobiSnop(lat, lon, smer) {
