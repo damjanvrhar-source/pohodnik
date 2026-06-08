@@ -212,19 +212,24 @@ export default function Zemljevid({ izbranaPot, offlineObmocje, avtomatskiStart,
 
     // Kompas — poskusi z DeviceOrientationEvent
     function onOrientacija(e) {
-      let smer = 0
-      if (e.webkitCompassHeading !== undefined && e.webkitCompassHeading !== null) {
+      let smer = null
+      if (e.webkitCompassHeading != null) {
+        // iOS — direktno kompas smer
         smer = e.webkitCompassHeading
-      } else if (e.absolute && e.alpha !== null) {
-        smer = 360 - e.alpha
-      } else {
-        return // Ni veljavnih podatkov
+      } else if (e.alpha != null) {
+        // Android — alpha je rotacija zaslona, ne kompas!
+        // Za absolutni event: smer = 360 - alpha
+        // Za navadni event: potrebujemo popravek za magnetno deklinacijo
+        smer = (360 - e.alpha) % 360
       }
+      if (smer === null) return
+      smer = (smer + 360) % 360
       smerRef.current = smer
+      setKompasSmeri(Math.round(smer))
+      setKompasAktiven(true)
       const lokacija = gpsLokacija.current
       if (lokacija && map) {
-        if (snopMarker.current) map.removeLayer(snopMarker.current)
-        snopMarker.current = L.marker(lokacija, { icon: ustvariSnopIkono(smer), zIndexOffset: -100 }).addTo(map)
+        posodobiSnop(lokacija[0], lokacija[1], smer)
       }
     }
 
@@ -574,6 +579,22 @@ export default function Zemljevid({ izbranaPot, offlineObmocje, avtomatskiStart,
       setPrikazProfila(true)
     }
     bralnik.readAsText(datoteka)
+  }
+
+  function onOrientacijaZunanji(e) {
+    let smer = null
+    if (e.webkitCompassHeading != null) {
+      smer = e.webkitCompassHeading
+    } else if (e.alpha != null) {
+      smer = (360 - e.alpha) % 360
+    }
+    if (smer === null) return
+    smer = (smer + 360) % 360
+    smerRef.current = smer
+    setKompasSmeri(Math.round(smer))
+    setKompasAktiven(true)
+    const lok = gpsLokacija.current
+    if (lok) posodobiSnop(lok[0], lok[1], smer)
   }
 
   function sosKlic() {
