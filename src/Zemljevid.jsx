@@ -575,11 +575,7 @@ export default function Zemljevid({ izbranaPot, offlineObmocje, avtomatskiStart,
 
      
 
-      {/* SOS */}
-      <button onClick={sosKlic} style={{ position: 'absolute', bottom: 16 + spodajOffset, right: 12, background: '#DC2626', color: 'white', border: 'none', borderRadius: 12, padding: '11px 16px', fontSize: 14, fontWeight: 800, cursor: 'pointer', zIndex: 1000, boxShadow: '0 4px 14px rgba(220,38,38,0.5)', display: 'flex', alignItems: 'center', gap: 7, minWidth: 80, justifyContent: 'center' }}>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.62 4.38 2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        112
-      </button>
+     
 
       {/* STATS PANEL */}
       {sledenje && (
