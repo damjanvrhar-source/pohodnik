@@ -583,7 +583,7 @@ export default function Zemljevid({ izbranaPot, offlineObmocje, avtomatskiStart,
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
             {[
               { i: '📏', v: formatRazd(sledRazdalja), l: 'prehojena' },
-        G      { i: '⏱', v: formatCas(sledCas), l: 'čas hoje' },
+            { i: '⏱', v: formatCas(sledCas), l: 'čas hoje' },
               { i: '⚡', v: `${hitrost} km/h`, l: 'hitrost' },
               { i: '▲', v: visina ? `${visina} m` : '–', l: 'višina' },
               izbranaPot?.lat ? { i: '📍', v: (() => { const gpsEl = gpsMarker.current; if (!gpsEl) return '–'; const pos = gpsEl.getLatLng(); return formatRazd(izracunajRazd(pos.lat, pos.lng, izbranaPot.lat, izbranaPot.lon)) })(), l: 'do cilja' } : null,
