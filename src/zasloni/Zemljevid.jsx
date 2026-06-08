@@ -573,22 +573,9 @@ export default function Zemljevid({ izbranaPot, offlineObmocje, avtomatskiStart,
         </button>
       )}
 
-      {/* GPX */}
-      <input ref={gpxInput} type="file" accept=".gpx" style={{ display: 'none' }} onChange={nalozGPX} />
-      <button onClick={() => gpxInput.current.click()} style={{ ...btnStil, position: 'absolute', bottom: 16 + spodajOffset + 186, right: 12 }}>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        GPX
-      </button>
-
       {/* GPS gumb */}
       <button onClick={sledenje ? ustavi : zageniGPS} style={{ ...btnStil, position: 'absolute', bottom: 16 + spodajOffset + 62, right: 12, background: sledenje ? ZELENA : 'white', color: sledenje ? 'white' : ZELENA, border: `1.5px solid ${ZELENA}` }}>
         {sledenje ? <><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12"/></svg> Ustavi</> : <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg> GPS</>}
-      </button>
-
-      {/* SOS */}
-      <button onClick={sosKlic} style={{ position: 'absolute', bottom: 16 + spodajOffset, right: 12, background: '#DC2626', color: 'white', border: 'none', borderRadius: 12, padding: '11px 16px', fontSize: 14, fontWeight: 800, cursor: 'pointer', zIndex: 1000, boxShadow: '0 4px 14px rgba(220,38,38,0.5)', display: 'flex', alignItems: 'center', gap: 7, minWidth: 80, justifyContent: 'center' }}>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13 19.79 19.79 0 0 1 1.62 4.38 2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l.92-.92a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        112
       </button>
 
       {/* STATS PANEL */}
